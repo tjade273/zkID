@@ -35,7 +35,7 @@ TEST(MerkleAutenticationTest, TestValidWitness) {
     libff::start_profiling();
 
    /* prepare test */
-    libff::edwards_pp::init_public_params();
+    libff::mnt4_pp::init_public_params();
     typedef libff::Fr<libff::mnt4_pp> FieldT;
     typedef sha256_two_to_one_hash_gadget<FieldT> HashT;
     const size_t digest_len = HashT::get_digest_len();
@@ -85,7 +85,6 @@ TEST(MerkleAutenticationTest, TestValidWitness) {
     digest_variable<FieldT> leaf_digest(pb, digest_len, "input_block");
     digest_variable<FieldT> root_digest(pb, digest_len, "output_digest");
     merkle_authentication_path_variable<FieldT, HashT> path_var(pb, tree_depth, "path_var");
-    
     merkle_tree_check_read_gadget<FieldT, HashT> ml(pb, tree_depth, address_bits_va, leaf_digest, root_digest, path_var, ONE, "ml");
 
     path_var.generate_r1cs_constraints();
@@ -93,7 +92,7 @@ TEST(MerkleAutenticationTest, TestValidWitness) {
 
     address_bits_va.fill_with_bits(pb, address_bits);
     
-    assert(address_bits_va.get_field_element_from_bits(pb).as_ulong() == address);
+    ASSERT_TRUE(address_bits_va.get_field_element_from_bits(pb).as_ulong() == address);
     leaf_digest.generate_r1cs_witness(leaf);
     path_var.generate_r1cs_witness(address, path);
     ml.generate_r1cs_witness();
@@ -102,9 +101,9 @@ TEST(MerkleAutenticationTest, TestValidWitness) {
     address_bits_va.fill_with_bits(pb, address_bits);
     leaf_digest.generate_r1cs_witness(leaf);
     root_digest.generate_r1cs_witness(root);
-    assert(pb.is_satisfied());
+    ASSERT_TRUE(pb.is_satisfied());
 
     const size_t num_constraints = pb.num_constraints();
     const size_t expected_constraints = merkle_tree_check_read_gadget<FieldT, HashT>::expected_constraints(tree_depth);
-    assert(num_constraints == expected_constraints);
+    ASSERT_TRUE(num_constraints == expected_constraints);
 }
