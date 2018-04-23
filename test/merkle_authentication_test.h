@@ -35,8 +35,8 @@ TEST(MerkleAutenticationTest, TestValidWitness) {
     libff::start_profiling();
 
    /* prepare test */
-    libff::mnt4_pp::init_public_params();
-    typedef libff::Fr<libff::mnt4_pp> FieldT;
+    libff::alt_b128::init_public_params();
+    typedef libff::Fr<libff::alt_b128> FieldT;
     typedef sha256_two_to_one_hash_gadget<FieldT> HashT;
     const size_t digest_len = HashT::get_digest_len();
     const size_t tree_depth = 3;
@@ -65,7 +65,6 @@ TEST(MerkleAutenticationTest, TestValidWitness) {
 
     //construct authentication path
     json::iterator cur_node_it = path_hashes.begin();
-    std::cout << path_hashes.size() << std::endl;
     for(int cur_depth = tree_depth-1; cur_depth >= 0; ++cur_node_it, --cur_depth){
         const std::string node_hash = (*cur_node_it)["hash"];
         const bool is_right = (*cur_node_it)["right"];
@@ -85,7 +84,8 @@ TEST(MerkleAutenticationTest, TestValidWitness) {
     digest_variable<FieldT> leaf_digest(pb, digest_len, "input_block");
     digest_variable<FieldT> root_digest(pb, digest_len, "output_digest");
     merkle_authentication_path_variable<FieldT, HashT> path_var(pb, tree_depth, "path_var");
-    merkle_tree_check_read_gadget<FieldT, HashT> ml(pb, tree_depth, address_bits_va, leaf_digest, root_digest, path_var, ONE, "ml");
+    merkle_tree_check_read_gadget<FieldT, HashT> ml(pb, tree_depth, address_bits_va, 
+                        leaf_digest, root_digest, path_var, ONE, "ml");
 
     path_var.generate_r1cs_constraints();
     ml.generate_r1cs_constraints();
