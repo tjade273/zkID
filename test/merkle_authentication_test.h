@@ -1,6 +1,4 @@
-#ifdef CURVE_BN128
-#include <libff/algebra/curves/bn128/bn128_pp.hpp>
-#endif
+#include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
 #include <libff/algebra/curves/edwards/edwards_pp.hpp>
 #include <libff/algebra/curves/mnt/mnt4/mnt4_pp.hpp>
 #include <libff/algebra/curves/mnt/mnt6/mnt6_pp.hpp>
@@ -35,8 +33,8 @@ TEST(MerkleAutenticationTest, TestValidWitness) {
     libff::start_profiling();
 
    /* prepare test */
-    libff::alt_b128::init_public_params();
-    typedef libff::Fr<libff::alt_b128> FieldT;
+    libff::alt_bn128_pp::init_public_params();
+    typedef libff::Fr<libff::alt_bn128_pp> FieldT;
     typedef sha256_two_to_one_hash_gadget<FieldT> HashT;
     const size_t digest_len = HashT::get_digest_len();
     const size_t tree_depth = 3;

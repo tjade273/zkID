@@ -1,0 +1,77 @@
+commit e8ccb14a3efafd337107ffecf0057e5b766791cd
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 21:06:45 2018 -0400
+
+    Switch to corect curve
+
+commit 179111b38dde5bed5e1cae1e969b276e61debb11
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 20:52:33 2018 -0400
+
+    gtest
+
+commit 46631d3c97636a4f28acf282806f15502fdac4a7
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 20:45:53 2018 -0400
+
+    gtest
+
+commit 7ea8a2c3a6438170d40d18dd45afa5fd5ebf7cca
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 20:41:00 2018 -0400
+
+    gtest
+
+commit 0c164ef0bf51996f3b8927a2b1ad3540b25a1e9f
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 20:33:40 2018 -0400
+
+    gtest
+
+commit 908c351a2ebd1bdfed835c807ead88f4837e39f0
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 20:25:16 2018 -0400
+
+    gtest
+
+commit b4ce07c136041d8550874493bfd6dbe26d4a3b34
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 20:20:05 2018 -0400
+
+    gtest
+
+commit 5ff2a761fe8e7467bc03e089498ce85d2ac873c7
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 20:16:09 2018 -0400
+
+    gtest
+
+commit 975262e3808bc19b504c6b786d2d1d29ed16cb89
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 20:12:47 2018 -0400
+
+    Ubuntu 14.04
+
+commit 403c7bfd7390371a8f92ea1091d957d1fb3c575b
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 20:04:55 2018 -0400
+
+    Travis Setup
+
+commit 25019ff16a389976a60f487ec3f833146a901dc4
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 19:43:14 2018 -0400
+
+    Satisfy my pB boi
+
+commit 6d77d601ecc9ac32c4c6b13a3e5b8a3dc1d31329
+Author: LucasSwitz <lucswitz@gmail.com>
+Date:   Sun Apr 22 19:27:15 2018 -0400
+
+    Depth = 3?
+
+commit 3d243f257f16cc0cdf02f23cf78394b7fdcfa336
+Author: Lucas Switzer <lucswitz@gmail.com>
+Date:   Sun Apr 22 18:17:30 2018 -0400
+
+    Initial commit
