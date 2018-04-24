@@ -24,9 +24,23 @@ void bit_vector_from_string(libff::bit_vector& vect, const std::string& s){
         ss << hex_char;
         ss >> std::hex >> v;
         for(int j = 7; j >= 0; j--){
-            vect[i*4 + j] = v & (1 << j); 
+            vect[i*4 + (7-j)] = v & (1 << j); 
         }
     }
+}
+
+
+TEST(MerkleAutenticationTest, TestBitVectorFromString){
+    libff::bit_vector hash_string_bv(SHA256_digest_size);
+    bit_vector_from_string(hash_string_bv,"038cce42abd366b83ede7e009130de5372cdf73dee8251148cb48d1b9af68ad0");
+
+    const libff::bit_vector int_list_bv = libff::int_list_to_bits({0x038cce42, 0xabd366b8, 0x3ede7e00, 0x9130de53, 0x72cdf73d, 0xee825114, 0x8cb48d1b, 0x9af68ad0}, 32);
+
+    ASSERT_TRUE(int_list_bv.size() == hash_string_bv.size());
+    for(int i = 0; i < hash_string_bv.size(); i++){
+        ASSERT_TRUE(hash_string_bv[i] == int_list_bv[i]);
+    }
+
 }
 
 TEST(MerkleAutenticationTest, TestValidWitness) {
@@ -65,7 +79,7 @@ TEST(MerkleAutenticationTest, TestValidWitness) {
     json::iterator cur_node_it = path_hashes.begin();
     for(int cur_depth = tree_depth-1; cur_depth >= 0; ++cur_node_it, --cur_depth){
         const std::string node_hash = (*cur_node_it)["hash"];
-        const bool is_right = (*cur_node_it)["right"];
+        const bool is_right = !(*cur_node_it)["right"];
 
         address |= (is_right ? 1ul << (tree_depth-1-cur_depth) : 0);
         address_bits.push_back(is_right);
