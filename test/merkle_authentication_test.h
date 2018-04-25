@@ -1,7 +1,4 @@
 #include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
-#include <libff/algebra/curves/edwards/edwards_pp.hpp>
-#include <libff/algebra/curves/mnt/mnt4/mnt4_pp.hpp>
-#include <libff/algebra/curves/mnt/mnt6/mnt6_pp.hpp>
 #include <libsnark/common/data_structures/merkle_tree.hpp>
 #include <libsnark/gadgetlib1/gadget.hpp>
 #include <libsnark/gadgetlib1/gadgets/hashes/crh_gadget.hpp>
@@ -11,24 +8,11 @@
 #include <libsnark/gadgetlib1/gadgets/hashes/sha256/sha256_gadget.hpp>
 #include <libsnark/gadgetlib1/gadgets/merkle_tree/merkle_tree_check_read_gadget.hpp>
 #include "json.hpp"
+#include "util/libsnark_helpers.h"
 #include <fstream>
 
 using namespace libsnark;
 using json = nlohmann::json;
-
-void bit_vector_from_string(libff::bit_vector& vect, const std::string& s){
-    for(int i = 0; i < s.size(); i+=2){
-        unsigned int v;
-        std::string hex_char = s.substr(i,2);
-        std::stringstream ss;
-        ss << hex_char;
-        ss >> std::hex >> v;
-        for(int j = 7; j >= 0; j--){
-            vect[i*4 + (7-j)] = v & (1 << j); 
-        }
-    }
-}
-
 
 TEST(MerkleAutenticationTest, TestBitVectorFromString){
     libff::bit_vector hash_string_bv(SHA256_digest_size);

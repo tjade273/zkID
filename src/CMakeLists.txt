@@ -1,18 +1,21 @@
 include_directories(.)
 
-add_executable(
-  main
+file(GLOB_RECURSE SOURCES
+    *.h
+    *.cpp
+    *.c)
 
-  main.cpp
-)
+
+add_library(our_lib ${SOURCES})
+
 target_link_libraries(
-  main
-
+  our_lib
   snark
 )
-target_include_directories(
-  main
 
+target_include_directories(
+  our_lib
+  
   PUBLIC
   ${DEPENDS_DIR}/libsnark
   ${DEPENDS_DIR}/libsnark/depends/libfqfft

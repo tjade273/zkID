@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "merkle_authentication_test.h"
+#include "authentication/zkMerkelTreeAuthenticatorTest.h"
  
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
