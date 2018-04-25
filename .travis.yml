@@ -1,6 +1,6 @@
 language: cpp
 sudo: enabled
-script: mkdir build && cd build && cmake .. && make && cd test && ./run_tests
+script: mkdir build && cd build && cmake .. && make && /test/run_tests
 dist: trusty
 
 before_install:
