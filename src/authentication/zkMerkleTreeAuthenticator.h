@@ -3,50 +3,33 @@
 
 #include <fstream>
 #include <libff/algebra/curves/public_params.hpp>
+#include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
 #include <libsnark/gadgetlib1/gadgets/merkle_tree/merkle_tree_check_read_gadget.hpp>
+#include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
+#include <libff/common/default_types/ec_pp.hpp>
+#include <libsnark/common/default_types/r1cs_gg_ppzksnark_pp.hpp>
 #include "util/libsnark_helpers.h"
+#include "src/authentication/zkMerkleTreeAuthenticationStructs.h"
+#include "util/zk_identity_helpers.h"
 
 using namespace libsnark;
-enum AuthenticationErrorCode
-{
-    //TODO: Define some error codes.
-};
 
-struct AuthenticationData
-{
-    //TODO: Figure out what this should look like
-};
-
-struct AuthenticationNode
-{
-    bool is_right;
-    std::string hash;
-    AuthenticationNode(const std::string &_hash, bool _is_right) : hash(_hash), is_right(_is_right){};
-    AuthenticationNode(){};
-};
-
-struct AuthenticationError
-{
-    AuthenticationError(){};
-    AuthenticationError(const AuthenticationErrorCode &_ec, const std::string &_msg) : ec(_ec), msg(_msg) {}
-    AuthenticationErrorCode ec;
-    std::string msg;
-};
-
-template <typename Field, template <typename> typename Hash>
+template <template <typename> typename Hash>
 class zkMerkleTreeAuthenticator
 {
   public:
     zkMerkleTreeAuthenticator(){};
 
-    typedef libff::Fr<Field> FieldT;
+    typedef libff::alt_bn128_pp ppt;
+    typedef libff::Fr<ppt> FieldT;
     typedef Hash<FieldT> HashT;
 
     bool Authenticate(const std::string &leaf_hash, const std::string &root_hash,
                       const std::vector<AuthenticationNode> &path, AuthenticationData &data)
     {
-        Field::init_public_params();
+        ppt::init_public_params();
 
+        //Pb variables
         const size_t digest_len = HashT::get_digest_len();
         int tree_depth = path.size();
         libff::bit_vector address_bits;
@@ -55,21 +38,18 @@ class zkMerkleTreeAuthenticator
         std::vector<libsnark::merkle_authentication_node> auth_path(tree_depth);
         size_t address = 0;
 
+        //constructs a the authentication path from the provided vector
         this->ConstructPath(tree_depth, path, address, address_bits, auth_path);
         bit_vector_from_string(root, root_hash);
         bit_vector_from_string(leaf, leaf_hash);
 
+        //Fills in the variables on the protoboard
         protoboard<FieldT> pb;
         this->FillPb(pb,leaf,root,address_bits,address,auth_path);
 
-        if (pb.is_satisfied())
-        {
-            return this->GenerateAuthenticationData(pb, data);
-        }
-        else
-        {
-            return false;
-        }
+        //Genreate a authentication proof if the pb is satisified.
+        
+        return this->GenerateAuthenticationData(pb, data);
     }
 
     AuthenticationError GetError() const
@@ -108,7 +88,16 @@ class zkMerkleTreeAuthenticator
 
     bool GenerateAuthenticationData(protoboard<FieldT> &pb, AuthenticationData &auth_data)
     {
-        //TODO: Generate the authentication data.
+        if(!pb.is_satisfied())
+            return false;
+
+        r1cs_ppzksnark_keypair<ppt> keypair = r1cs_ppzksnark_generator<ppt>(pb.get_constraint_system());
+        r1cs_ppzksnark_verification_key<ppt> pvk = r1cs_ppzksnark_verification_key<ppt>(keypair.vk);
+        r1cs_ppzksnark_proof<ppt> proof = r1cs_ppzksnark_prover<ppt>(keypair.pk, pb.primary_input(), pb.auxiliary_input());
+        
+        auth_data.proof = ExtractAuthenticationProof(proof);
+        auth_data.key = ExtractVerificationKey(pvk);
+
         return true;
     }
 

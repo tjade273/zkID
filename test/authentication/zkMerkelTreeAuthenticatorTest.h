@@ -5,7 +5,7 @@
 #include "util/zk_identity_helpers.h"
 
 TEST(zkMerkleTreeAuthenticatorTest, TestAuthenticate){
-    zkMerkleTreeAuthenticator<libff::alt_bn128_pp,sha256_two_to_one_hash_gadget> authenticator;
+    zkMerkleTreeAuthenticator<sha256_two_to_one_hash_gadget> authenticator;
     std::string root;
     std::string leaf;
     std::vector<AuthenticationNode> path;
