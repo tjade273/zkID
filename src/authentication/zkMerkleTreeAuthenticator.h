@@ -14,6 +14,13 @@
 
 using namespace libsnark;
 
+struct LibsnarkAuthenticationData{
+    r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> pvk;
+    r1cs_ppzksnark_proof<libff::alt_bn128_pp> proof;
+    r1cs_ppzksnark_primary_input<libff::alt_bn128_pp> primary_input;
+};
+
+
 template <template <typename> typename Hash>
 class zkMerkleTreeAuthenticator
 {
@@ -25,7 +32,8 @@ class zkMerkleTreeAuthenticator
     typedef Hash<FieldT> HashT;
 
     bool Authenticate(const std::string &leaf_hash, const std::string &root_hash,
-                      const std::vector<AuthenticationNode> &path, AuthenticationData &data)
+                      const std::vector<AuthenticationNode> &path, AuthenticationData &data,
+                      LibsnarkAuthenticationData* libsnark_data = nullptr)
     {
         ppt::init_public_params();
 
@@ -49,12 +57,34 @@ class zkMerkleTreeAuthenticator
 
         //Genreate a authentication proof if the pb is satisified.
         
-        return this->GenerateAuthenticationData(pb, data);
+        return this->GenerateAuthenticationData(pb, data,libsnark_data);
     }
 
     AuthenticationError GetError() const
     {
         return this->_e;
+    }
+
+
+    bool GenerateAuthenticationData(protoboard<FieldT> &pb, AuthenticationData &auth_data, LibsnarkAuthenticationData* libsnark_data = nullptr)
+    {
+        if(!pb.is_satisfied())
+            return false;
+
+        r1cs_ppzksnark_keypair<ppt> keypair = r1cs_ppzksnark_generator<ppt>(pb.get_constraint_system());
+        r1cs_ppzksnark_verification_key<ppt> pvk = r1cs_ppzksnark_verification_key<ppt>(keypair.vk);
+        r1cs_ppzksnark_proof<ppt> proof = r1cs_ppzksnark_prover<ppt>(keypair.pk, pb.primary_input(), pb.auxiliary_input());
+        
+        if(libsnark_data){
+            libsnark_data->pvk = pvk;
+            libsnark_data->proof = proof;
+            libsnark_data->primary_input = pb.primary_input();
+        }
+
+        auth_data.proof = ExtractAuthenticationProof(proof);
+        auth_data.key = ExtractVerificationKey(pvk);
+
+        return true;
     }
 
   private:
@@ -84,21 +114,6 @@ class zkMerkleTreeAuthenticator
         address_bits_va.fill_with_bits(pb, address_bits);
         leaf_digest.generate_r1cs_witness(leaf);
         root_digest.generate_r1cs_witness(root);
-    }
-
-    bool GenerateAuthenticationData(protoboard<FieldT> &pb, AuthenticationData &auth_data)
-    {
-        if(!pb.is_satisfied())
-            return false;
-
-        r1cs_ppzksnark_keypair<ppt> keypair = r1cs_ppzksnark_generator<ppt>(pb.get_constraint_system());
-        r1cs_ppzksnark_verification_key<ppt> pvk = r1cs_ppzksnark_verification_key<ppt>(keypair.vk);
-        r1cs_ppzksnark_proof<ppt> proof = r1cs_ppzksnark_prover<ppt>(keypair.pk, pb.primary_input(), pb.auxiliary_input());
-        
-        auth_data.proof = ExtractAuthenticationProof(proof);
-        auth_data.key = ExtractVerificationKey(pvk);
-
-        return true;
     }
 
     void ConstructPath(int tree_depth, const std::vector<AuthenticationNode> &path, size_t &address,

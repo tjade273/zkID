@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 2.8)
 
 project(libsnark-tutorial)
 
+if ( CMAKE_COMPILER_IS_GNUCC )
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall")
+endif()
+
 set(
   CURVE
   "ALT_BN128"
