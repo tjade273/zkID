@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 #include <libsnark/gadgetlib1/gadgets/hashes/sha256/sha256_gadget.hpp>
 #include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
-#include "src/authentication/zkMerkleTreeAuthenticator.h"
+#include "authentication/zkMTA.h"
 #include "util/zk_identity_helpers.h"
 
-TEST(zkMerkleTreeAuthenticatorTest, TestAuthenticate){
-    zkMerkleTreeAuthenticator<sha256_two_to_one_hash_gadget> authenticator;
+TEST(zkMTATest, TestAuthenticate){
+    zkMTA<sha256_two_to_one_hash_gadget> authenticator;
     std::string root;
     std::string leaf;
     std::vector<AuthenticationNode> path;
@@ -18,8 +18,8 @@ TEST(zkMerkleTreeAuthenticatorTest, TestAuthenticate){
 }
 
 
-TEST(zkMerkleTreeAuthenticatorTest, TestVerify){
-    zkMerkleTreeAuthenticator<sha256_two_to_one_hash_gadget> authenticator;
+TEST(zkMTATest, TestVerify){
+    zkMTA<sha256_two_to_one_hash_gadget> authenticator;
     std::string root;
     std::string leaf;
     std::vector<AuthenticationNode> path;

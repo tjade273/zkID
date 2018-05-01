@@ -50,9 +50,10 @@ def generate_sha256_gadget_tests():
     print "const libff::bit_vector hash_bv = %s;" % cpp_val(hash)
 
 def generate_merkle_gadget_tests():
-    left = gen_random_bytes(HASH_BYTES)
+    left = gen_random_bytes(HASH_BYTES) + gen_random_bytes(HASH_BYTES)#generate a left with the correct block size
     right = gen_random_bytes(HASH_BYTES)
-    hash1 = H_bytes(left + right)
+    left_hash = H_bytes(left) #get its hash
+    hash1 = H_bytes(left_hash + right)
     hash2 = H_bytes(hash1 + right)
     hash3 = H_bytes(hash2 + right)
 

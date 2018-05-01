@@ -5,7 +5,7 @@
 #include <vector>
 #include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
 #include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
-#include "src/authentication/zkMerkleTreeAuthenticationStructs.h"
+#include "authentication/zkMTAStructs.h"
 #include "util/libsnark_helpers.h"
 
 #include "json.hpp"

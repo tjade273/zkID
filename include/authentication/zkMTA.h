@@ -1,5 +1,5 @@
-#ifndef _zkMerkleTreeAuthenticator_h
-#define _zkMerkleTreeAuthenticator_h
+#ifndef _zkMTA_h
+#define _zkMTA_h
 
 #include <fstream>
 #include <libff/algebra/curves/public_params.hpp>
@@ -8,8 +8,8 @@
 #include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
 #include <libff/common/default_types/ec_pp.hpp>
 #include <libsnark/common/default_types/r1cs_gg_ppzksnark_pp.hpp>
+#include "authentication/zkMTAStructs.h"
 #include "util/libsnark_helpers.h"
-#include "src/authentication/zkMerkleTreeAuthenticationStructs.h"
 #include "util/zk_identity_helpers.h"
 
 using namespace libsnark;
@@ -22,16 +22,16 @@ struct LibsnarkAuthenticationData{
 
 
 template <template <typename> typename Hash>
-class zkMerkleTreeAuthenticator
+class zkMTA
 {
   public:
-    zkMerkleTreeAuthenticator(){};
+    zkMTA(){};
 
     typedef libff::alt_bn128_pp ppt;
     typedef libff::Fr<ppt> FieldT;
     typedef Hash<FieldT> HashT;
 
-    bool Authenticate(const std::string &leaf_hash, const std::string &root_hash,
+    bool Authenticate(const std::string &leaf, const std::string &root_hash,
                       const std::vector<AuthenticationNode> &path, AuthenticationData &data,
                       LibsnarkAuthenticationData* libsnark_data = nullptr)
     {
@@ -41,19 +41,29 @@ class zkMerkleTreeAuthenticator
         const size_t digest_len = HashT::get_digest_len();
         int tree_depth = path.size();
         libff::bit_vector address_bits;
-        libff::bit_vector leaf(digest_len);
-        libff::bit_vector root(digest_len);
+        libff::bit_vector leaf_hash_bv(digest_len);
+        libff::bit_vector root_hash_bv(digest_len);
         std::vector<libsnark::merkle_authentication_node> auth_path(tree_depth);
         size_t address = 0;
 
-        //constructs a the authentication path from the provided vector
+        //constructs the authentication path from the provided vector
         this->ConstructPath(tree_depth, path, address, address_bits, auth_path);
-        bit_vector_from_string(root, root_hash);
-        bit_vector_from_string(leaf, leaf_hash);
+
+        //convert root hash string to bit vector
+        bit_vector_from_string(root_hash_bv, root_hash);
+        
+        //convert leaf value to bit vector
+        libff::bit_vector leaf_bv(leaf.length()*4);
+        bit_vector_from_string(leaf_bv,leaf);
+
+        //TODO: This assumes that the provided leaf does not exceed HashT's block size. 
+
+        //compute the hash of the leaf's value
+        leaf_hash_bv = HashT::get_hash(leaf_bv);
 
         //Fills in the variables on the protoboard
         protoboard<FieldT> pb;
-        this->FillPb(pb,leaf,root,address_bits,address,auth_path);
+        this->FillPb(pb,leaf_hash_bv,root_hash_bv,address_bits,address,auth_path);
 
         //Genreate a authentication proof if the pb is satisified.
         
