@@ -1,6 +1,7 @@
 #ifndef _LIBSNARK_HELPERS
 #define _LIBSNARK_HELPERS
-
+#include <iostream>
+#include <iomanip>
 #include "libff/common/utils.hpp"
 #include <libff/algebra/fields/bigint.hpp>
 
