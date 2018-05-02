@@ -1,0 +1,909 @@
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:z="http://www.zotero.org/namespaces/export#"
+ xmlns:bib="http://purl.org/net/biblio#"
+ xmlns:foaf="http://xmlns.com/foaf/0.1/"
+ xmlns:link="http://purl.org/rss/1.0/modules/link/"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:prism="http://prismstandard.org/namespaces/1.2/basic/"
+ xmlns:vcard="http://nwalsh.com/rdf/vCard#">
+    <bib:Report rdf:about="http://eprint.iacr.org/2013/622">
+        <z:itemType>report</z:itemType>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Garman</foaf:surname>
+                        <foaf:givenname>Christina</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Green</foaf:surname>
+                        <foaf:givenname>Matthew</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Miers</foaf:surname>
+                        <foaf:givenname>Ian</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_42"/>
+        <link:link rdf:resource="#item_41"/>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>anonymous credentials</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>Bitcoin</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>cryptographic protocols</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://eprint.iacr.org/2013/622</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dc:date>2013</dc:date>
+        <dcterms:dateSubmitted>2018-05-01 16:14:30</dcterms:dateSubmitted>
+        <z:libraryCatalog>ePrint IACR</z:libraryCatalog>
+        <dcterms:abstract>Anonymous credentials provide a powerful tool for making assertions about identity while maintaining privacy. However, a limitation of today's anonymous credential systems is the need for a trusted credential issuer --- which is both a single point of failure and a target for compromise. Furthermore, the need for such a trusted issuer can make it challenging to deploy credential systems in practice, particularly in the ad hoc network setting (e.g., anonymous peer-to-peer networks) where no single party can be trusted with this responsibility.
+
+In this work we propose a novel anonymous credential scheme that eliminates the need for a trusted credential issuer. Our approach builds on recent results in the area of electronic cash and uses techniques --- such as the calculation of a distributed transaction ledger --- that are currently in widespread deployment in the Bitcoin payment system. Using this decentralized ledger and standard cryptographic primitives, we propose and provide a proof of security for a basic anonymous credential system that allows users to make flexible identity assertions with strong privacy guarantees. Finally, we discuss a number of practical applications for our techniques, including resource management in ad hoc networks and prevention of Sybil attacks. We implement our scheme and measure its efficiency.</dcterms:abstract>
+        <prism:number>622</prism:number>
+        <dc:title>Decentralized Anonymous Credentials</dc:title>
+    </bib:Report>
+    <z:Attachment rdf:about="#item_42">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://eprint.iacr.org/2013/622.pdf</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:14:32</dcterms:dateSubmitted>
+        <dc:title>ePrint IACR Full Text PDF</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <z:Attachment rdf:about="#item_41">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>https://eprint.iacr.org/2013/622</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:14:31</dcterms:dateSubmitted>
+        <dc:title>ePrint IACR Snapshot</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>text/html</link:type>
+    </z:Attachment>
+    <bib:Article rdf:about="http://doi.acm.org/10.1145/4372.4373">
+        <z:itemType>journalArticle</z:itemType>
+        <dcterms:isPartOf rdf:resource="urn:issn:0001-0782"/>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Chaum</foaf:surname>
+                        <foaf:givenname>David</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_44"/>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://doi.acm.org/10.1145/4372.4373</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <bib:pages>1030–1044</bib:pages>
+        <dc:date>October 1985</dc:date>
+        <dcterms:dateSubmitted>2018-05-01 16:15:15</dcterms:dateSubmitted>
+        <z:libraryCatalog>ACM Digital Library</z:libraryCatalog>
+        <dcterms:abstract>The large-scale automated transaction systems of the near future can be designed to protect the privacy and maintain the security of both individuals and organizations.</dcterms:abstract>
+        <dc:title>Security Without Identification: Transaction Systems to Make Big Brother Obsolete</dc:title>
+        <z:shortTitle>Security Without Identification</z:shortTitle>
+    </bib:Article>
+    <bib:Journal rdf:about="urn:issn:0001-0782">
+        <prism:volume>28</prism:volume>
+        <prism:number>10</prism:number>
+        <dc:title>Commun. ACM</dc:title>
+        <dc:identifier>ISSN 0001-0782</dc:identifier>
+        <dc:identifier>DOI 10.1145/4372.4373</dc:identifier>
+    </bib:Journal>
+    <z:Attachment rdf:about="#item_44">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>http://dl.acm.org/ft_gateway.cfm?id=4373&amp;type=pdf</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:15:18</dcterms:dateSubmitted>
+        <dc:title>ACM Full Text PDF</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <bib:Report rdf:about="http://eprint.iacr.org/2004/205">
+        <z:itemType>report</z:itemType>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Brickell</foaf:surname>
+                        <foaf:givenname>Ernie</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Camenisch</foaf:surname>
+                        <foaf:givenname>Jan</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Chen</foaf:surname>
+                        <foaf:givenname>Liqun</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_47"/>
+        <link:link rdf:resource="#item_46"/>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>cryptographic protocols</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>digital signatures</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>group signatures</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>privacy</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://eprint.iacr.org/2004/205</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dc:date>2004</dc:date>
+        <dcterms:dateSubmitted>2018-05-01 16:19:51</dcterms:dateSubmitted>
+        <z:libraryCatalog>ePrint IACR</z:libraryCatalog>
+        <dcterms:abstract>This paper describes the direct anonymous attestation scheme (DAA). This scheme was adopted by the Trusted Computing Group as the method for remote authentication of a hardware module, called trusted platform module (TPM), while preserving the privacy of the user of the platform that contains the module. Direct anonymous attestation can be seen as a group signature without the feature that a signature can be opened, i.e., the anonymity is not revocable. Moreover, DAA allows for pseudonyms, i.e., for each signature a user (in agreement with the recipient of the signature) can decide whether or not the signature should be linkable to another signature. DAA furthermore allows for detection of ``known'' keys: if the DAA secret keys are extracted from a TPM and published, a verifier can detect that a signature was produced using these secret keys. The scheme is provably secure in the random oracle model under the strong RSA and the decisional Diffie-Hellman assumption.</dcterms:abstract>
+        <prism:number>205</prism:number>
+        <dc:title>Direct Anonymous Attestation</dc:title>
+    </bib:Report>
+    <z:Attachment rdf:about="#item_47">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://eprint.iacr.org/2004/205.pdf</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:19:53</dcterms:dateSubmitted>
+        <dc:title>ePrint IACR Full Text PDF</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <z:Attachment rdf:about="#item_46">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>https://eprint.iacr.org/2004/205</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:19:52</dcterms:dateSubmitted>
+        <dc:title>ePrint IACR Snapshot</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>text/html</link:type>
+    </z:Attachment>
+    <rdf:Description rdf:about="#item_48">
+        <z:itemType>conferencePaper</z:itemType>
+        <dcterms:isPartOf>
+            <bib:Journal>
+                <dc:identifier>DOI 10.1109/SP.2013.34</dc:identifier>
+                <dc:title>2013 IEEE Symposium on Security and Privacy</dc:title>
+            </bib:Journal>
+        </dcterms:isPartOf>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Miers</foaf:surname>
+                        <foaf:givenname>I.</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Garman</foaf:surname>
+                        <foaf:givenname>C.</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Green</foaf:surname>
+                        <foaf:givenname>M.</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Rubin</foaf:surname>
+                        <foaf:givenname>A. D.</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_50"/>
+        <link:link rdf:resource="#item_49"/>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>anonymous currency transactions</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>anonymous distributed e-cash</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>Bitcoin protocol</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>Concrete</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>cryptographic extension</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>cryptography</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>Cryptography</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>data privacy</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>electronic money</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>financial interaction</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>Online banking</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>Peer-to-peer computing</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>Privacy</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>Protocols</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>pseudonym</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>standard cryptographic assumptions</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>user privacy</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>Zerocoin cryptographic construction</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <bib:pages>397-411</bib:pages>
+        <dc:date>May 2013</dc:date>
+        <z:libraryCatalog>IEEE Xplore</z:libraryCatalog>
+        <bib:presentedAt>
+            <bib:Conference>
+               <dc:title>2013 IEEE Symposium on Security and Privacy</dc:title>
+            </bib:Conference>
+        </bib:presentedAt>
+        <dcterms:abstract>Bitcoin is the first e-cash system to see widespread adoption. While Bitcoin offers the potential for new types of financial interaction, it has significant limitations regarding privacy. Specifically, because the Bitcoin transaction log is completely public, users' privacy is protected only through the use of pseudonyms. In this paper we propose Zerocoin, a cryptographic extension to Bitcoin that augments the protocol to allow for fully anonymous currency transactions. Our system uses standard cryptographic assumptions and does not introduce new trusted parties or otherwise change the security model of Bitcoin. We detail Zerocoin's cryptographic construction, its integration into Bitcoin, and examine its performance both in terms of computation and impact on the Bitcoin protocol.</dcterms:abstract>
+        <dc:title>Zerocoin: Anonymous Distributed E-Cash from Bitcoin</dc:title>
+        <z:shortTitle>Zerocoin</z:shortTitle>
+    </rdf:Description>
+    <z:Attachment rdf:about="#item_50">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://ieeexplore.ieee.org/document/6547123/</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:24:21</dcterms:dateSubmitted>
+        <dc:title>IEEE Xplore Abstract Record</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>text/html</link:type>
+    </z:Attachment>
+    <z:Attachment rdf:about="#item_49">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://ieeexplore.ieee.org/ielx7/6547086/6547088/06547123.pdf?tp=&amp;arnumber=6547123&amp;isnumber=6547088</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:24:16</dcterms:dateSubmitted>
+        <dc:title>IEEE Xplore Full Text PDF</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <bib:Report rdf:about="http://eprint.iacr.org/2011/495">
+        <z:itemType>report</z:itemType>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Catalano</foaf:surname>
+                        <foaf:givenname>Dario</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Fiore</foaf:surname>
+                        <foaf:givenname>Dario</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_53"/>
+        <link:link rdf:resource="#item_52"/>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>Accumulator</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>Commitments</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>Vector Commitments</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>Verifiable Databases</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>Zero-Knowledge Databases</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://eprint.iacr.org/2011/495</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dc:date>2011</dc:date>
+        <dcterms:dateSubmitted>2018-05-01 16:26:52</dcterms:dateSubmitted>
+        <z:libraryCatalog>ePrint IACR</z:libraryCatalog>
+        <dcterms:abstract>We put forward the study of a new primitive that we call {\em Vector Commitment} (VC, for short). Informally, VCs allow to commit to an ordered sequence of $q$ values $(m_1, \ldots, m_q)$ in such a way that one can later open the commitment at specific positions (e.g., prove that $m_i$ is the $i$-th committed message). For security, Vector Commitments are required to satisfy a notion that we call \emph{position binding} which states that an adversary should not be able to open a commitment to two different values at the same position. Moreover, what makes our primitive interesting is that we require VCs to be {\em concise}, i.e. the size of the commitment string and of its openings has to be independent of the vector length.
+
+We show two realizations of VCs based on standard and well established assumptions, such as RSA, and Computational Diffie-Hellman (in bilinear groups). Next, we turn our attention to applications and we show that Vector Commitments are useful in a variety of contexts, as they allow for compact and efficient solutions which significantly improve previous works either in terms of efficiency of the resulting solutions, or in terms of &quot;quality&quot; of the underlying assumption, or both. These applications include: Verifiable Databases with Efficient Updates, Updatable Zero-Knowledge Databases, and Universal Dynamic Accumulators.</dcterms:abstract>
+        <prism:number>495</prism:number>
+        <dc:title>Vector Commitments and their Applications</dc:title>
+    </bib:Report>
+    <z:Attachment rdf:about="#item_53">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://eprint.iacr.org/2011/495.pdf</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:26:54</dcterms:dateSubmitted>
+        <dc:title>ePrint IACR Full Text PDF</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <z:Attachment rdf:about="#item_52">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>https://eprint.iacr.org/2011/495</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:26:54</dcterms:dateSubmitted>
+        <dc:title>ePrint IACR Snapshot</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>text/html</link:type>
+    </z:Attachment>
+    <rdf:Description rdf:about="urn:isbn:978-3-540-44050-5%20978-3-540-45708-4">
+        <z:itemType>conferencePaper</z:itemType>
+        <dcterms:isPartOf>
+            <bib:Journal>
+                <dcterms:isPartOf>
+                    <bib:Series>
+                       <dc:title>Lecture Notes in Computer Science</dc:title>
+                    </bib:Series>
+                </dcterms:isPartOf>
+                <dc:identifier>ISBN 978-3-540-44050-5 978-3-540-45708-4</dc:identifier>
+                <dc:identifier>DOI 10.1007/3-540-45708-9_5</dc:identifier>
+                <dc:title>Advances in Cryptology — CRYPTO 2002</dc:title>
+            </bib:Journal>
+        </dcterms:isPartOf>
+        <dc:publisher>
+            <foaf:Organization>
+               <foaf:name>Springer, Berlin, Heidelberg</foaf:name>
+            </foaf:Organization>
+        </dc:publisher>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Camenisch</foaf:surname>
+                        <foaf:givenname>Jan</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Lysyanskaya</foaf:surname>
+                        <foaf:givenname>Anna</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_55"/>
+        <link:link rdf:resource="#item_56"/>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://link.springer.com/chapter/10.1007/3-540-45708-9_5</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <bib:pages>61-76</bib:pages>
+        <dc:date>2002/8/18</dc:date>
+        <dcterms:dateSubmitted>2018-05-01 16:28:49</dcterms:dateSubmitted>
+        <z:libraryCatalog>link.springer.com</z:libraryCatalog>
+        <bib:presentedAt>
+            <bib:Conference>
+               <dc:title>Annual International Cryptology Conference</dc:title>
+            </bib:Conference>
+        </bib:presentedAt>
+        <z:language>en</z:language>
+        <dcterms:abstract>We introduce the notion of a dynamic accumulator. An accumulator scheme allows one to hash a large set of inputs into one short value, such that there is a short proof that a given input was incorporated into this value. A dynamic accumulator allows one to dynamically add and delete a value, such that the cost of an add or delete is independent of the number of accumulated values. We provide a construction of a dynamic accumulator and an efficient zero-knowledge proof of knowledge of an accumulated value. We prove their security under the strong RSA assumption. We then show that our construction of dynamic accumulators enables efficient revocation of anonymous credentials, and membership revocation for recent group signature and identity escrow schemes.</dcterms:abstract>
+        <dc:title>Dynamic Accumulators and Application to Efficient Revocation of Anonymous Credentials</dc:title>
+    </rdf:Description>
+    <z:Attachment rdf:about="#item_55">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://link.springer.com/content/pdf/10.1007%2F3-540-45708-9_5.pdf</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:28:50</dcterms:dateSubmitted>
+        <dc:title>Full Text PDF</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <z:Attachment rdf:about="#item_56">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://link.springer.com/chapter/10.1007/3-540-45708-9_5</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:28:51</dcterms:dateSubmitted>
+        <dc:title>Snapshot</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>text/html</link:type>
+    </z:Attachment>
+    <bib:Report rdf:about="http://eprint.iacr.org/2005/170">
+        <z:itemType>report</z:itemType>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Damgård</foaf:surname>
+                        <foaf:givenname>Ivan</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Dupont</foaf:surname>
+                        <foaf:givenname>Kasper</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Pedersen</foaf:surname>
+                        <foaf:givenname>Michael Østergaard</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_59"/>
+        <link:link rdf:resource="#item_58"/>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>privacy</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>anonymity</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>identification schemes</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>protocols</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>ryptographic protocols</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://eprint.iacr.org/2005/170</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dc:date>2005</dc:date>
+        <dcterms:dateSubmitted>2018-05-01 16:51:25</dcterms:dateSubmitted>
+        <z:libraryCatalog>ePrint IACR</z:libraryCatalog>
+        <dcterms:abstract>We introduce and motivate the concept of unclonable group identification, that provides maximal protection against sharing of identities while still protecting the anonymity of users. We prove that the notion can be realized from any one-way function and suggest a more efficient implementation based on specific assumptions.</dcterms:abstract>
+        <prism:number>170</prism:number>
+        <dc:title>Unclonable Group Identification</dc:title>
+    </bib:Report>
+    <z:Attachment rdf:about="#item_59">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://eprint.iacr.org/2005/170.pdf</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:51:27</dcterms:dateSubmitted>
+        <dc:title>ePrint IACR Full Text PDF</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <z:Attachment rdf:about="#item_58">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>https://eprint.iacr.org/2005/170</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:51:26</dcterms:dateSubmitted>
+        <dc:title>ePrint IACR Snapshot</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>text/html</link:type>
+    </z:Attachment>
+    <z:Attachment rdf:about="#item_60">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://tokensale.civic.com/CivicTokenSaleWhitePaper.pdf</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 16:52:10</dcterms:dateSubmitted>
+        <dc:title>CivicTokenSaleWhitePaper.pdf</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <rdf:Description rdf:about="urn:isbn:978-3-540-89254-0">
+        <z:itemType>conferencePaper</z:itemType>
+        <dcterms:isPartOf>
+            <bib:Journal>
+                <dcterms:isPartOf>
+                   <bib:Series><dc:title>ASIACRYPT '08</dc:title></bib:Series>
+                </dcterms:isPartOf>
+                <dc:identifier>ISBN 978-3-540-89254-0</dc:identifier>
+                <dc:identifier>DOI 10.1007/978-3-540-89255-7_15</dc:identifier>
+                <dc:title>Proceedings of the 14th International Conference on the Theory and Application of Cryptology and Information Security: Advances in Cryptology</dc:title>
+            </bib:Journal>
+        </dcterms:isPartOf>
+        <dc:publisher>
+            <foaf:Organization>
+                <vcard:adr>
+                    <vcard:Address>
+                       <vcard:locality>Berlin, Heidelberg</vcard:locality>
+                    </vcard:Address>
+                </vcard:adr>
+                <foaf:name>Springer-Verlag</foaf:name>
+            </foaf:Organization>
+        </dc:publisher>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Camenisch</foaf:surname>
+                        <foaf:givenname>Jan</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Chaabouni</foaf:surname>
+                        <foaf:givenname>Rafik</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Shelat</foaf:surname>
+                        <foaf:givenname>Abhi</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>bi-linear maps</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>proofs of knowledge</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>Range proofs</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>set membership proofs</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>http://dx.doi.org/10.1007/978-3-540-89255-7_15</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <bib:pages>234–252</bib:pages>
+        <dc:date>2008</dc:date>
+        <dcterms:dateSubmitted>2018-05-01 18:30:42</dcterms:dateSubmitted>
+        <z:libraryCatalog>ACM Digital Library</z:libraryCatalog>
+        <dcterms:abstract>We consider the following problem: Given a commitment to a value&lt;em&gt;σ&lt;/em&gt; , prove in zero-knowledge that &lt;em&gt;σ&lt;/em&gt; belongs to some discrete set &lt;em&gt;φ&lt;/em&gt; . The set &lt;em&gt;φ&lt;/em&gt; can perhaps be a list of cities or clubs; often &lt;em&gt;φ&lt;/em&gt; canbe a numerical range such as [1,220]. This problemarises in e-cash systems, anonymous credential systems, and variousother practical uses of zero-knowledge protocols. When using commitment schemes relying on RSA-like assumptions,there are solutions to this problem which require only a constantnumber of RSA-group elements to be exchanged between the prover andverifier [5, 15, 16]. However, for many commitment schemes based onbilinear group assumptions, these techniques do not work, and thebest known protocols require &lt;em&gt;O&lt;/em&gt; (&lt;em&gt;k&lt;/em&gt; ) group elementsto be exchanged where &lt;em&gt;k&lt;/em&gt; is a security parameter. In this paper, we present two new approaches to buildingset-membership proofs. The first is based on bilinear groupassumptions. When applied to the case where &lt;em&gt;φ&lt;/em&gt; is arange of integers, our protocols require $O(\frac{k}{\log k -\log\log k})$ group elements to be exchanged. Not only is thisresult asymptotically better, but the constants are small enough toprovide significant improvements even for small ranges. Indeed, fora discrete logarithm based setting, our new protocol is an order ofmagnitude more efficient than previously known ones. We also discuss alternative implementations of our membershipproof based on the strong RSA assumption. Depending on theapplication, e.g., when &lt;em&gt;φ&lt;/em&gt; is a published set of valuessuch a frequent flyer clubs, cities, or other ad hoc collections,these alternative also outperform prior solutions.</dcterms:abstract>
+        <dc:title>Efficient Protocols for Set Membership and Range Proofs</dc:title>
+    </rdf:Description>
+    <rdf:Description rdf:about="#item_62">
+        <z:itemType>conferencePaper</z:itemType>
+        <dcterms:isPartOf>
+           <bib:Journal><dc:title>In ASIACRYPT</dc:title></bib:Journal>
+        </dcterms:isPartOf>
+        <dc:publisher>
+           <foaf:Organization><foaf:name>Springer</foaf:name></foaf:Organization>
+        </dc:publisher>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Camenisch</foaf:surname>
+                        <foaf:givenname>Jan</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Chaabouni</foaf:surname>
+                        <foaf:givenname>Rafik</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Shelat</foaf:surname>
+                        <foaf:givenname>Abhi</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_64"/>
+        <link:link rdf:resource="#item_63"/>
+        <bib:pages>234–252</bib:pages>
+        <dc:date>2008</dc:date>
+        <z:libraryCatalog>CiteSeer</z:libraryCatalog>
+        <dcterms:abstract>Abstract. We consider the following problem: Given a commitment to a value σ, prove in zero-knowledge that σ belongs to some discrete set Φ. The set Φ can perhaps be a list of cities or clubs; often Φ can be a numerical range such as [1, 2 20]. This problem arises in e-cash systems, anonymous credential systems, and various other practical uses of zeroknowledge protocols. When using commitment schemes relying on RSA-like assumptions, there are solutions to this problem which require only a constant number of RSA-group elements to be exchanged between the prover and verifier [5, 16, 15]. However, for many commitment schemes based on bilinear group assumptions, these techniques do not work, and the best known protocols require O(k) group elements to be exchanged where k is a security parameter. In this paper, we present two new approaches to building set-membership proofs. The first is based on bilinear group assumptions. When applied to the case where Φ is a range of integers, our protocols require k log k−log log k O ( ) group elements to be exchanged. Not only is this result asymptotically better, but the constants are small enough to provide significant improvements even for small ranges. Indeed, for a discrete logarithm based setting, our new protocol is an order of magnitude more efficient than previously known ones. We also discuss alternative implementations of our membership proof based on the strong RSA assumption. Depending on the application, e.g., when Φ is a published set of values such a frequent flyer clubs, cities, or other ad hoc collections, these alternative also outperform prior solutions.</dcterms:abstract>
+        <dc:title>Efficient protocols for set membership and range proofs</dc:title>
+    </rdf:Description>
+    <z:Attachment rdf:about="#item_64">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=542B8CECD8452233E9F272B0A0262FBA?doi=10.1.1.229.567&amp;rep=rep1&amp;type=pdf</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 18:30:56</dcterms:dateSubmitted>
+        <dc:title>Citeseer - Full Text PDF</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <z:Attachment rdf:about="#item_63">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.229.567</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 18:30:56</dcterms:dateSubmitted>
+        <dc:title>Citeseer - Snapshot</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>text/html</link:type>
+    </z:Attachment>
+    <bib:Report rdf:about="http://eprint.iacr.org/2006/454">
+        <z:itemType>report</z:itemType>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Camenisch</foaf:surname>
+                        <foaf:givenname>Jan</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Hohenberger</foaf:surname>
+                        <foaf:givenname>Susan</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Kohlweiss</foaf:surname>
+                        <foaf:givenname>Markulf</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Lysyanskaya</foaf:surname>
+                        <foaf:givenname>Anna</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Meyerovich</foaf:surname>
+                        <foaf:givenname>Mira</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_67"/>
+        <link:link rdf:resource="#item_66"/>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>cryptographic protocols</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+           <z:AutomaticTag><rdf:value>e-cash</rdf:value></z:AutomaticTag>
+        </dc:subject>
+        <dc:subject>
+            <z:AutomaticTag>
+               <rdf:value>electronic commerce and payment</rdf:value>
+            </z:AutomaticTag>
+        </dc:subject>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://eprint.iacr.org/2006/454</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dc:date>2006</dc:date>
+        <dcterms:dateSubmitted>2018-05-01 18:44:44</dcterms:dateSubmitted>
+        <z:libraryCatalog>ePrint IACR</z:libraryCatalog>
+        <dcterms:abstract>We create a credential system that lets a user anonymously authenticate at most $n$ times in a single time period. A user withdraws a dispenser of $n$ e-tokens. She shows an e-token to a verifier to authenticate herself; each e-token can be used only once, however, the dispenser automatically refreshes every time period. The only prior solution to this problem, due to Damgård et al.~[DDP05], uses protocols that are a factor of $k$ slower for the user and verifier, where $k$ is the security parameter. Damgård et al. also only support one authentication per time period, while we support $n$. Because our construction is based on e-cash, we can use existing techniques to identify a cheating user, trace all of her e-tokens, and revoke her dispensers. We also offer a new anonymity service: glitch protection for basically honest users who (occasionally) reuse e-tokens. The verifier can always recognize a reused e-token; however, we preserve the anonymity of users who do not reuse e-tokens too often.</dcterms:abstract>
+        <prism:number>454</prism:number>
+        <dc:title>How to Win the Clone Wars: \\ Efficient Periodic n-Times Anonymous Authentication</dc:title>
+        <z:shortTitle>How to Win the Clone Wars</z:shortTitle>
+    </bib:Report>
+    <z:Attachment rdf:about="#item_67">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>http://eprint.iacr.org/2006/454.pdf</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 18:44:46</dcterms:dateSubmitted>
+        <dc:title>ePrint IACR Full Text PDF</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <z:Attachment rdf:about="#item_66">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>https://eprint.iacr.org/2006/454</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 18:44:45</dcterms:dateSubmitted>
+        <dc:title>ePrint IACR Snapshot</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>text/html</link:type>
+    </z:Attachment>
+    <bib:Document rdf:about="https://github.com/ethereum/EIPs/issues/725">
+        <z:itemType>webpage</z:itemType>
+        <dcterms:isPartOf>
+           <z:Website></z:Website>
+        </dcterms:isPartOf>
+        <link:link rdf:resource="#item_69"/>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>https://github.com/ethereum/EIPs/issues/725</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 20:49:47</dcterms:dateSubmitted>
+        <dc:title>ERC: Identity · Issue #725 · ethereum/EIPs</dc:title>
+    </bib:Document>
+    <z:Attachment rdf:about="#item_69">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+               <rdf:value>https://github.com/ethereum/EIPs/issues/725</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 20:49:49</dcterms:dateSubmitted>
+        <dc:title>ERC: Identity · Issue #725 · ethereum/EIPs</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>text/html</link:type>
+    </z:Attachment>
+    <z:Attachment rdf:about="#item_70">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://tokensale.civic.com/CivicTokenSaleWhitePaper.pdf</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 20:50:18</dcterms:dateSubmitted>
+        <dc:title>CivicTokenSaleWhitePaper.pdf</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>application/pdf</link:type>
+    </z:Attachment>
+    <bib:Document rdf:about="https://medium.com/uport/different-approaches-to-ethereum-identity-standards-a09488347c87">
+        <z:itemType>blogPost</z:itemType>
+        <dcterms:isPartOf>
+           <z:Blog><dc:title>Medium</dc:title></z:Blog>
+        </dcterms:isPartOf>
+        <bib:authors>
+            <rdf:Seq>
+                <rdf:li>
+                    <foaf:Person>
+                        <foaf:surname>Braendgaard</foaf:surname>
+                        <foaf:givenname>Pelle</foaf:givenname>
+                    </foaf:Person>
+                </rdf:li>
+            </rdf:Seq>
+        </bib:authors>
+        <link:link rdf:resource="#item_72"/>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://medium.com/uport/different-approaches-to-ethereum-identity-standards-a09488347c87</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dc:date>2018-01-24T15:43:46.853Z</dc:date>
+        <dcterms:dateSubmitted>2018-05-01 20:50:25</dcterms:dateSubmitted>
+        <dcterms:abstract>Identity as a concept affects all of us. Yet, depending on who you ask, there are many different ideas of what Identity is as a technology.</dcterms:abstract>
+        <dc:title>Different Approaches to Ethereum Identity Standards</dc:title>
+    </bib:Document>
+    <z:Attachment rdf:about="#item_72">
+        <z:itemType>attachment</z:itemType>
+        <dc:identifier>
+            <dcterms:URI>
+                <rdf:value>https://medium.com/uport/different-approaches-to-ethereum-identity-standards-a09488347c87</rdf:value>
+            </dcterms:URI>
+        </dc:identifier>
+        <dcterms:dateSubmitted>2018-05-01 20:50:27</dcterms:dateSubmitted>
+        <dc:title>Snapshot</dc:title>
+        <z:linkMode>1</z:linkMode>
+        <link:type>text/html</link:type>
+    </z:Attachment>
+</rdf:RDF>
