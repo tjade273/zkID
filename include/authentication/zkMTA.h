@@ -4,7 +4,10 @@
 #include <fstream>
 #include <libff/algebra/curves/public_params.hpp>
 #include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
+#include <libff/algebra/fields/field_utils.hpp>
+#include <libsnark/gadgetlib1/gadget.hpp>
 #include <libsnark/gadgetlib1/gadgets/merkle_tree/merkle_tree_check_read_gadget.hpp>
+#include <libsnark/gadgetlib1/gadgets/basic_gadgets.hpp>
 #include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
 #include <libff/common/default_types/ec_pp.hpp>
 #include <libsnark/common/default_types/r1cs_gg_ppzksnark_pp.hpp>
@@ -63,7 +66,7 @@ class zkMTA
 
         //Fills in the variables on the protoboard
         protoboard<FieldT> pb;
-        this->FillPb(pb,leaf_hash_bv,root_hash_bv,address_bits,address,auth_path);
+        this->FillPb(pb,leaf_hash_bv,root_hash_bv, address_bits,address,auth_path);
 
         //Genreate a authentication proof if the pb is satisified.
 
@@ -105,9 +108,17 @@ class zkMTA
     {
         int tree_depth = auth_path.size();
 
+        // Pack merkle root into 2 field elements
+        std::vector<FieldT> root_elems = libff::pack_bit_vector_into_field_element_vector<FieldT>(root);
+
         // Allocate the root hash first since it is the public input
+        pb_linear_combination_array<FieldT> root_packed(root_elems.size());
+        root_packed.fill_with_field_elements(pb, root_elems);
+        pb.set_input_sizes(root_elems.size());
+
+        // Constrain root_digest to be the binary representation of root_packed
         digest_variable<FieldT> root_digest(pb, _digest_len, "output_digest");
-        pb.set_input_sizes(256);
+        multipacking_gadget<FieldT> packer(pb, root_digest.bits(), root_packed, FieldT::capacity(), "root_unpacker");
 
         pb_variable_array<FieldT> address_bits_va;
         address_bits_va.allocate(pb, auth_path.size(), "address_bits");
@@ -116,11 +127,13 @@ class zkMTA
         merkle_tree_check_read_gadget<FieldT, HashT> ml(pb, tree_depth, address_bits_va,
                                                         leaf_digest, root_digest, path_var, ONE, "ml");
 
+        packer.generate_r1cs_constraints(1);
         path_var.generate_r1cs_constraints();
         ml.generate_r1cs_constraints();
 
         address_bits_va.fill_with_bits(pb, address_bits);
 
+        packer.generate_r1cs_witness_from_packed();
         leaf_digest.generate_r1cs_witness(leaf);
         path_var.generate_r1cs_witness(address, auth_path);
         ml.generate_r1cs_witness();
