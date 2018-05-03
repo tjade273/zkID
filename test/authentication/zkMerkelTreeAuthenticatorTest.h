@@ -4,6 +4,8 @@
 #include "authentication/zkMTA.h"
 #include "util/zk_identity_helpers.h"
 
+#define M_TREE_LENGTH 32
+
 TEST(zkMTATest, TestAuthenticate){
     zkMTA<sha256_two_to_one_hash_gadget> authenticator;
     std::string root;
@@ -54,18 +56,10 @@ TEST(zkMTATest, TestVerifyFail){
 }
 
 TEST(zkMTATest, TestExportVerifier){
-  zkMTA<sha256_two_to_one_hash_gadget> authenticator;
-  std::string root;
-  std::string leaf;
-  std::vector<AuthenticationNode> path;
-  AuthenticationData authentication_data;
+  zkMTA<sha256_two_to_one_hash_gadget> constraints;
 
-  AuthenticationArgsFromJson("test/res/merkle_path_test_pass.json",leaf,root,path);
-
-  LibsnarkAuthenticationData libsnark_data;
-  authenticator.Authenticate(leaf,root,path,authentication_data,&libsnark_data);
-
-  VerificationKey vk = ExtractVerificationKey(libsnark_data.pvk);
+  auto vk_pp = constraints.GenerateVerificationKey(M_TREE_LENGTH);
+  VerificationKey vk = ExtractVerificationKey(vk_pp);
 
   ExportVerificationKey(&vk, "test/res/verification.sol.tmpl", "test/res/verification.sol");
 }

@@ -67,7 +67,10 @@ class zkMTA
 
         //Fills in the variables on the protoboard
         protoboard<FieldT> pb;
-        this->FillPb(pb,leaf_hash_bv,root_hash_bv, address_bits,address,auth_path);
+
+        zkmta_gadget<FieldT, HashT> zkmta(pb, tree_depth);
+        zkmta.generate_r1cs_constraints();
+        zkmta.generate_r1cs_witness(leaf_hash_bv, root_hash_bv, address_bits, address, auth_path);
 
         //Genreate a authentication proof if the pb is satisified.
 
@@ -101,18 +104,17 @@ class zkMTA
         return true;
     }
 
+    r1cs_ppzksnark_verification_key<ppt> GenerateVerificationKey(size_t tree_depth){
+      ppt::init_public_params();
+      protoboard<FieldT> pb;
+      zkmta_gadget<FieldT, HashT> zkmta(pb, tree_depth);
+      zkmta.generate_r1cs_constraints();
+      r1cs_ppzksnark_keypair<ppt> keypair = r1cs_ppzksnark_generator<ppt>(pb.get_constraint_system());
+      return r1cs_ppzksnark_verification_key<ppt>(keypair.vk);
+    }
+
   private:
     int _digest_len = HashT::get_digest_len();
-
-    void FillPb(protoboard<FieldT> &pb, libff::bit_vector &leaf, libff::bit_vector &root,
-                libff::bit_vector& address_bits, size_t &address, std::vector<libsnark::merkle_authentication_node> &auth_path)
-    {
-        int tree_depth = auth_path.size();
-
-        zkmta_gadget<FieldT, HashT> zkmta(pb, tree_depth);
-        zkmta.generate_r1cs_constraints();
-        zkmta.generate_r1cs_witness(leaf, root, address_bits, address, auth_path);
-    }
 
     void ConstructPath(int tree_depth, const std::vector<AuthenticationNode> &path, size_t &address,
                        libff::bit_vector &address_bits, std::vector<merkle_authentication_node> &auth_path)
