@@ -61,7 +61,7 @@ AuthenticationProof ExtractAuthenticationProof(libsnark::r1cs_ppzksnark_proof<li
 VerificationKey ExtractVerificationKey(libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp>& vk)
 {
     VerificationKey k;
-    
+
     int icLength = vk.encoded_IC_query.rest.indices.size() + 1;
 
     k.A = libsnark::outputPointG2AffineAsHex(vk.alphaA_g2);
@@ -115,6 +115,18 @@ void ExportVerificationKey(VerificationKey *vk, const std::string &fname){
   buffer.str(std::regex_replace(buffer.str(), reg, FormatG2(vk->Z)));
   reg = std::regex("<%vk_ic_length%>");
   buffer.str(std::regex_replace(buffer.str(), reg, std::to_string(vk->ICs.size())));
+
+  std::stringstream ic_buffer;
+  for(int i = 0; i < vk->ICs.size(); i++){
+    ic_buffer << "vk.IC[" << i << "] = Pairing.G1Point(" << FormatG1(vk->ICs[i]) <<");\n";
+  }
+
+  reg = std::regex("<%vk_ic_pts%>");
+  buffer.str(std::regex_replace(buffer.str(), reg, ic_buffer.str()));
+
+  reg = std::regex("<%vk_input_length%>");
+  buffer.str(std::regex_replace(buffer.str(), reg, std::to_string(vk->ICs.size()-1)));
+
   std::cout << buffer.str() << std::flush;
 }
 

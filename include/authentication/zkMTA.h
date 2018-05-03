@@ -51,12 +51,12 @@ class zkMTA
 
         //convert root hash string to bit vector
         bit_vector_from_string(root_hash_bv, root_hash);
-        
+
         //convert leaf value to bit vector
         libff::bit_vector leaf_bv(leaf.length()*4);
         bit_vector_from_string(leaf_bv,leaf);
 
-        //TODO: This assumes that the provided leaf does not exceed HashT's block size. 
+        //TODO: This assumes that the provided leaf does not exceed HashT's block size.
 
         //compute the hash of the leaf's value
         leaf_hash_bv = HashT::get_hash(leaf_bv);
@@ -66,7 +66,7 @@ class zkMTA
         this->FillPb(pb,leaf_hash_bv,root_hash_bv,address_bits,address,auth_path);
 
         //Genreate a authentication proof if the pb is satisified.
-        
+
         return this->GenerateAuthenticationData(pb, data,libsnark_data);
     }
 
@@ -84,7 +84,7 @@ class zkMTA
         r1cs_ppzksnark_keypair<ppt> keypair = r1cs_ppzksnark_generator<ppt>(pb.get_constraint_system());
         r1cs_ppzksnark_verification_key<ppt> pvk = r1cs_ppzksnark_verification_key<ppt>(keypair.vk);
         r1cs_ppzksnark_proof<ppt> proof = r1cs_ppzksnark_prover<ppt>(keypair.pk, pb.primary_input(), pb.auxiliary_input());
-        
+
         if(libsnark_data){
             libsnark_data->pvk = pvk;
             libsnark_data->proof = proof;
@@ -104,10 +104,14 @@ class zkMTA
                 libff::bit_vector& address_bits, size_t &address, std::vector<libsnark::merkle_authentication_node> &auth_path)
     {
         int tree_depth = auth_path.size();
+
+        // Allocate the root hash first since it is the public input
+        digest_variable<FieldT> root_digest(pb, _digest_len, "output_digest");
+        pb.set_input_sizes(256);
+
         pb_variable_array<FieldT> address_bits_va;
         address_bits_va.allocate(pb, auth_path.size(), "address_bits");
         digest_variable<FieldT> leaf_digest(pb, _digest_len, "input_block");
-        digest_variable<FieldT> root_digest(pb, _digest_len, "output_digest");
         merkle_authentication_path_variable<FieldT, HashT> path_var(pb, tree_depth, "path_var");
         merkle_tree_check_read_gadget<FieldT, HashT> ml(pb, tree_depth, address_bits_va,
                                                         leaf_digest, root_digest, path_var, ONE, "ml");

@@ -48,7 +48,7 @@ std::array<std::string,2> outputPointG1AffineAsHex(libff::alt_bn128_G1 _p)
 {
     libff::alt_bn128_G1 aff = _p;
     aff.to_affine_coordinates();
-    return {"0x" + HexStringFromLibsnarkBigint(aff.X.as_bigint()), 
+    return {"0x" + HexStringFromLibsnarkBigint(aff.X.as_bigint()),
             "0x"  + HexStringFromLibsnarkBigint(aff.Y.as_bigint())} ;
 }
 
@@ -56,9 +56,9 @@ std::array<std::string,4> outputPointG2AffineAsHex(libff::alt_bn128_G2 _p)
 {
     libff::alt_bn128_G2 aff = _p;
     aff.to_affine_coordinates();
-    return {"0x" +HexStringFromLibsnarkBigint(aff.X.c1.as_bigint()) , 
-            "0x" + HexStringFromLibsnarkBigint(aff.X.c0.as_bigint()), 
-            "0x" +HexStringFromLibsnarkBigint(aff.Y.c1.as_bigint()), 
+    return {"0x" +HexStringFromLibsnarkBigint(aff.X.c1.as_bigint()) ,
+            "0x" + HexStringFromLibsnarkBigint(aff.X.c0.as_bigint()),
+            "0x" +HexStringFromLibsnarkBigint(aff.Y.c1.as_bigint()),
             "0x" +HexStringFromLibsnarkBigint(aff.Y.c0.as_bigint())};
 }
 }
