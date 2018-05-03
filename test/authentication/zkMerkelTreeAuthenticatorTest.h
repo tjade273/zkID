@@ -67,5 +67,5 @@ TEST(zkMTATest, TestExportVerifier){
 
   VerificationKey vk = ExtractVerificationKey(libsnark_data.pvk);
 
-  ExportVerificationKey(&vk, "test/res/verification.sol");
+  ExportVerificationKey(&vk, "test/res/verification.sol.tmpl", "test/res/verification.sol");
 }

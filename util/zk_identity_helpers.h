@@ -90,11 +90,13 @@ std::string FormatG2(std::array<std::string, 4> p){
   return "["+p[0]+", "+p[1]+"], ["+p[2] + ", "+ p[3] + "]";
 }
 
-void ExportVerificationKey(VerificationKey *vk, const std::string &fname){
+void ExportVerificationKey(VerificationKey *vk, const std::string &sol_path, const std::string &out_path){
 
-  std::ifstream f(fname);
-  if (!f)
-    std::cout << "Failed to open file stream" << std::endl;
+  std::ifstream f(sol_path);
+  if (!f){
+    std::cerr << "Solidity template not found" << std::endl;
+    return;
+  }
 
   std::stringstream buffer;
   buffer << f.rdbuf();
@@ -127,7 +129,13 @@ void ExportVerificationKey(VerificationKey *vk, const std::string &fname){
   reg = std::regex("<%vk_input_length%>");
   buffer.str(std::regex_replace(buffer.str(), reg, std::to_string(vk->ICs.size()-1)));
 
-  std::cout << buffer.str() << std::flush;
+  std::ofstream of(out_path);
+  if (!of){
+    std::cerr << "Could not open output file";
+    return;
+  }
+  of << buffer.str() << std::flush;
+  of.close();
 }
 
 #endif
