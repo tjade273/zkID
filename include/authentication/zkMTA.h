@@ -112,13 +112,18 @@ class zkMTA
         std::vector<FieldT> root_elems = libff::pack_bit_vector_into_field_element_vector<FieldT>(root);
 
         // Allocate the root hash first since it is the public input
-        pb_linear_combination_array<FieldT> root_packed(root_elems.size());
+        pb_variable_array<FieldT> root_packed;
+        root_packed.allocate(pb, root_elems.size());
         root_packed.fill_with_field_elements(pb, root_elems);
+
+        // Set public input to size of packed digest
+        // Digest is 256 bits, field element can hold only 255 bits, so we use 2 elems
+        // This is inefficient, but we can use the wasted space for more primary inputs later
         pb.set_input_sizes(root_elems.size());
 
         // Constrain root_digest to be the binary representation of root_packed
         digest_variable<FieldT> root_digest(pb, _digest_len, "output_digest");
-        multipacking_gadget<FieldT> packer(pb, root_digest.bits(), root_packed, FieldT::capacity(), "root_unpacker");
+        multipacking_gadget<FieldT> packer(pb, root_digest.bits, root_packed, FieldT::capacity(), "digest_packer");
 
         pb_variable_array<FieldT> address_bits_va;
         address_bits_va.allocate(pb, auth_path.size(), "address_bits");
@@ -133,7 +138,6 @@ class zkMTA
 
         address_bits_va.fill_with_bits(pb, address_bits);
 
-        packer.generate_r1cs_witness_from_packed();
         leaf_digest.generate_r1cs_witness(leaf);
         path_var.generate_r1cs_witness(address, auth_path);
         ml.generate_r1cs_witness();
@@ -141,6 +145,7 @@ class zkMTA
         address_bits_va.fill_with_bits(pb, address_bits);
         leaf_digest.generate_r1cs_witness(leaf);
         root_digest.generate_r1cs_witness(root);
+        packer.generate_r1cs_witness_from_packed();
     }
 
     void ConstructPath(int tree_depth, const std::vector<AuthenticationNode> &path, size_t &address,
