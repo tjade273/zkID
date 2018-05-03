@@ -34,6 +34,8 @@ TEST(zkMTATest, TestVerify){
 
     const bool verified = r1cs_ppzksnark_verifier_strong_IC<libff::alt_bn128_pp>(libsnark_data.pvk,libsnark_data.primary_input,libsnark_data.proof);
 
+    ExportProof(libsnark_data, "test/res/proof.export");
+
     ASSERT_TRUE(verified);
 }
 
@@ -51,8 +53,9 @@ TEST(zkMTATest, TestVerifyFail){
 
   const bool verified = r1cs_ppzksnark_verifier_strong_IC<libff::alt_bn128_pp>(libsnark_data.pvk,libsnark_data.primary_input,libsnark_data.proof);
 
-  ASSERT_FALSE(verified);
+  ExportProof(libsnark_data, "test/res/proof.bad.export");
 
+  ASSERT_FALSE(verified);
 }
 
 TEST(zkMTATest, TestExportVerifier){
@@ -61,5 +64,5 @@ TEST(zkMTATest, TestExportVerifier){
   auto vk_pp = constraints.GenerateVerificationKey(M_TREE_LENGTH);
   VerificationKey vk = ExtractVerificationKey(vk_pp);
 
-  ExportVerificationKey(&vk, "test/res/verification.sol.tmpl", "test/res/verification.sol");
+  ExportVerificationKey(vk, "test/res/verification.sol.tmpl", "test/res/verification.sol");
 }

@@ -4,6 +4,10 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
+#include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
+
+
 
 enum AuthenticationErrorCode
 {
@@ -56,5 +60,12 @@ struct AuthenticationError
     AuthenticationErrorCode ec;
     std::string msg;
 };
+
+struct LibsnarkAuthenticationData{
+  libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> pvk;
+  libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> proof;
+  libsnark::r1cs_ppzksnark_primary_input<libff::alt_bn128_pp> primary_input;
+};
+
 
 #endif
