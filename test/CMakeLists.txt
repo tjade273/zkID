@@ -1,10 +1,15 @@
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 include_directories(.)
+add_subdirectory(authentication)
+
+
+file(GLOB_RECURSE TEST_SOURCES
+    *.cpp)
 
 add_executable(
   run_tests
-  run_tests.cpp
+  ${TEST_SOURCES}
 )
 
 FILE (GLOB_RECURSE res "res/*.*")
@@ -38,7 +43,7 @@ endforeach()
 target_link_libraries(
   run_tests
   gtest
-  snark
+  our_lib
 )
 target_include_directories(
   run_tests
