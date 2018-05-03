@@ -3,6 +3,9 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <regex>
+#include <fstream>
 #include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
 #include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
 #include "authentication/zkMTAStructs.h"
@@ -77,6 +80,42 @@ VerificationKey ExtractVerificationKey(libsnark::r1cs_ppzksnark_verification_key
     }
 
     return k;
+}
+
+std::string FormatG1(std::array<std::string, 2> p){
+  return  p[0] + ", " + p[1];
+}
+
+std::string FormatG2(std::array<std::string, 4> p){
+  return "["+p[0]+", "+p[1]+"], ["+p[2] + ", "+ p[3] + "]";
+}
+
+void ExportVerificationKey(VerificationKey *vk, const std::string &fname){
+
+  std::ifstream f(fname);
+  if (!f)
+    std::cout << "Failed to open file stream" << std::endl;
+
+  std::stringstream buffer;
+  buffer << f.rdbuf();
+  f.close();
+  std::regex reg("<%vk_a%>");
+  buffer.str(std::regex_replace(buffer.str(), reg, FormatG2(vk->A)));
+  reg = std::regex("<%vk_b%>");
+  buffer.str(std::regex_replace(buffer.str(), reg, FormatG1(vk->B)));
+  reg = std::regex("<%vk_c%>");
+  buffer.str(std::regex_replace(buffer.str(), reg, FormatG2(vk->C)));
+  reg = std::regex("<%vk_g%>");
+  buffer.str(std::regex_replace(buffer.str(), reg, FormatG2(vk->gamma)));
+  reg = std::regex("<%vk_gb1%>");
+  buffer.str(std::regex_replace(buffer.str(), reg, FormatG1(vk->gammaBeta1)));
+  reg = std::regex("<%vk_gb2%>");
+  buffer.str(std::regex_replace(buffer.str(), reg, FormatG2(vk->gammaBeta2)));
+  reg = std::regex("<%vk_z%>");
+  buffer.str(std::regex_replace(buffer.str(), reg, FormatG2(vk->Z)));
+  reg = std::regex("<%vk_ic_length%>");
+  buffer.str(std::regex_replace(buffer.str(), reg, std::to_string(vk->ICs.size())));
+  std::cout << buffer.str() << std::flush;
 }
 
 #endif
