@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <libsnark/gadgetlib1/gadgets/hashes/sha256/sha256_gadget.hpp>
 #include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
-#include "authentication/zkMTA.h"
-#include "util/zk_identity_helpers.h"
+#include "authentication/zkidMTA.h"
+#include "util/zkid_helpers.h"
 
 //
 #define M_TREE_LENGTH 3
@@ -42,14 +42,13 @@ TEST(zkMTATest, TestVerify){
 }
 
 TEST(zkMTATest, TestExportVerifier){
-  zkMTA<sha256_two_to_one_hash_gadget> constraints;
+  zkMTA<sha256_two_to_one_hash_gadget> zkidMTA(M_TREE_LENGTH);
 
-  auto vk_pp = constraints.GenerateVerificationKey(M_TREE_LENGTH);
+  auto vk_pp = zkidMTA.GetVerificationKey();
   VerificationKey vk = ExtractVerificationKey(vk_pp);
 
   ExportVerificationKey(vk, "test/res/verification.sol.tmpl", "test/res/verification.sol");
 }
-
 
 TEST(zkMTATest, TestVerifyFail){
   std::string root;
@@ -70,15 +69,3 @@ TEST(zkMTATest, TestVerifyFail){
 
   ASSERT_FALSE(verified);
 }
-<<<<<<< HEAD:test/authentication/zkMerkelTreeAuthenticatorTest.cpp
-
-/*TEST(zkMTATest, TestExportVerifier){
-  zkMTA<sha256_two_to_one_hash_gadget> constraints;
-
-  auto vk_pp = constraints.GenerateVerificationKey(M_TREE_LENGTH);
-  VerificationKey vk = ExtractVerificationKey(vk_pp);
-
-  ExportVerificationKey(vk, "test/res/verification.sol.tmpl", "test/res/verification.sol");
-}*/
-=======
->>>>>>> e605743... Fix path length. TODO: use properly sized test paths:test/authentication/zkMerkelTreeAuthenticatorTest.h

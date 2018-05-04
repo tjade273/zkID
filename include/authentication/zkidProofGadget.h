@@ -2,7 +2,7 @@
 #define _zkid_Proof_Gadget_h
 
 #include "zkidVerificationStructs.h"
-#include "util/zk_identity_helpers.h"
+#include "util/zkid_helpers.h"
 #include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
 
 class zkidProofGadget

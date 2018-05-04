@@ -12,9 +12,9 @@
 #include <libff/common/default_types/ec_pp.hpp>
 #include <libsnark/common/default_types/r1cs_gg_ppzksnark_pp.hpp>
 #include "authentication/zkidVerificationStructs.h"
-#include "authentication/zkMTACircuit.h"
+#include "authentication/zkidMTACircuit.h"
 #include "util/libsnark_helpers.h"
-#include "util/zk_identity_helpers.h"
+#include "util/zkid_helpers.h"
 #include "authentication/zkidProofGadget.h"
 
 using namespace libsnark;
@@ -94,35 +94,7 @@ class zkMTA : public zkidProofGadget
 
     const r1cs_ppzksnark_verification_key<ppt> &GetVerificationKey()
     {
-<<<<<<< HEAD
         return this->_verification_key;
-=======
-        if(!pb.is_satisfied())
-            return false;
-
-        r1cs_ppzksnark_keypair<ppt> keypair = r1cs_ppzksnark_generator<ppt>(pb.get_constraint_system());
-        r1cs_ppzksnark_verification_key<ppt> pvk = r1cs_ppzksnark_verification_key<ppt>(keypair.vk);
-        r1cs_ppzksnark_proof<ppt> proof = r1cs_ppzksnark_prover<ppt>(keypair.pk, pb.primary_input(), pb.auxiliary_input());
-
-        if(libsnark_data){
-            libsnark_data->pvk = pvk;
-            libsnark_data->proof = proof;
-            libsnark_data->primary_input = pb.primary_input();
-        }
-
-        auth_data.proof = ExtractAuthenticationProof(proof);
-        auth_data.key = ExtractVerificationKey(pvk);
-
-        return true;
-    }
-
-    r1cs_ppzksnark_verification_key<ppt> GenerateVerificationKey(size_t tree_depth){
-      protoboard<FieldT> pb;
-      zkmta_gadget<FieldT, HashT> zkmta(pb, tree_depth);
-      zkmta.generate_r1cs_constraints();
-      r1cs_ppzksnark_keypair<ppt> keypair = r1cs_ppzksnark_generator<ppt>(pb.get_constraint_system());
-      return r1cs_ppzksnark_verification_key<ppt>(keypair.vk);
->>>>>>> e605743... Fix path length. TODO: use properly sized test paths
     }
 
   private:
