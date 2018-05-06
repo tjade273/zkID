@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Credentials Example</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+  <link href='../css/modal.css' rel='stylesheet' type='text/css'>
+</head>
+<div id="credentials-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h4>This action requires the following credentials.</h1>
+    <table id="credential_table" class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Credential</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <div class = "button-container">
+      <button type="button" class="btn btn-success" onclick = "OnApprove()">Approve</button>
+      <button type="button" class="btn btn-danger" onclick= "OnDeny()">Deny</button>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+<script src="../js/credentials.js"></script>
+<html>

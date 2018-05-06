@@ -1,0 +1,15 @@
+{
+    "issuer":"UUID",
+    "type":"type",
+    "public_inputs":[],
+    "proof":{
+        "A":[],
+        "A_p":[],
+        "B":[],
+        "B_p":[],
+        "C":[],
+        "C_p":[],
+        "H":[],
+        "K":[]
+    }
+}
