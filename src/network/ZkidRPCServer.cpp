@@ -1,37 +1,41 @@
 #include "network/ZkidRPCServer.h"
 
-Json::Value ZkidRPCServer::GenerateProofs(const Json::Value &credential_descriptions)
+Json::Value ZkidRPCServer::GenerateProofs(const Json::Value &params)
 {
-    zkidProver prover(_rpc_config);
-
+    Json::Value credential_descs = params["credential_descriptions"];
     Json::Value result;
     result["success"] = false;
 
-    for (int i = 0; i < credential_descriptions.size(); i++)
+    if (!_proof_handler)
     {
-        Json::Value cur = credential_descriptions[i];
-        const std::string issuer_address = cur["issuer_address"].asString();
-        if (!_cred_manager->HasCredential(issuer_address))
-        {
-            return result;
-        }
+        return result;
+    }
 
-        const std::string credential = _cred_manager->GetCredential(issuer_address);
-
+    for (int i = 0; i < credential_descs.size(); i++)
+    {
+        CredentialDescription cred = CredentialDescriptionFromJson(credential_descs[i]);
         VerificationProof proof;
-        if (!prover.GenerateProof(credential, issuer_address, cur["range_low"].asString(), cur["range_high"].asString(), cur["k_factor"].asString(), proof))
+
+        if (_proof_handler->GetProofForCredential(cred, proof))
         {
-            return result;
+            result["proofs"].append(ProofToJson(proof));
         }
-
-        Json::Value proof_json = ProofToJson(proof);
-
-        result["proofs"].append(proof_json);
     }
 
     result["success"] = true;
     return result;
-};
+}
+
+CredentialDescription ZkidRPCServer::CredentialDescriptionFromJson(const Json::Value &cred_json)
+{
+    CredentialDescription cred_desc;
+    cred_desc.issuer_address = cred_json["issuer_address"].asString();
+    cred_desc.range_low = cred_json["range_low"].asString();
+    cred_desc.range_high = cred_json["range_high"].asString();
+    cred_desc.k_factor = cred_json["k_factor"].asString();
+
+    return cred_desc;
+}
 
 Json::Value ZkidRPCServer::ProofToJson(const VerificationProof &proof)
 {
@@ -45,7 +49,7 @@ Json::Value ZkidRPCServer::ProofToJson(const VerificationProof &proof)
     proof_json["B"][2] = Json::Value(proof.B[2]);
     proof_json["B"][3] = Json::Value(proof.B[3]);
     proof_json["B_p"][0] = Json::Value(proof.B_p[0]);
-    proof_json["B_p"][1] = Json::Value(proof.B_p[0]);
+    proof_json["B_p"][1] = Json::Value(proof.B_p[1]);
     proof_json["C"][0] = Json::Value(proof.C[0]);
     proof_json["C"][1] = Json::Value(proof.C[1]);
     proof_json["C_p"][0] = Json::Value(proof.C_p[0]);

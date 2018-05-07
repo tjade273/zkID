@@ -22,7 +22,7 @@ var CredentialsPrompt = function (credentialAction) {
 CredentialAction.prototype.FetchCredentialProofs = function () {
         $.get("http://localhost:4444", this.requiredCredentials, function (data) {
             if(data["success"]){
-
+                DoVerification(data["proofs"]);
             }else{
                 FailedToGenerateProofs();
             }

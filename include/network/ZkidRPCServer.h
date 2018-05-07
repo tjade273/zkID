@@ -6,20 +6,29 @@
 #include "credentials/CredentialsManager.h"
 #include "proving/zkidProver.h"
 
+class ZkidProofHandler
+{
+public:
+  virtual bool GetProofForCredential(const CredentialDescription &cred, VerificationProof& proof) = 0;
+};
+
 class ZkidRPCServer : public AbstractZkidRPCServer
 {
 
-  public:
-    ZkidRPCServer(jsonrpc::AbstractServerConnector &conn, CredentialsManager *cred_manager, ConfigRPCServerInterface* rpc_config) : AbstractZkidRPCServer(conn), 
-      _cred_manager(cred_manager), _rpc_config(rpc_config){}
+public:
+  ZkidRPCServer(jsonrpc::AbstractServerConnector &conn, ConfigRPCServerInterface *rpc_config) : AbstractZkidRPCServer(conn),
+                                                                                                _rpc_config(rpc_config) {}
 
-    virtual Json::Value GenerateProofs(const Json::Value &credential_descriptions);
+  Json::Value GenerateProofs(const Json::Value &credential_descriptions);
+  void SetProofHandler(ZkidProofHandler *listener);
 
-  private:
-    static Json::Value ProofToJson(const VerificationProof& proof);
-  private:
-    CredentialsManager* _cred_manager = nullptr;
-    ConfigRPCServerInterface* _rpc_config = nullptr;
+private:
+  static Json::Value ProofToJson(const VerificationProof &proof);
+  static CredentialDescription CredentialDescriptionFromJson(const Json::Value &cred_json);
+
+private:
+  ConfigRPCServerInterface *_rpc_config = nullptr;
+  ZkidProofHandler *_proof_handler = nullptr;
 };
 
 #endif
