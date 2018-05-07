@@ -44,10 +44,10 @@ class zkMTA : public zkidProofGadget
         _zkmta.generate_r1cs_constraints();
         _keypair = std::make_shared<r1cs_ppzksnark_keypair<ppt>>
             (r1cs_ppzksnark_keypair<ppt>(r1cs_ppzksnark_generator<ppt>(_pb.get_constraint_system())));
-        _verification_key = r1cs_ppzksnark_verification_key<ppt>(_keypair->vk);   
+        _verification_key = r1cs_ppzksnark_verification_key<ppt>(_keypair->vk);
     };
 
-    typedef Hash<FieldT> HashT; 
+    typedef Hash<FieldT> HashT;
 
     bool GetVerificationData(const std::string &leaf, const std::string &root_hash,
                              const std::vector<MTAuthenticationNode> &path, VerificationData &data,
