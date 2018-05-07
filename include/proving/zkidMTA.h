@@ -11,11 +11,12 @@
 #include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
 #include <libff/common/default_types/ec_pp.hpp>
 #include <libsnark/common/default_types/r1cs_gg_ppzksnark_pp.hpp>
-#include "authentication/zkidVerificationStructs.h"
-#include "authentication/zkidMTACircuit.h"
+#include "proving/zkidVerificationStructs.h"
+#include "proving/zkidMTACircuit.h"
 #include "util/libsnark_helpers.h"
 #include "util/zkid_helpers.h"
-#include "authentication/zkidProofGadget.h"
+#include "proving/zkidProofGadget.h"
+#include "util/json_helpers.h"
 
 using namespace libsnark;
 

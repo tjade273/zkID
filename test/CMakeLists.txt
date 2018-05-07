@@ -43,7 +43,7 @@ endforeach()
 target_link_libraries(
   run_tests
   gtest
-  our_lib
+  zkid_lib
 )
 target_include_directories(
   run_tests

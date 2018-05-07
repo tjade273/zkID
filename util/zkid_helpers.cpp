@@ -1,7 +1,5 @@
 #include "zkid_helpers.h"
 
-using json = nlohmann::json;
-
 VerificationProof ExtractVerificationProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof)
 {
     VerificationProof p;

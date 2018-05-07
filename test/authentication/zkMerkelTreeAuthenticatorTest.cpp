@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <libsnark/gadgetlib1/gadgets/hashes/sha256/sha256_gadget.hpp>
 #include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
-#include "authentication/zkidMTA.h"
+#include "proving/zkidMTA.h"
 #include "util/zkid_helpers.h"
 
 //
