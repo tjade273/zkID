@@ -141,18 +141,20 @@ class zkid_gadget : gadget<FieldT> {
   pb_variable_array<FieldT> serial_bits;
   pb_variable_array<FieldT> upper_bits;
   pb_variable_array<FieldT> lower_bits;
-  pb_variable_array<FieldT> attribute_bits;
   pb_variable_array<FieldT> address_bits_va;
   digest_variable<FieldT> leaf_digest;
+  pb_variable<FieldT> k;
 
-  std::vector<std::shared_ptr<packing_gadget>> unpackers;
+  std::vector<std::shared_ptr<packing_gadget<FieldT>>> unpackers;
 
   // split bounds
   std::shared_ptr<multipacking_gadget<FieldT>> upper_splitter;
   std::shared_ptr<multipacking_gadget<FieldT>> lower_splitter;
   std::shared_ptr<multipacking_gadget<FieldT>> attr_splitter;
 
-  std::vector<std::shared_ptr<zkrange_gadget>> range_proofs;
+  std::vector<std::shared_ptr<zkrange_gadget<FieldT>>> range_proofs;
+
+  std::shared_ptr<comparison_gadget<FieldT>> k_bound;
 
   std::shared_ptr<HashT> serial_hasher;
   std::shared_ptr<HashT> leaf_hasher;
@@ -163,7 +165,7 @@ class zkid_gadget : gadget<FieldT> {
  public:
   digest_variable<FieldT> merkle_root;
   digest_variable<FieldT> serial_number;
-  pb_variable_array<FieldT> upper_bound;
+  pb_variable_array<FieldT> upper_bounds;
   pb_variable_array<FieldT> lower_bounds;
   pb_variable_array<FieldT> attributes;
   digest_variable<FieldT> attribute_bits;
@@ -176,6 +178,7 @@ class zkid_gadget : gadget<FieldT> {
              pb_variable<FieldT> &upper,
              pb_variable<FieldT> &lower,
              pb_variable<FieldT> &salt,
+
              size_t tree_depth,
              size_t attribute_size) :
   gadget<FieldT>(pb),
@@ -211,7 +214,7 @@ class zkid_gadget : gadget<FieldT> {
       upper_splitter.reset(new multipacking_gadget<FieldT>(pb, upper_bits, upper_bounds, attribute_size));
       lower_splitter.reset(new multipacking_gadget<FieldT>(pb, lower_bits, lower_bounds, attribute_size));
       pb_variable_array<FieldT> attr_bottom_bits(attribute_bits.bits.begin(), attribute_bits.bits.begin() + num_attributes*attribute_size);
-      attr_splitter.reset(new multipacking_gadget<FieldT>(pb, attribute_bits.bits., attributes, attribute_size));
+      attr_splitter.reset(new multipacking_gadget<FieldT>(pb, attribute_bits.bits, attributes, attribute_size));
 
       // constrain each attribute to be in-bounds
       for(int i = 0; i < num_attributes; ++i)
@@ -221,22 +224,42 @@ class zkid_gadget : gadget<FieldT> {
 
       size_t digest_size = HashT::get_digest_len();
 
-      // constrain serial number to equal bottom FieldT::capacity() bits of the digest
-      pb_variable_array<FieldT> serial_bottom_bits(serial_number.bits.begin(), serial_number.bits.begin()+FieldT::capacity());
-      unpackers.emplace_back(new packing_gadget<FieldT>(pb, serial_bottom_bits, serial));
-
-      // constrain serial number to be H(privkey, salt)
-      serial_hasher.reset(HashT(pb, private_key, salt_bits, serial_number));
-
       // constrain H(privkey, attributes) to be leaf of merkle tree
       pb_variable_array<FieldT> merkle_bottom_bits(merkle_root.bits.begin(), merkle_root.bits.begin()+FieldT::capacity());
       unpackers.emplace_back(new packing_gadget<FieldT>(pb, merkle_bottom_bits, merkle));
       leaf_hasher.reset(HashT(pb, private_key, attribute_bits, leaf_digest));
       address_bits_va.allocate(pb, tree_depth);
-      merkle_check.reset(new merkle_tree_check_read_gadget<FieldT, HashT>(pb, tree_depth, address_bits_va, leaf_digest, merkle_root, path, ONE));
+
+      path_var.reset(new merkle_authentication_path_variable<FieldT, HashT>(pb, tree_depth, "path_var"));
+
+      merkle_check.reset(new merkle_tree_check_read_gadget<FieldT, HashT>(pb, tree_depth, address_bits_va, leaf_digest, merkle_root, path_var, ONE));
 
       // constrain salt to have k less than k_bound
-      //TODO
+      k.allocate(pb);
+      pb_variable_array<FieldT> k_bits;
+      k_bits.allocate(pb, attribute_size);
+      unpackers.emplace_back(new packing_gadget<FieldT>(pb, k_bits, k));
+
+      pb_variable<FieldT> k_limit;
+      k_limit.allocate(pb);
+
+      pb_variable_array<FieldT> k_limit_bits(salt.end() - attribute_size, salt.end());
+      unpackers.emplace_back(new packing_gadget<FieldT>(pb, k_limit_bits, k_limit));
+
+      pb_variable<FieldT> lt;
+      pb.allocate(lt);
+
+      k_bound.reset(new comparison_gadget<FieldT>(pb, attribute_size, k, k_limit, lt, ONE));
+
+      // constrain serial number to equal bottom FieldT::capacity() bits of the digest
+      pb_variable_array<FieldT> serial_bottom_bits(serial_number.bits.begin(), serial_number.bits.begin()+FieldT::capacity());
+      unpackers.emplace_back(new packing_gadget<FieldT>(pb, serial_bottom_bits, serial));
+
+      // constrain serial number to be H(privkey, salt||k)
+      pb_variable_array<FieldT> k_salt(salt_bits.begin(), salt_bits.end()-attribute_size);
+      k_salt.insert(k_salt.end(), k_bits.begin(), k_bits.end());
+      serial_hasher.reset(HashT(pb, private_key, salt_bits, serial_number));
+    }
 };
 
 #endif
