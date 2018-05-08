@@ -4,7 +4,7 @@
 class ConfigCredentialsInterface
 {
   public:
-    virtual const std::string &GetCredentialsFilePath() = 0;
+    virtual std::string GetCredentialsFilePath() = 0;
 };
 
 #endif

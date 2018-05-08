@@ -9,17 +9,17 @@
 
 class AbstractZkidRPCServer : public jsonrpc::AbstractServer<AbstractZkidRPCServer>
 {
-    public:
-        AbstractZkidRPCServer(jsonrpc::AbstractServerConnector &conn, jsonrpc::serverVersion_t type = jsonrpc::JSONRPC_SERVER_V2) : jsonrpc::AbstractServer<AbstractZkidRPCServer>(conn, type)
-        {
-            this->bindAndAddMethod(jsonrpc::Procedure("GenerateProofs", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_OBJECT, "credential_descriptions",jsonrpc::JSON_ARRAY, NULL), &AbstractZkidRPCServer::GenerateProofsI);
-        }
+  public:
+    AbstractZkidRPCServer(jsonrpc::AbstractServerConnector &conn) : jsonrpc::AbstractServer<AbstractZkidRPCServer>(conn)
+    {
+        this->bindAndAddMethod(jsonrpc::Procedure("GenerateProofs", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_OBJECT, "credential_descriptions", jsonrpc::JSON_ARRAY, NULL), &AbstractZkidRPCServer::GenerateProofsI);
+    }
 
-        inline virtual void GenerateProofsI(const Json::Value &request, Json::Value &response)
-        {
-            response = this->GenerateProofs(request["credential_descriptions"]);
-        }
-        virtual Json::Value GenerateProofs(const Json::Value& credential_descriptions) = 0;
+    inline virtual void GenerateProofsI(const Json::Value &request, Json::Value &response)
+    {
+        response = this->GenerateProofs(request["credential_descriptions"]);
+    }
+    virtual Json::Value GenerateProofs(const Json::Value &credential_descriptions) = 0;
 };
 
 #endif //JSONRPC_CPP_STUB_ABSTRACTZKIDRPCSERVER_H_

@@ -2,29 +2,31 @@
 #define _ZkidService_h
 
 #include <spdlog/spdlog.h>
+#include <memory>
 #include "configuration/ConfigZkidServiceInterface.h"
-#include "network/ZkidRCPServer.h"
+#include "credentials/CredentialsManager.h"
+#include "network/ZkidRPCServer.h"
 
 class ZkidService : public ZkidProofHandler
 {
 
   public:
-    ZkidService(ConfigZkidServiceInterface *service_config, CredentialsManager *cred_manager) : service_config(service_config), _cred_manager(cred_manager){};
+    ZkidService(ConfigZkidServiceInterface* service_config, CredentialsManager* cred_manager);
 
     static std::shared_ptr<spdlog::logger> console;
-    void Start();
+    bool Start();
     void Stop();
     bool GetProofForCredential(const CredentialDescription &cred, VerificationProof& proof);
-
+    int GetPort();
   protected:
-    virtual VerificationProof GenerateProofForCredential(const Json::Value &credential_descriptions);
+  virtual bool GenerateProofForCredential(const CredentialDescription &cred, VerificationProof &proof);
 
   protected:
     ConfigZkidServiceInterface *_service_config;
-    ZkidRPCServer _rpc_server;
+    std::shared_ptr<ZkidRPCServer> _rpc_server;
 
   private:
-    HttpServer _http_server;
-    CredentialsManager *_cred_manager = nullptr;
+    jsonrpc::HttpServer _http_server;
+    CredentialsManager* _cred_manager = nullptr;
 };
 #endif

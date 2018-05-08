@@ -2,7 +2,7 @@
 #define _ConfigProverInterface_h
 
 class ConfigProverInterface{
-    virtual const std::string& GetMerkleTreeEndpoint() = 0;
+    virtual std::string GetMerkleTreeEndpoint(const std::string& issuer) = 0;
 };
 
 #endif

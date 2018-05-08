@@ -1,6 +1,7 @@
 #ifndef _ZkidRPCServer_h
 #define _ZkidRPCServer_h
 
+#include <jsonrpccpp/server/connectors/httpserver.h>
 #include "network/AbstractZkidRPCServer.h"
 #include "configuration/ConfigRPCServerInterface.h"
 #include "credentials/CredentialsManager.h"
@@ -9,16 +10,14 @@
 class ZkidProofHandler
 {
 public:
-  virtual bool GetProofForCredential(const CredentialDescription &cred, VerificationProof& proof) = 0;
+    virtual bool GetProofForCredential(const CredentialDescription &cred, VerificationProof& proof) = 0;
 };
 
 class ZkidRPCServer : public AbstractZkidRPCServer
 {
 
 public:
-  ZkidRPCServer(jsonrpc::AbstractServerConnector &conn, ConfigRPCServerInterface *rpc_config) : AbstractZkidRPCServer(conn),
-                                                                                                _rpc_config(rpc_config) {}
-
+  ZkidRPCServer(jsonrpc::AbstractServerConnector &conn, ConfigRPCServerInterface *rpc_config);
   Json::Value GenerateProofs(const Json::Value &credential_descriptions);
   void SetProofHandler(ZkidProofHandler *listener);
 

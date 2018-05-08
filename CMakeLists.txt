@@ -93,3 +93,5 @@ add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(util)
 
+add_executable(zkid_service "run_service.cpp")
+target_link_libraries(zkid_service zkid_lib)

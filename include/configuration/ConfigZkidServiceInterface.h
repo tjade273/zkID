@@ -1,10 +1,13 @@
-#ifndef _ConfigZkidService_h
-#define _ConfigZkidService_h
+#ifndef _ConfigZkidServiceInterface_h
+#define _ConfigZkidServiceInterface_h
 
 #include <string>
 #include "configuration/ConfigProverInterface.h"
+#include "configuration/ConfigRPCServerInterface.h"
 
-class ConfigZkidServiceInterface : public ConfigProverInterface{
-    virtual const std::string& GetServiceAddress() = 0;
+class ConfigZkidServiceInterface : public ConfigProverInterface, public ConfigRPCServerInterface
+{
+  public:
+    virtual int GetServicePort() = 0;
 };
 #endif
