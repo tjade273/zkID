@@ -2,7 +2,8 @@
 
 std::shared_ptr<spdlog::logger> ZkidService::console = spdlog::stderr_color_mt("zkid");
 
-ZkidService::ZkidService(ConfigZkidServiceInterface *service_config, CredentialsManager *cred_manager) : _service_config(service_config), _cred_manager(cred_manager), _http_server(service_config->GetServicePort())
+ZkidService::ZkidService(ConfigZkidServiceInterface *service_config, CredentialsManager *cred_manager, zkidMTProvider* mt_provider) : 
+    _service_config(service_config), _cred_manager(cred_manager), _http_server(service_config->GetServicePort()), _mt_provider(mt_provider)
 
 {
     _rpc_server = std::make_shared<ZkidRPCServer>(_http_server, _service_config);
@@ -52,5 +53,5 @@ bool ZkidService::GenerateProofForCredential(const CredentialDescription &cred, 
 
     const std::string credential = _cred_manager->GetCredential(issuer_address);
 
-    return prover.GenerateProof(credential, issuer_address, cred.range_low, cred.range_high, cred.k_factor, proof);
+    return prover.GenerateProof(credential, issuer_address, cred.range_low, cred.range_high, cred.k_factor, _mt_provider->GetIssuerMerkleTree(issuer_address),proof);
 }

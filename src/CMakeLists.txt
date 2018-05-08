@@ -1,5 +1,14 @@
 include_directories(.)
 
+
+FIND_LIBRARY(JSONRPCCPP_LIBRARY_SERVER
+    NAMES
+    ipfs-api
+    PATHS
+    /usr/lib/
+    /usr/local/lib
+)
+
 FIND_LIBRARY(JSONRPCCPP_LIBRARY_SERVER
     NAMES
     jsonrpccpp-server

@@ -6,12 +6,13 @@
 #include "configuration/ConfigZkidServiceInterface.h"
 #include "credentials/CredentialsManager.h"
 #include "network/ZkidRPCServer.h"
+#include "proving/zkidMTProvider.h"
 
 class ZkidService : public ZkidProofHandler
 {
 
   public:
-    ZkidService(ConfigZkidServiceInterface* service_config, CredentialsManager* cred_manager);
+    ZkidService(ConfigZkidServiceInterface* service_config, CredentialsManager* cred_manager, zkidMTProvider* mt_provider);
 
     static std::shared_ptr<spdlog::logger> console;
     bool Start();
@@ -28,5 +29,6 @@ class ZkidService : public ZkidProofHandler
   private:
     jsonrpc::HttpServer _http_server;
     CredentialsManager* _cred_manager = nullptr;
+    zkidMTProvider* _mt_provider = nullptr;
 };
 #endif
