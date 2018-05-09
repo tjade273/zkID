@@ -6,16 +6,23 @@
 #include "configuration/ConfigCredentialsInterface.h"
 #include "util/json_helpers.h"
 
+struct Credential{
+    Credential(){};
+    Credential(uint32_t t, size_t a) : token(t), address(a){};
+    uint32_t token;
+    size_t address;
+};
+
 class CredentialsManager{
     public:
         CredentialsManager(ConfigCredentialsInterface* cred_config) : _cred_config(cred_config){}
         void LoadCredentials();
         bool HasCredential(const std::string& issuer_address);
-        const std::string& GetCredential(const std::string& issuer_address);
+        Credential GetCredential(const std::string& issuer_address);
 
     private:
         ConfigCredentialsInterface* _cred_config;
-        std::unordered_map<std::string,std::string> _credentials; //this may be redundant since the issuer address is in the token.
+        std::unordered_map<std::string,Credential> _credentials; //this may be redundant since the issuer address is in the token.
 };
 
 #endif

@@ -22,7 +22,7 @@ class zkidProofGadget
             libsnark_data->primary_input = _pb.primary_input();
         }
 
-        v_data.proof = ExtractVerificationProof(proof);
+        v_data.proof = ExtractCredentialProof(proof);
     }
 
   protected:

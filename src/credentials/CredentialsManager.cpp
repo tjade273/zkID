@@ -4,7 +4,7 @@ bool CredentialsManager::HasCredential(const std::string& issuer_address){
     return _credentials.find(issuer_address) != _credentials.end();
 }
 
-const std::string& CredentialsManager::GetCredential(const std::string& issuer_address){
+Credential CredentialsManager::GetCredential(const std::string& issuer_address){
     return _credentials[issuer_address];
 }
 
@@ -15,6 +15,6 @@ void CredentialsManager::LoadCredentials(){
 
     for(int i = 0; i < creds_json.size(); i++){
         Json::Value current_cred = creds_json[i];
-        _credentials[current_cred["issuer"].asString()] = current_cred["token"].asString();
+        _credentials[current_cred["issuer_address"].asString()] = Credential(current_cred["token"].asInt(), current_cred["address"].asInt());
     }
 }

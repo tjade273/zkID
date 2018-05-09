@@ -19,8 +19,8 @@ Json::Value ZkidRPCServer::GenerateProofs(const Json::Value &credential_descs)
 
     for (int i = 0; i < credential_descs.size(); i++)
     {
-        CredentialDescription cred = CredentialDescriptionFromJson(credential_descs[i]);
-        VerificationProof proof;
+        CredentialRequest cred = CredentialRequestFromJson(credential_descs[i]);
+        CredentialProof proof;
 
         if (_proof_handler->GetProofForCredential(cred, proof))
         {
@@ -34,18 +34,19 @@ Json::Value ZkidRPCServer::GenerateProofs(const Json::Value &credential_descs)
     return result;
 }
 
-CredentialDescription ZkidRPCServer::CredentialDescriptionFromJson(const Json::Value &cred_json)
+CredentialRequest ZkidRPCServer::CredentialRequestFromJson(const Json::Value &cred_json)
 {
-    CredentialDescription cred_desc;
+    CredentialRequest cred_desc;
     cred_desc.issuer_address = cred_json["issuer_address"].asString();
-    cred_desc.range_low = cred_json["range_low"].asString();
-    cred_desc.range_high = cred_json["range_high"].asString();
-    cred_desc.k_factor = cred_json["k_factor"].asString();
+    cred_desc.merkle_root_address = cred_json["merkle_root_address"].asString();
+    cred_desc.range_low = cred_json["range_low"].asInt();
+    cred_desc.range_high = cred_json["range_high"].asInt();
+    cred_desc.k_factor = cred_json["k_factor"].asInt();
 
     return cred_desc;
 }
 
-Json::Value ZkidRPCServer::ProofToJson(const VerificationProof &proof)
+Json::Value ZkidRPCServer::ProofToJson(const CredentialProof &proof)
 {
     Json::Value proof_json;
     proof_json["A"][0] = proof.A[0];

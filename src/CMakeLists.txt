@@ -1,9 +1,17 @@
 include_directories(.)
 
 
-FIND_LIBRARY(JSONRPCCPP_LIBRARY_SERVER
+FIND_LIBRARY(IPFS_LIBRARY
     NAMES
     ipfs-api
+    PATHS
+    /usr/lib/
+    /usr/local/lib
+)
+
+FIND_LIBRARY(CURL_LIBRARY
+    NAMES
+    curl
     PATHS
     /usr/lib/
     /usr/local/lib
@@ -56,6 +64,8 @@ target_link_libraries(
   ${JSONRPCCPP_LIBRARY_COMMON}
   ${JSONRPCCPP_LIBRARY_JSONCPP}
   ${JSONRPCCPP_LIBRARY_MICROHTTPD}
+  ${IPFS_LIBRARY}
+  ${CURL_LIBRARY}
   snark
 )
 

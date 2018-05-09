@@ -14,11 +14,35 @@ def sha_compress(data):
     sha256.sha_transform(state)
     return struct.pack(">"+"I"*8, *state["digest"])
 
-if __name__ == "__main__":
+def full_tree(depth):
+    idx = (1 << (depth+1)) - 2
+    tree = [0]*(idx+1)
+    tree_json = [0]*(idx+1)
+    idx_temp = idx
+    for i in range(int(idx_temp/2) + 1):
+        leaf = urandom(64)
+        h = sha_compress(leaf)
+        tree[idx] = h
+        tree_json[idx]= (h.hex())
+        idx -= 1
+
+    level_nodes = (1 << (depth+1)) / 4
+    while(idx >= 0):
+        for i in range(int(level_nodes)):
+            h = sha_compress(tree[2*idx + 1] + tree[2*idx + 2])
+            tree[idx] = h
+            tree_json[idx] = h.hex()
+            idx-=1
+        level_nodes/=2
+        depth-=1
+
+    print(json.dumps(tree_json,indent=4,separators=(',', ': ')))
+
+def path(count):
     leaf =  urandom(64)
     h = sha_compress(leaf)
     tree = {"root" : "", "leaf": leaf.hex(), "path" : []}
-    for i in range(int(argv[1])):
+    for i in range(count):
         sibling = urandom(32)
         right = bool(urandom(1)[0]%2)
         #right = True
@@ -26,3 +50,16 @@ if __name__ == "__main__":
         tree["path"].append({"hash": sibling.hex(), "right": right})
     tree["root"] = h.hex()
     print(json.dumps(tree, indent=4, separators=(',', ': ')))
+
+if __name__ == "__main__":
+    if len(argv) < 3:
+            print("Specify valid generation type (p: path | t: full tree) and count.")
+            exit()
+    gen_type = argv[1]
+    gen_count = argv[2]
+    if gen_type == 'p':
+        path(int(gen_count))
+    elif gen_type == 't':
+        full_tree(int(gen_count))
+    else:
+        print("Specify valid generation type (p: path | t: full tree)")

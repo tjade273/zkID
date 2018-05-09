@@ -17,10 +17,10 @@ class ZkidService : public ZkidProofHandler
     static std::shared_ptr<spdlog::logger> console;
     bool Start();
     void Stop();
-    bool GetProofForCredential(const CredentialDescription &cred, VerificationProof& proof);
+    bool GetProofForCredential(const CredentialRequest &cred, CredentialProof& proof);
     int GetPort();
   protected:
-  virtual bool GenerateProofForCredential(const CredentialDescription &cred, VerificationProof &proof);
+  virtual bool GenerateProofForCredential(const CredentialRequest &cred, CredentialProof &proof);
 
   protected:
     ConfigZkidServiceInterface *_service_config;

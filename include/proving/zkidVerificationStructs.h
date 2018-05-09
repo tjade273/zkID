@@ -11,14 +11,15 @@ enum VerificationErrorCode
     //TODO: Define some error codes.
 };
 
-struct CredentialDescription{
+struct CredentialRequest{
   std::string issuer_address;
-  std::string range_low;
-  std::string range_high;
-  std::string k_factor;
+  std::string merkle_root_address;
+  uint32_t range_low;
+  uint32_t range_high;
+  uint32_t k_factor;
 };
 
-struct VerificationProof
+struct CredentialProof
 {
     std::array<std::string, 2> A;
     std::array<std::string, 2> A_p;
@@ -45,7 +46,7 @@ struct VerificationKey
 
 struct VerificationData
 {
-    VerificationProof proof;
+    CredentialProof proof;
 };
 
 struct VerificationError

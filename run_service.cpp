@@ -1,6 +1,7 @@
 #include "cxxopts/cxxopts.hpp"
 #include "network/ZkidService.h"
 #include "configuration/ZkidConfiguration.h"
+#include "network/zkidIPFSGateway.h"
 
 int main(int argc, char **argv)
 {
@@ -11,13 +12,13 @@ int main(int argc, char **argv)
 
     ZkidConfiguration config(result["f"].as<std::string>());
     CredentialsManager cred_manager(&config);
+    zkidIPFSGateway zkidIPFSGateway(&config);
 
     try
     {
-        ZkidService service(&config, &cred_manager);
+        ZkidService service(&config, &cred_manager, &zkidIPFSGateway);
         if (service.Start())
         {
-        
             service.console->info("Started zkid service on port {0} successfully!", service.GetPort());
             getchar();
             service.Stop();

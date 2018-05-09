@@ -1,80 +1,92 @@
-web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-abi = JSON.parse('[{"constant":false,"inputs":[{"name":"candidate","type":"bytes32"}],"name":"Join","outputs":[{"name":"","type":"uint8"}],"payable":false,"type":"function","credentials":[{"issuer_address":"0xdeadbeef","range_high":"0x0","range_low":"0x0","k_factor":"0x0","description":"Confirms holder is over 18."},{"issuer_address":"0xfeedbeef","range_high":"0x0","range_low":"0x0","k_factor":"0x0","description":"Confirms holder is American."}]}]')
+issuer_abi = JSON.parse('[{"constant":false,"inputs":[],"name":"getMerkleRootAddress","outputs":[{"address":"","type":"string"}],"payable":false,"type":"function"}]');
+IssuerContract = web3.eth.contract(issuer_abi);
+currentBlock = null;
 
-
-CredentialsContract = web3.eth.contract(abi);
-// In your nodejs console, execute contractInstance.address to get the address at which the contract is deployed and change the line below to use your deployed address
-contractInstance = CredentialsContract.at("CONTRACT_ADDR");
-currentPrompt = null;
-
-var CredentialAction = function (contract, functionName) {
-    this.functionName = functionName;
-    this.requiredCredentials = abi.filter(function (e) {
-        return e["name"] === functionName;
-    })[0]["credentials"];
+function ProofToBytes(proof) {
+    return [].concat(
+        web3.utils.hexToBytes(proof["A"][0]),
+        web3.utils.hexToBytes(proof["A"][1]),
+        web3.utils.hexToBytes(proof["A_p"][0]),
+        web3.utils.hexToBytes(proof["A_p"][1]),
+        web3.utils.hexToBytes(proof["B"][0]),
+        web3.utils.hexToBytes(proof["B"][1]),
+        web3.utils.hexToBytes(proof["B"][2]),
+        web3.utils.hexToBytes(proof["B"][3]),
+        web3.utils.hexToBytes(proof["B_p"][0]),
+        web3.utils.hexToBytes(proof["B_p"][1]),
+        web3.utils.hexToBytes(proof["C"][0]),
+        web3.utils.hexToBytes(proof["C"][1]),
+        web3.utils.hexToBytes(proof["C_p"][0]),
+        web3.utils.hexToBytes(proof["C_p"][1]),
+        web3.utils.hexToBytes(proof["H"][0]),
+        web3.utils.hexToBytes(proof["H"][1]),
+        web3.utils.hexToBytes(proof["K"][0]),
+        web3.utils.hexToBytes(proof["K"][1]));
 }
 
-var CredentialsPrompt = function (credentialAction) {
-    this.action = credentialAction;
+
+var CredentialMethod = function (methodName, method, abi) {
+    this.methodName = methodName;
+    this.method = method;
+    this.requiredCredentials = abi.find(function (e) {
+        return e["name"] === methodName;
+    })["credentials"];
 }
 
-CredentialAction.prototype.FetchCredentialProofs = function () {
-        var action = currentPrompt.action;
-        var client = new zkidclient("http://localhost:8383");
-        client.GenerateProofs(action.requiredCredentials,function(id,result){
-            generated_proofs = [{"issuer_address":"0xdeadbeef"}]; //TODO: replace with proofs from result
-            HighlightCredentials(generated_proofs);
-            if(result["success"]){
-                //Take the credential proofs and send them to the contract function
-            }else{
-                $("#msg-container").first().text("A proof could not be generated for one or more credentials.");
-                $("#msg-container").show();
-                $("#return-button-container").show();
-            }
-        }, function(code,msg){
-            PostFetchError(code,msg);
-        });
-}
+CredentialBlock.prototype.FetchCredentialProofs = function () {
+    var client = new zkidclient("http://localhost:8383");
 
-function HighlightCredentials(generated_proofs){
-    $("#credential_table").find("tr:not(:first-child)").each(function(){
-        var issuer_addr = $(this).find(">:first-child").text();
-        var was_verified = generated_proofs.reduce(function(acc,e){
-            return acc ? true : e["issuer_address"] === issuer_addr; 
-        },false);
+    this.action.requiredCredentials = this.action.requiredCredentials.map((e) => {
+        //ask each verifier contract for the address of its merkle root
+        try {
+            var issuerContractInstance = IssuerContract.at(e["issuer_address"]);
+            e["merkle_root_address"] = issuerContractInstance.getMerkleRootAddress().call();
+        } catch (e) {
+            e["merkle_root_address"] = "";
+        } finally {
+            return e;
+        }
+    });
 
-        if(was_verified)
-            $(this).animate({backgroundColor:"#C8E6C9"},500);
-        else 
-            $(this).animate({backgroundColor:"#EF9A9A"},500);
+    client.GenerateProofs(this.action.requiredCredentials, (id, result) => {
+        var generated_proofs = result["proofs"];
+        this.highlightCredentials(generated_proofs);
+
+        if (result["success"]) {
+            var proof_bytes = generated_proofs.reduce(function (acc, e) {
+                acc.concat(ProofToBytes(e));
+            }, []);
+            action.method(proof_bytes);
+        } else {
+            $("#msg-container").first().text("A proof could not be generated for one or more credentials.");
+            $("#msg-container").show();
+            $("#return-button-container").show();
+        }
+    }, function (code, msg) {
+        PostFetchError(code, msg);
     });
 }
 
-function PostVericiationError(code, msg){
-    //Display that the credentials could not be verified
+CredentialBlock.prototype.highlightCredentials = function (generated_proofs) {
+    $("#credential_table").find("tr:not(:first-child)").each(function () {
+        var issuer_addr = $(this).find(">:first-child").text();
+        var was_generated = generated_proofs == null ? false : generated_proofs.reduce(function (acc, e) {
+            return acc ? true : e["issuer_address"] === issuer_addr;
+        }, false);
+
+        if (was_generated)
+            $(this).animate({ backgroundColor: "#C8E6C9" }, 500);
+        else
+            $(this).animate({ backgroundColor: "#EF9A9A" }, 500);
+    });
 }
 
-function PostFetchError(code,msg){
-    console.log("Code:%i Msg:%s",code,msg);
-}
-
-OnApprove = function () {
-    //query prover rpc for proofs and send to contract. Catch "verified event" and finish.
-    var action = currentPrompt.action;
-    var res = action.FetchCredentialProofs();
-}
-
-OnReturn = function () {
-    $("#modal-container").remove();
-}
-
-CredentialsPrompt.prototype.display = function () {
-
+CredentialBlock.prototype.display = function () {
     $("#main-container").after("<div id='modal-container'></div>");
-    $("#modal-container").load("html/modal.html", function () {
+    $("#modal-container").load("html/modal.html", () => {
         var table = document.getElementById("credential_table");
-        var requiredCredentials = currentPrompt.action.requiredCredentials;
+        var requiredCredentials = this.action.requiredCredentials;
 
         for (var i = 0; i < requiredCredentials.length; i++) {
             var current_cred = requiredCredentials[i];
@@ -91,21 +103,29 @@ CredentialsPrompt.prototype.display = function () {
             table.appendChild(cred_row);
         }
 
-        var modal = document.getElementById("credentials-modal");
-        var action_name = document.getElementById("action-name");
-        action_name.appendChild(document.createTextNode(currentPrompt.action.functionName));
-        modal.style.display = "inherit";
+        $("#action-name").text(this.action.methodName);
+        $("#credentials-modal").show();
     });
 };
 
-function OnJoinClick(){
-    CredentialBlock("Join",abi);
+//method should be a partial application of desired method with the non-proof arguments already applied
+function CredentialBlock(methodName, method, abi) {
+    this.action = new CredentialMethod(methodName, method, abi);
+    currentBlock = this;
 }
 
+function PostVericiationError(code, msg) {
+    //Display that the credentials could not be verified
+}
 
-function CredentialBlock(functionName,abi) {
-    var action = new CredentialAction(CredentialsContract, functionName);
-    var prompt = new CredentialsPrompt(action);
-    prompt.display();
-    currentPrompt = prompt;
+function PostFetchError(code, msg) {
+    console.log("Code:%i Msg:%s", code, msg);
+}
+
+OnApprove = function () {
+    currentBlock.FetchCredentialProofs();
+}
+
+OnReturn = function () {
+    $("#modal-container").remove();
 }

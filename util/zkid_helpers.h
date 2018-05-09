@@ -17,7 +17,7 @@ struct LibsnarkVerificationData
   libsnark::r1cs_ppzksnark_primary_input<libff::alt_bn128_pp> primary_input;
 };
 
-VerificationProof ExtractVerificationProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof);
+CredentialProof ExtractCredentialProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof);
 
 VerificationKey ExtractVerificationKey(libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> &vk);
 

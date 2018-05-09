@@ -1,5 +1,4 @@
 {
-    "credentials_file":"",
-    "service_port":8383,
-    "merkle_tree_endpoint":""
+    "credentials_file":"res/credentials/credentials.json",
+    "service_port":8383
 }

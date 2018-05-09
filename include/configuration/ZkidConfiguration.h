@@ -5,22 +5,28 @@
 #include "util/json_helpers.h"
 #include "configuration/ConfigCredentialsInterface.h"
 #include "configuration/ConfigZkidServiceInterface.h"
+#include "configuration/ConfigIPFSInterface.h"
 
-class ZkidConfiguration : public ConfigCredentialsInterface, public ConfigZkidServiceInterface
+class ZkidConfiguration : public ConfigCredentialsInterface, public ConfigZkidServiceInterface, public ConfigIPFSInterface
 {
-  public:
-    ZkidConfiguration(const std::string &path_to_config);
+public:
+  ZkidConfiguration(const std::string &path_to_config);
 
-    //ConfigCredentialsInterface
-    std::string GetCredentialsFilePath();
+  //ConfigCredentialsInterface
+  std::string GetCredentialsFilePath();
 
-    //ConfigRPCServerInterface
-    int GetServicePort();
+  //ConfigRPCServerInterface
+  int GetServicePort();
 
-    //ConfigProverInterface
-    std::string GetMerkleTreeEndpoint(const std::string& issuer);
+  //ConfigProverInterface
+  std::string GetMerkleTreeEndpoint(const std::string &issuer);
 
-  private:
-    Json::Value _config;
+
+  //ConfigIPFSInterfance
+  std::string GetIPFSClientIP();
+  int GetIPFSClientPort();
+
+private:
+  Json::Value _config;
 };
 #endif
