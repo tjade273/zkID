@@ -6,6 +6,10 @@
 #include <libsnark/gadgetlib1/gadgets/merkle_tree/merkle_tree_check_read_gadget.hpp>
 #include <libsnark/gadgetlib1/gadgets/basic_gadgets.hpp>
 
+//TODO remove:
+#include "util/libsnark_helpers.h"
+
+
 using namespace libsnark;
 
 /*
@@ -74,7 +78,6 @@ public:
             address_bits_va.allocate(pb, tree_depth, "address_bits");
             root_digest.reset(new digest_variable<FieldT>(pb, digest_len, "output_digest"));
             unpacked_inputs = root_digest->bits;
-            unpacked_inputs.emplace_back();
             unpacker.reset(new multipacking_gadget<FieldT>(pb,
                                                            unpacked_inputs,
                                                            packed_inputs,
@@ -111,9 +114,12 @@ public:
 
         address_bits_va.fill_with_bits(this->pb, address_bits);
         leaf_digest->generate_r1cs_witness(leaf);
-        root_digest->generate_r1cs_witness(root);
         path_var->generate_r1cs_witness(address, auth_path);
         merkle_check->generate_r1cs_witness();
+        printf("Merkle root:\n");
+        std::cout << hex_from_bit_vector(merkle_check->root.get_digest()) << std::endl;
+
+        root_digest->generate_r1cs_witness(root);
         unpacker->generate_r1cs_witness_from_packed();
     }
 };
@@ -137,12 +143,10 @@ template<typename FieldT, typename HashT>
 class zkid_gadget : gadget<FieldT> {
  private:
   // unpacked field elements
-  pb_variable_array<FieldT> root_bits;
   pb_variable_array<FieldT> serial_bits;
   pb_variable_array<FieldT> upper_bits;
   pb_variable_array<FieldT> lower_bits;
   pb_variable_array<FieldT> address_bits_va;
-  digest_variable<FieldT> leaf_digest;
   pb_variable<FieldT> k;
 
   std::vector<std::shared_ptr<packing_gadget<FieldT>>> unpackers;
@@ -163,11 +167,15 @@ class zkid_gadget : gadget<FieldT> {
   std::shared_ptr<merkle_tree_check_read_gadget<FieldT, HashT>> merkle_check;
 
  public:
-  digest_variable<FieldT> merkle_root;
-  digest_variable<FieldT> serial_number;
   pb_variable_array<FieldT> upper_bounds;
   pb_variable_array<FieldT> lower_bounds;
   pb_variable_array<FieldT> attributes;
+
+
+  digest_variable<FieldT> merkle_root;
+  digest_variable<FieldT> serial_number;
+  digest_variable<FieldT> leaf_digest;
+
   digest_variable<FieldT> attribute_bits;
   digest_variable<FieldT> salt_bits;
   digest_variable<FieldT> private_key;
@@ -203,7 +211,6 @@ class zkid_gadget : gadget<FieldT> {
 
       unpackers.emplace_back(new packing_gadget<FieldT>(pb, upper_bits, upper));
       unpackers.emplace_back(new packing_gadget<FieldT>(pb, lower_bits, lower));
-      unpackers.emplace_back(new packing_gadget<FieldT>(pb, root_bits, merkle_root));
       unpackers.emplace_back(new packing_gadget<FieldT>(pb, serial_bits, serial_number));
 
       // constrain split representation to be equivalent to bit representation
@@ -225,7 +232,7 @@ class zkid_gadget : gadget<FieldT> {
       size_t digest_size = HashT::get_digest_len();
 
       // constrain H(privkey, attributes) to be leaf of merkle tree
-      pb_variable_array<FieldT> merkle_bottom_bits(merkle_root.bits.begin(), merkle_root.bits.begin()+FieldT::capacity());
+      pb_variable_array<FieldT> merkle_bottom_bits(merkle_root.bits.end()-FieldT::capacity(), merkle_root.bits.end());
       unpackers.emplace_back(new packing_gadget<FieldT>(pb, merkle_bottom_bits, merkle));
       leaf_hasher.reset(HashT(pb, private_key, attribute_bits, leaf_digest));
       address_bits_va.allocate(pb, tree_depth);
@@ -260,6 +267,58 @@ class zkid_gadget : gadget<FieldT> {
       k_salt.insert(k_salt.end(), k_bits.begin(), k_bits.end());
       serial_hasher.reset(HashT(pb, private_key, salt_bits, serial_number));
     }
+
+  void generate_r1cs_constraints(){
+    for(auto& unpacker :  unpackers)
+      unpacker->generate_r1cs_constraints(true);
+
+    upper_splitter->generate_r1cs_constraints(true);
+    lower_splitter->generate_r1cs_constraints(true);
+    attr_splitter->generate_r1cs_constraints(true);
+
+    for(auto& range : range_proofs)
+      range->generate_r1cs_constraints();
+
+    k_bound->generate_r1cs_constraints();
+    leaf_hasher->generate_r1cs_constraints();
+    serial_hasher->generate_r1cs_constraints();
+
+    path_var->generate_r1cs_constraints();
+    merkle_check->generate_r1cs_constraints();
+
+    merkle_root->generate_r1cs_constraints();
+    serial_number->generate_r1cs_constraints();
+    leaf_digest->generate_r1cs_constraints();
+
+    attribute_bits->generate_r1cs_constraints();
+    salt_bits->generate_r1cs_constraints();
+    private_key->generate_r1cs_constraints();
+  }
+
+  void generate_r1cs_witness(libff::bit_vector &leaf,
+                             libff::bit_vector &root,
+                             libff::bit_vector& address_bits,
+                             size_t &address,
+                             std::vector<libsnark::merkle_authentication_node> &auth_path){
+    // Fill unpackers from bits
+    for(auto& unpacker : unpackers)
+      unpacker->generate_r1cs_witness_from_bits();
+
+    // Split back into field elements from bits
+    upper_splitter->generate_r1cs_witness_from_packed();
+    lower_splitter->generate_r1cs_witness_from_packed();
+    attr_splitter->generate_r1cs_witness_from_packed();
+
+    for(auto& range : range_proofs)
+      range->generate_r1cs_witness();
+
+    k_bound->generate_r1cs_witness();
+    leaf_hasher->generate_r1cs_witness();
+    serial_hasher->generate_r1cs_witness();
+    path_var->generate_r1cs_witness(address, auth_path);
+    address_bits_va.fill_with_bits(this->pb, address_bits);
+    merkle_check->generate_r1cs_constraints();
+  }
 };
 
 #endif

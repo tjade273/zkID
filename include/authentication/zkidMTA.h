@@ -75,15 +75,18 @@ class zkMTA : public zkidProofGadget
         //compute the hash of the leaf's value
         leaf_hash_bv = HashT::get_hash(leaf_bv);
 
-        //Fills in the variables on the protoboard
+        printf("Leaf: \n");
+        std::cout << hex_from_bit_vector(leaf_hash_bv) << std::endl;
 
+        //Fills in the variables on the protoboard
         _zkmta.generate_r1cs_witness(leaf_hash_bv, root_hash_bv, address_bits, address, auth_path);
 
-        //Genreate a authentication proof if the pb is satisified.
+        //Generate a authentication proof if the pb is satisified.
         if (!_pb.is_satisfied())
             return false;
 
         GenerateProof(_pb, data, libsnark_data);
+
         return true;
     }
 
