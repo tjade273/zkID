@@ -11,31 +11,31 @@ void zkidIPFSGateway::GetMerklePath(const std::string &merkle_address, size_t ad
      * the root.
      */
 
-    ipfs::Json j;
-    _client.ObjectGet(merkle_address, &j);
+    ipfs::Json parent;
+    _client.ObjectGet(merkle_address, &parent);
 
-    ipfs::Json links = j["Links"];
-
+    ipfs::Json links = parent["Links"];
     if (links.size() == 0)
-        return; //hit leaf
-
+        return; //hit leafs
     ipfs::Json left_addr = links[0]["Hash"];
     ipfs::Json right_addr = links[1]["Hash"];
 
-    ipfs::Json path_element, next_parent;
+    ipfs::Json path_element_hash;
+    ipfs::Json next_parent;
 
     if (address & (1 << path.size()))
     {
-        path_element = right_addr;
-        next_parent = left_addr;
+        path_element_hash = left_addr;
+        next_parent = right_addr;
     }
     else
     {
-        path_element = left_addr;
-        next_parent = right_addr;
+        path_element_hash = right_addr;
+        next_parent = left_addr;
     }
 
-    _client.ObjectGet(merkle_address, &path_element);
+    ipfs::Json path_element;
+    _client.ObjectGet(path_element_hash, &path_element);
     path.push_back(path_element["Data"]);
     GetMerklePath(next_parent, address, path);
 }
@@ -45,19 +45,19 @@ std::string zkidIPFSGateway::PutMerkleTree(const std::vector<std::string> &tree,
     ipfs::Json node;
     node["Data"] = tree[i];
 
-    if (i < tree.size() /  2)
+    if (i < tree.size() / 2)
     {
         // If the node is not a leaf add its children
         ipfs::Json left_link;
         left_link["Name"] = "Left Child";
-        left_link["Hash"] = PutMerkleTree(tree, 2 * i);
+        left_link["Hash"] = PutMerkleTree(tree, 2 * i + 1);
 
         ipfs::Json right_link;
         right_link["Name"] = "Right Child";
-        right_link["Hash"] = PutMerkleTree(tree, 2 * i + 1);
+        right_link["Hash"] = PutMerkleTree(tree, 2 * i + 2);
 
         node["Links"][0] = left_link;
-        node["links"][1] = right_link;
+        node["Links"][1] = right_link;
     }
 
     ipfs::Json stored;

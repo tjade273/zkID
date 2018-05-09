@@ -68,4 +68,3 @@ TEST(zkMTATest, TestVerifyFail){
 
   ASSERT_FALSE(verified);
 }
-
