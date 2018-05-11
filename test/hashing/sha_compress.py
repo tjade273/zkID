@@ -3,7 +3,7 @@ import random
 import struct
 import json
 from os import urandom
-import pypy_sha256 as sha256
+from . import pypy_sha256 as sha256
 from sys import argv
 
 # Takes 64 bytes and returns 32
@@ -36,20 +36,20 @@ def full_tree(depth):
         level_nodes/=2
         depth-=1
 
-    print(json.dumps(tree_json,indent=4,separators=(',', ': ')))
+    return tree_json
 
-def path(count):
-    leaf =  urandom(64)
+def path(count, leaf=None):
+    if leaf is None:
+        leaf = urandom(64)
     h = sha_compress(leaf)
-    tree = {"root" : "", "leaf": leaf.hex(), "path" : []}
+    tree = {"root": "", "leaf": leaf.hex(), "path": []}
     for i in range(count):
         sibling = urandom(32)
         right = bool(urandom(1)[0]%2)
-        #right = True
         h = sha_compress(h+sibling if right else sibling+h)
         tree["path"].append({"hash": sibling.hex(), "right": right})
     tree["root"] = h.hex()
-    print(json.dumps(tree, indent=4, separators=(',', ': ')))
+    return tree
 
 if __name__ == "__main__":
     if len(argv) < 3:
@@ -58,8 +58,8 @@ if __name__ == "__main__":
     gen_type = argv[1]
     gen_count = argv[2]
     if gen_type == 'p':
-        path(int(gen_count))
+        print(json.dumps(path(int(gen_count)), indent=4, separators=(',', ': ')))
     elif gen_type == 't':
-        full_tree(int(gen_count))
+        print(json.dumps(full_tree(int(gen_count)),indent=4,separators=(',', ': ')))
     else:
         print("Specify valid generation type (p: path | t: full tree)")
