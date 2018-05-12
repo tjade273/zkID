@@ -25,8 +25,7 @@ class Credential(object):
                  "k": k,
                  "contract_salt": contract_salt.hex(),
                  "serial_number": serial.hex(),
-                 "merkle_proof" : path(8, b"\x00"+self.secret_key+self.attr_string)
-        }
+                 "merkle_proof" : path(8, b"\x00"+self.secret_key+self.attr_string)}
 
 if __name__ == "__main__":
     sk = urandom(31)

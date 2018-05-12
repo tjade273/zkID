@@ -68,3 +68,7 @@ TEST(zkMTATest, TestVerifyFail){
 
   ASSERT_FALSE(verified);
 }
+
+TEST(zkIDTest, TestProofGeneration){
+  
+}
