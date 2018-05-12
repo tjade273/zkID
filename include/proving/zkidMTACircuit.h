@@ -161,35 +161,23 @@ class zkid_gadget : gadget<FieldT> {
   std::shared_ptr<merkle_tree_check_read_gadget<FieldT, HashT>> merkle_check;
 
  public:
-  // In order of witness generation
   pb_variable_array<FieldT> upper_bounds_bits;
   pb_variable_array<FieldT> lower_bounds_bits;
   pb_variable_array<FieldT> attributes_split;
 
-  // Now run the multipackers
-  // Now run the range proofs
+  pb_variable<FieldT> k_packed;
+  pb_variable<FieldT> k_bound;
 
-  pb_variable<FieldT> k_packed; // Fill with field element
-  pb_variable<FieldT> k_bound;  // Fill with field element
-
-  // Now run comparison gadget
-
-  // Fill with bits
   pb_variable_array<FieldT> salt_kbound_bits;
   pb_variable_array<FieldT> k_bits;
   pb_variable_array<FieldT> private_key;
 
-  // Fill with full digests
   digest_variable<FieldT> leaf_digest;
   digest_variable<FieldT> merkle_root_digest;
   digest_variable<FieldT> serial_number_digest;
 
-  // Fill with merkle address
   pb_variable_array<FieldT> address_bits;
 
-  // Now run path, hashers, merkle
-
-  // These don't need to be filled manually
 
   // Public inputs (packed)
   pb_variable<FieldT> merkle_root_packed;
@@ -210,7 +198,7 @@ class zkid_gadget : gadget<FieldT> {
  zkid_gadget(protoboard<FieldT> &pb,
              size_t tree_depth,
              size_t attribute_size) :
-  gadget<FieldT>(pb),
+  gadget<FieldT>(pb)
     {
       size_t digest_len = HashT::get_digest_len();
       // Note that all hash digests are constrained only up to the size of 1 field element
@@ -235,7 +223,7 @@ class zkid_gadget : gadget<FieldT> {
       upper_bounds_bits.allocate(pb, num_attributes*attribute_size);
       upper_bounds_split.allocate(pb, num_attributes);
       upper_splitter.reset(new multipacking_gadget<FieldT>(pb, upper_bounds_bits, upper_bounds_split, attribute_size));
-      bit_packers.emplace_back(new packing_gadget<FielT>(pb, upper_bound_packed, upper_bounds_bits));
+      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, upper_bound_packed, upper_bounds_bits));
 
       lower_bounds_bits.allocate(pb, num_attributes*attribute_size);
       lower_bounds_split.allocate(pb, num_attributes);
@@ -280,14 +268,14 @@ class zkid_gadget : gadget<FieldT> {
       // construct merkle root
       pb_variable_array<FieldT> attribute_bits;
       attribute_bits.allocate(digest_len);
-      attr_splitter.reset(new multipackaing_gadget<FieldT>(pb, attribute_bits, attributes_split, attribute_size));
+      attr_splitter.reset(new multipacking_gadget<FieldT>(pb, attribute_bits, attributes_split, attribute_size));
       leaf_inputs = block_variable<FieldT>({private_key, attribute_bits});
       leaf_digest = digest_variable<FieldT>(pb, digest_len);
       leaf_hasher.reset(HashT(pb, leaf_inputs, leaf_digest));
 
       address_bits.allocate(pb, tree_depth);
       path_var.reset(new merkle_authentication_path_variable<FieldT, HashT>(pb, tree_depth, "path_var"));
-      merkle_check.reset(new merkle_tree_check_read_gadget<FieldT, HashT>(pb, tree_depth, address_bits, leaf_digest, merkle_root_digest, path_var, ONE))
+      merkle_check.reset(new merkle_tree_check_read_gadget<FieldT, HashT>(pb, tree_depth, address_bits, leaf_digest, merkle_root_digest, path_var, ONE));
     }
 
   void generate_r1cs_constraints(){
@@ -313,11 +301,11 @@ class zkid_gadget : gadget<FieldT> {
     leaf_digest->generate_r1cs_constraints();
 
     leaf_inputs->generate_r1cs_constraints();
-    merkle_inputs->generate_r1cs_constraints();
+    serial_inputs->generate_r1cs_constraints();
   }
 
   void generate_r1cs_witness(libff::bit_vector &secret_key,
-                             libff::bit_vector &upper_bound;
+                             libff::bit_vector &upper_bounds,
                              libff::bit_vector &lower_bounds,
                              libff::bit_vector &attributes,
                              libff::bit_vector &address_bits,
@@ -325,28 +313,29 @@ class zkid_gadget : gadget<FieldT> {
                              const unsigned long k,
                              const unsigned long k_bound,
                              libff::bit_vector merkle_root,
+                             libff::bit_vector &addr_bits,
                              size_t &address,
                              std::vector<libsnark::merkle_authentication_node> &auth_path)
   {
-    upper_bounds_bits.fill_with_bits(pb, upper_bounds);
-    lower_bounds_bits.fill_with_bits(pb, lower_bounds);
-    attr_splitter->bits.fill_with_bits(pb, attributes);
+    upper_bounds_bits.fill_with_bits(this->pb, upper_bounds);
+    lower_bounds_bits.fill_with_bits(this->pb, lower_bounds);
+    attr_splitter->bits.fill_with_bits(this->pb, attributes);
 
     upper_splitter->generate_r1cs_witness_from_bits();
     lower_splitter->generate_r1cs_witness_from_bits();
     attr_splitter->generate_r1cs_witness_from_bits();
 
     // true means unsigned
-    pb.val(k_packed) = FieldT(k, true);
-    pb.val(k_bound) = FieldT(k_bound, true);
+    this->pb.val(k_packed) = FieldT(k, true);
+    this->pb.val(k_bound) = FieldT(k_bound, true);
 
     k_compare->generate_r1cs_witness();
 
     libff::bit_vector k_bound_bits = libff::convert_field_element_to_bit_vector(k_bound);
     salt.insert(salt.end(), k_bound_bits.begin(), k_bound_bits.end());
-    salt_kbound_bits.fill_with_bits(pb, salt);
-    k_bits.fill_with_bits_of_ulong(pb, k);
-    private_key.fill_with_bits(pb, secret_key);
+    salt_kbound_bits.fill_with_bits(this->pb, salt);
+    k_bits.fill_with_bits_of_ulong(this->pb, k);
+    private_key.fill_with_bits(this->pb, secret_key);
 
     merkle_root_digest.generate_r1cs_witness(merkle_root);
     attributes.insert(attributes.begin(), secret_key.begin(), secret_key.end());
@@ -355,11 +344,11 @@ class zkid_gadget : gadget<FieldT> {
     libff::bit_vector serial_leaf;
     serial_leaf.insert(serial_leaf.end(), secret_key.begin(), secret_key.end());
     serial_leaf.insert(serial_leaf.end(), salt.begin(), salt.end() - k_bound_bits.size());
-    auto k_bv = k_bits.get_bits(pb);
+    auto k_bv = k_bits.get_bits(this->pb);
     serial_leaf.insert(serial_leaf.end(), k_bv.begin(), k_bv.end());
     serial_number_digest.generate_r1cs_witness(HashT::get_hash(serial_leaf));
 
-    this->address_bits.fill_with_bits(pb, address_bits);
+    this->address_bits.fill_with_bits(this->pb, addr_bits);
 
     path_var->generate_r1cs_witness(address, auth_path);
     merkle_check->generate_r1cs_witness();

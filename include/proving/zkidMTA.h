@@ -42,72 +42,74 @@ struct ProofRequest {
   std::array<std::string, 7> attributes;
   std::array<std::string, 7> upper_bounds;
   std::array<std::string, 7> lower_bounds;
-  std::string k_bound;
+  unsigned long k_bound;
+  unsigned long k;
   std::string salt;
-}
-
+};
 
 template <template <typename> typename Hash>
 class zkID : public zkidProofGadget
 {
- private:
-  int _digest_len = HashT::get_digest_len();
-  r1cs_ppzksnark_verification_key<ppt> _verification_key;
-  zkid_gadget<FieldT, HashT> _zkid;
-  pb_variable<FieldT> merkle;
-  pb_variable<FieldT> serial;
-  pb_variable<FieldT> upper;
-  pb_variable<FieldT> lower;
-  pb_variable<FieldT> salt;
-  VerificationError _e;
-
- public:
-  zkID(size_t tree_depth, size_t attribute_length)
+  public:
+ zkID(int tree_depth, int attribute_size) : _zkid(_pb, tree_depth, attribute_size), attribute_size(attribute_size)
     {
-      merkle.allocate(_pb);
-      serial.allocate(_pb);
-      upper.allocate(_pb);
-      lower.allocate(_pb);
-      salt.allocate(_pb);
-      _pb.set_input_sizes(5);
-      _zkid = new zkid_gadget(merkle, serial, upper, lower, salt, tree_depth, attribute_length);
       _zkid.generate_r1cs_constraints();
-        _keypair = std::make_shared<r1cs_ppzksnark_keypair<ppt>>
-            (r1cs_ppzksnark_keypair<ppt>(r1cs_ppzksnark_generator<ppt>(_pb.get_constraint_system())));
-        _verification_key = r1cs_ppzksnark_verification_key<ppt>(_keypair->vk);
+      _keypair = std::make_shared<r1cs_ppzksnark_keypair<ppt>>
+        (r1cs_ppzksnark_keypair<ppt>(r1cs_ppzksnark_generator<ppt>(_pb.get_constraint_system())));
+      _verification_key = r1cs_ppzksnark_verification_key<ppt>(_keypair->vk);
     };
 
     typedef Hash<FieldT> HashT;
 
-    bool GetVerificationData(ProofRequest<FieldT> &proof_req,
-                             VerificationData &data,
+    bool GetVerificationData(ProofRequest<FieldT> &proof_req, VerificationData &data,
                              LibsnarkVerificationData *libsnark_data = nullptr)
     {
         //Pb variables
         const size_t digest_len = HashT::get_digest_len();
-        int tree_depth = path.size();
+        int tree_depth = proof_req.path.size();
         libff::bit_vector address_bits;
-        libff::bit_vector secret_key_bv(digest_len);
         libff::bit_vector root_hash_bv(digest_len);
+        libff::bit_vector secret_key_bv(digest_len);
+        libff::bit_vector attributes_bv(attribute_size*7);
+        libff::bit_vector lower_bounds_bv(attribute_size*7);
+        libff::bit_vector upper_bounds_bv(attribute_size*7);
+        libff::bit_vector salt_bv(FieldT::capacity-32);
         std::vector<libsnark::merkle_authentication_node> auth_path(tree_depth);
         size_t address = 0;
 
         //constructs the authentication path from the provided vector
-        this->ConstructPath(tree_depth, path, address, address_bits, auth_path);
+        this->ConstructPath(tree_depth, proof_req.path, address, address_bits, auth_path);
 
         //convert root hash string to bit vector
         bit_vector_from_string(root_hash_bv, proof_req.merkle_root);
-
+        bit_vector_from_string(salt_bv, proof_req.salt);
         bit_vector_from_string(secret_key_bv, proof_req.secret_key);
+        // Construct attribute strings
+        for (int i = 0; i < 7; i++){
+          libff::bit_vector attribute(attribute_size);
+          libff::bit_vector upper(attribute_size);
+          libff::bit_vector lower(attribute_size);
+          bit_vector_from_string(attribute, proof_req.attributes[i]);
+          bit_vector_from_string(upper, proof_req.upper_bounds[i]);
+          bit_vector_from_string(lower, proof_req.lower_bounds[i]);
+          attributes_bv.insert(attributes_bv.end(), attribute.begin(), attribute.end());
+          lower_bounds_bv.insert(lower_bounds_bv.end(), lower.begin(), lower.end());
+          upper_bounds_bv.insert(upper_bounds_bv.end(), upper.begin(), upper.end());
+        }
 
-        //compute the hash of the leaf's value
-        leaf_hash_bv = HashT::get_hash(leaf_bv);
-
-        printf("Leaf: \n");
-        std::cout << hex_from_bit_vector(leaf_hash_bv) << std::endl;
 
         //Fills in the variables on the protoboard
-        _zkmta.generate_r1cs_witness(leaf_hash_bv, root_hash_bv, address_bits, address, auth_path);
+        _zkid.generate_r1cs_witness(secret_key_bv,
+                                    upper_bounds_bv,
+                                    lower_bounds_bv,
+                                    attributes_bv,
+                                    salt_bv,
+                                    proof_req.k,
+                                    proof_req.k_bound,
+                                    root_hash_bv,
+                                    address_bits,
+                                    address,
+                                    auth_path);
 
         //Generate a authentication proof if the pb is satisified.
         if (!_pb.is_satisfied())
@@ -148,7 +150,14 @@ class zkID : public zkidProofGadget
         }
     }
 
+  private:
+    int _digest_len = HashT::get_digest_len();
+    int attribute_size;
+    r1cs_ppzksnark_verification_key<ppt> _verification_key;
+    zkid_gadget<FieldT, HashT> _zkid;
+    VerificationError _e;
 };
+
 
 
 void AuthenticationArgsFromJson(const std::string &path_to_json, std::string &leaf, std::string &root,
