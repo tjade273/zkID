@@ -33,19 +33,20 @@ struct MTAuthenticationNode
     MTAuthenticationNode(){};
 };
 
-template<typename FieldT>
 struct ProofRequest {
   std::string secret_key;
   std::string merkle_root;
   std::vector<MTAuthenticationNode> path;
 
-  std::array<std::string, 7> attributes;
-  std::array<std::string, 7> upper_bounds;
-  std::array<std::string, 7> lower_bounds;
+  std::string attributes;
+  std::string upper_bounds;
+  std::string lower_bounds;
   unsigned long k_bound;
   unsigned long k;
   std::string salt;
 };
+
+void ProofRequestFromJson(const std::string &path, ProofRequest &proof);
 
 template <template <typename> typename Hash>
 class zkID : public zkidProofGadget
@@ -61,7 +62,7 @@ class zkID : public zkidProofGadget
 
     typedef Hash<FieldT> HashT;
 
-    bool GetVerificationData(ProofRequest<FieldT> &proof_req, VerificationData &data,
+    bool GetVerificationData(ProofRequest &proof_req, VerificationData &data,
                              LibsnarkVerificationData *libsnark_data = nullptr)
     {
         //Pb variables
@@ -73,7 +74,7 @@ class zkID : public zkidProofGadget
         libff::bit_vector attributes_bv(attribute_size*7);
         libff::bit_vector lower_bounds_bv(attribute_size*7);
         libff::bit_vector upper_bounds_bv(attribute_size*7);
-        libff::bit_vector salt_bv(FieldT::capacity-32);
+        libff::bit_vector salt_bv(FieldT::capacity()-32);
         std::vector<libsnark::merkle_authentication_node> auth_path(tree_depth);
         size_t address = 0;
 
@@ -84,30 +85,20 @@ class zkID : public zkidProofGadget
         bit_vector_from_string(root_hash_bv, proof_req.merkle_root);
         bit_vector_from_string(salt_bv, proof_req.salt);
         bit_vector_from_string(secret_key_bv, proof_req.secret_key);
-        // Construct attribute strings
-        for (int i = 0; i < 7; i++){
-          libff::bit_vector attribute(attribute_size);
-          libff::bit_vector upper(attribute_size);
-          libff::bit_vector lower(attribute_size);
-          bit_vector_from_string(attribute, proof_req.attributes[i]);
-          bit_vector_from_string(upper, proof_req.upper_bounds[i]);
-          bit_vector_from_string(lower, proof_req.lower_bounds[i]);
-          attributes_bv.insert(attributes_bv.end(), attribute.begin(), attribute.end());
-          lower_bounds_bv.insert(lower_bounds_bv.end(), lower.begin(), lower.end());
-          upper_bounds_bv.insert(upper_bounds_bv.end(), upper.begin(), upper.end());
-        }
-
+        bit_vector_from_string(attributes_bv, proof_req.attributes);
+        bit_vector_from_string(upper_bounds_bv, proof_req.upper_bounds);
+        bit_vector_from_string(lower_bounds_bv, proof_req.lower_bounds);
 
         //Fills in the variables on the protoboard
         _zkid.generate_r1cs_witness(secret_key_bv,
                                     upper_bounds_bv,
                                     lower_bounds_bv,
                                     attributes_bv,
+                                    address_bits,
                                     salt_bv,
                                     proof_req.k,
                                     proof_req.k_bound,
                                     root_hash_bv,
-                                    address_bits,
                                     address,
                                     auth_path);
 

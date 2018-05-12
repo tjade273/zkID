@@ -25,9 +25,9 @@ private:
 public:
     zkrange_gadget(protoboard<FieldT> &pb,
                    size_t n,
-                   pb_linear_combination<FieldT> &upper_bound,
-                   pb_linear_combination<FieldT> &lower_bound,
-                   pb_linear_combination<FieldT> &attribute)
+                   const pb_linear_combination<FieldT> &upper_bound,
+                   const pb_linear_combination<FieldT> &lower_bound,
+                   const pb_linear_combination<FieldT> &attribute)
         : gadget<FieldT>(pb), attribute(attribute)
         {
             // Generate dummy variables for LT, we only care about LE
@@ -37,10 +37,10 @@ public:
             lt2.allocate(pb);
 
             // Constrain `attribute <= upper_bound`
-            upper.reset(new comparison_gadget<FieldT>(n, attribute, upper_bound, lt1, ONE));
+            upper.reset(new comparison_gadget<FieldT>(pb, n, attribute, upper_bound, lt1, ONE));
 
             //Constrain `lower_bound <= attribute`
-            lower.reset(new comparison_gadget<FieldT>(n, lower_bound, lt2, ONE));
+            lower.reset(new comparison_gadget<FieldT>(pb, n, lower_bound, attribute, lt2, ONE));
         }
     void generate_r1cs_constraints(){
         upper->generate_r1cs_constraints();
@@ -191,15 +191,16 @@ class zkid_gadget : gadget<FieldT> {
   pb_variable_array<FieldT> lower_bounds_split;
 
   // Hash inputs
-  block_variable<FieldT> serial_inputs;
-  block_variable<FieldT> leaf_inputs;
+  std::shared_ptr<block_variable<FieldT>> serial_inputs;
+  std::shared_ptr<block_variable<FieldT>> leaf_inputs;
 
 
- zkid_gadget(protoboard<FieldT> &pb,
-             size_t tree_depth,
-             size_t attribute_size) :
-  gadget<FieldT>(pb)
-    {
+ zkid_gadget(protoboard<FieldT> &pb, size_t tree_depth, size_t attribute_size) :
+  gadget<FieldT>(pb),
+    leaf_digest(pb, HashT::get_digest_len(), "leaf"),
+    merkle_root_digest(pb, HashT::get_digest_len(), "root"),
+    serial_number_digest(pb, HashT::get_digest_len(), "serial")
+   {
       size_t digest_len = HashT::get_digest_len();
       // Note that all hash digests are constrained only up to the size of 1 field element
       // we require a 20-byte address and 4 byte block number, with room left for a k value
@@ -223,59 +224,56 @@ class zkid_gadget : gadget<FieldT> {
       upper_bounds_bits.allocate(pb, num_attributes*attribute_size);
       upper_bounds_split.allocate(pb, num_attributes);
       upper_splitter.reset(new multipacking_gadget<FieldT>(pb, upper_bounds_bits, upper_bounds_split, attribute_size));
-      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, upper_bound_packed, upper_bounds_bits));
+      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, upper_bounds_bits, upper_bound_packed));
 
       lower_bounds_bits.allocate(pb, num_attributes*attribute_size);
       lower_bounds_split.allocate(pb, num_attributes);
       lower_splitter.reset(new multipacking_gadget<FieldT>(pb, lower_bounds_bits, lower_bounds_split, attribute_size));
-      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, lower_bound_packed, lower_bounds_bits));
+      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, lower_bounds_bits, lower_bound_packed));
 
       // constrain each attribute to be in-bounds
       for(int i = 0; i < num_attributes; ++i)
-        range_proofs.emplace_back(pb, attribute_size, upper_bounds_split[i], lower_bounds_split[i], attributes_split[i]);
+        range_proofs.emplace_back(new zkrange_gadget<FieldT>(pb, attribute_size, upper_bounds_split[i], lower_bounds_split[i], attributes_split[i]));
 
       // pack salt_bits into salt
       salt_kbound_bits.allocate(pb, FieldT::capacity());
-      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, salt_kbound_packed, salt_kbound_bits));
+      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, salt_kbound_bits, salt_kbound_packed));
 
       // pack k_bound bits into k_bound
-      pb_variable_array<FieldT> k_bound_bits(salt_kbound_bits.end() - 32, salt_kbound_bits.end);
-      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, k_bound, k_bound_bits));
+      pb_variable_array<FieldT> k_bound_bits(salt_kbound_bits.end() - 32, salt_kbound_bits.end());
+      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, k_bound_bits, k_bound));
 
       // pack k_bits into k_packed
-      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, k_packed, k_bits));
+      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, k_bits, k_packed));
 
       // constrain k_packed to be less than k_bound
       pb_variable<FieldT> lt;
-      pb.allocate(lt);
+      lt.allocate(pb);
       k_compare.reset(new comparison_gadget<FieldT>(pb, attribute_size, k_packed, k_bound, lt, ONE));
 
       // construct serial number hash
       pb_variable_array<FieldT> salt_bits(salt_kbound_bits.begin(), salt_kbound_bits.end()-32);
-      serial_number_digest = digest_variable<FieldT>(pb, digest_len);
-      serial_inputs = block_variable<FieldT>({private_key, salt_bits, k_bits});
-      serial_hasher.reset(HashT(pb, serial_inputs, serial_number_digest));
+      serial_inputs.reset(new block_variable<FieldT>(pb, std::vector<pb_variable_array<FieldT>>({private_key, salt_bits, k_bits}), "serial inputs"));
+      serial_hasher.reset(new HashT(pb, 64, *serial_inputs, serial_number_digest, "serial hasher"));
 
       // pack serial_number low bits
       pb_variable_array<FieldT> serial_low_bits(serial_number_digest.bits.end()-FieldT::capacity(), serial_number_digest.bits.end());
-      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, serial_number_packed, serial_low_bits));
+      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, serial_low_bits,  serial_number_packed));
 
       // pack merkle_root
-      merkle_root_digest = digest_variable<FieldT>(pb, digest_len);
       pb_variable_array<FieldT> merkle_low_bits(merkle_root_digest.bits.end()-FieldT::capacity(), merkle_root_digest.bits.end());
-      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, merkle_root_packed, merkle_low_bits));
+      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, merkle_low_bits, merkle_root_packed));
 
       // construct merkle root
       pb_variable_array<FieldT> attribute_bits;
-      attribute_bits.allocate(digest_len);
+      attribute_bits.allocate(pb, digest_len);
       attr_splitter.reset(new multipacking_gadget<FieldT>(pb, attribute_bits, attributes_split, attribute_size));
-      leaf_inputs = block_variable<FieldT>({private_key, attribute_bits});
-      leaf_digest = digest_variable<FieldT>(pb, digest_len);
-      leaf_hasher.reset(HashT(pb, leaf_inputs, leaf_digest));
+      leaf_inputs.reset(new block_variable<FieldT>(pb,  std::vector<pb_variable_array<FieldT>>({private_key, attribute_bits}), "leaf inputs"));
+      leaf_hasher.reset(new HashT(pb, 64, *leaf_inputs, leaf_digest, "leaf hasher"));
 
       address_bits.allocate(pb, tree_depth);
       path_var.reset(new merkle_authentication_path_variable<FieldT, HashT>(pb, tree_depth, "path_var"));
-      merkle_check.reset(new merkle_tree_check_read_gadget<FieldT, HashT>(pb, tree_depth, address_bits, leaf_digest, merkle_root_digest, path_var, ONE));
+      merkle_check.reset(new merkle_tree_check_read_gadget<FieldT, HashT>(pb, tree_depth, address_bits, leaf_digest, merkle_root_digest, *path_var, ONE, ""));
     }
 
   void generate_r1cs_constraints(){
@@ -296,12 +294,9 @@ class zkid_gadget : gadget<FieldT> {
     path_var->generate_r1cs_constraints();
     merkle_check->generate_r1cs_constraints();
 
-    merkle_root_digest->generate_r1cs_constraints();
-    serial_number_digest->generate_r1cs_constraints();
-    leaf_digest->generate_r1cs_constraints();
-
-    leaf_inputs->generate_r1cs_constraints();
-    serial_inputs->generate_r1cs_constraints();
+    merkle_root_digest.generate_r1cs_constraints();
+    serial_number_digest.generate_r1cs_constraints();
+    leaf_digest.generate_r1cs_constraints();
   }
 
   void generate_r1cs_witness(libff::bit_vector &secret_key,
@@ -313,7 +308,6 @@ class zkid_gadget : gadget<FieldT> {
                              const unsigned long k,
                              const unsigned long k_bound,
                              libff::bit_vector merkle_root,
-                             libff::bit_vector &addr_bits,
                              size_t &address,
                              std::vector<libsnark::merkle_authentication_node> &auth_path)
   {
@@ -331,7 +325,7 @@ class zkid_gadget : gadget<FieldT> {
 
     k_compare->generate_r1cs_witness();
 
-    libff::bit_vector k_bound_bits = libff::convert_field_element_to_bit_vector(k_bound);
+    libff::bit_vector k_bound_bits = libff::convert_field_element_to_bit_vector(FieldT(k_bound, true));
     salt.insert(salt.end(), k_bound_bits.begin(), k_bound_bits.end());
     salt_kbound_bits.fill_with_bits(this->pb, salt);
     k_bits.fill_with_bits_of_ulong(this->pb, k);
@@ -348,7 +342,7 @@ class zkid_gadget : gadget<FieldT> {
     serial_leaf.insert(serial_leaf.end(), k_bv.begin(), k_bv.end());
     serial_number_digest.generate_r1cs_witness(HashT::get_hash(serial_leaf));
 
-    this->address_bits.fill_with_bits(this->pb, addr_bits);
+    this->address_bits.fill_with_bits(this->pb, address_bits);
 
     path_var->generate_r1cs_witness(address, auth_path);
     merkle_check->generate_r1cs_witness();

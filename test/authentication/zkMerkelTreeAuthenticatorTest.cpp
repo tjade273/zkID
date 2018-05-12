@@ -4,7 +4,7 @@
 #include "proving/zkidMTA.h"
 #include "util/zkid_helpers.h"
 
-//
+
 #define M_TREE_LENGTH 3
 
 TEST(zkMTATest, TestProofGenerationPbSatisfaction){
@@ -69,6 +69,14 @@ TEST(zkMTATest, TestVerifyFail){
   ASSERT_FALSE(verified);
 }
 
+
 TEST(zkIDTest, TestProofGeneration){
-  
+  ProofRequest proof;
+  VerificationData verification_data;
+
+  ProofRequestFromJson("test/res/credentials/test_credential_proof.json", proof);
+  libff::alt_bn128_pp::init_public_params();
+  zkID<sha256_two_to_one_hash_gadget> authenticator(proof.path.size(), 32);
+  bool verifiable = authenticator.GetVerificationData(proof, verification_data);
+  ASSERT_TRUE(verifiable);
 }
