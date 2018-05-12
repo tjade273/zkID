@@ -20,16 +20,21 @@ int main(int argc, char **argv)
     try
     {
         ZkidService service(&config, &cred_manager, &zkidIPFSGateway);
+
+        service.console->info("Loading user credentials from: {0}",config.GetCredentialsFilePath());
+        cred_manager.LoadCredentials();
+
         if (result["l"].as<bool>())
         {
             service.console->info("Starting IPFS daemon...", service.GetPort());
-            ipfs_service.StartService(argv);
+            ipfs_service.StartService();
         }
         if (service.Start())
         {
             service.console->info("Started zkid service on port {0} successfully!", service.GetPort());
             getchar();
             service.Stop();
+            ipfs_service.StopService();
         }
         else
         {

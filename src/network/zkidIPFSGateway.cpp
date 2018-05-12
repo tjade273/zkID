@@ -11,33 +11,41 @@ void zkidIPFSGateway::GetMerklePath(const std::string &merkle_address, size_t ad
      * the root.
      */
 
-    ipfs::Json parent;
-    _client.ObjectGet(merkle_address, &parent);
-
-    ipfs::Json links = parent["Links"];
-    if (links.size() == 0)
-        return; //hit leafs
-    ipfs::Json left_addr = links[0]["Hash"];
-    ipfs::Json right_addr = links[1]["Hash"];
-
-    ipfs::Json path_element_hash;
-    ipfs::Json next_parent;
-
-    if (address & (1 << path.size()))
+    try
     {
-        path_element_hash = left_addr;
-        next_parent = right_addr;
-    }
-    else
-    {
-        path_element_hash = right_addr;
-        next_parent = left_addr;
-    }
 
-    ipfs::Json path_element;
-    _client.ObjectGet(path_element_hash, &path_element);
-    path.push_back(path_element["Data"]);
-    GetMerklePath(next_parent, address, path);
+        ipfs::Json parent;
+        _client.ObjectGet(merkle_address, &parent);
+
+        ipfs::Json links = parent["Links"];
+        if (links.size() == 0)
+            return; //hit leafs
+        ipfs::Json left_addr = links[0]["Hash"];
+        ipfs::Json right_addr = links[1]["Hash"];
+
+        ipfs::Json path_element_hash;
+        ipfs::Json next_parent;
+
+        if (address & (1 << path.size()))
+        {
+            path_element_hash = left_addr;
+            next_parent = right_addr;
+        }
+        else
+        {
+            path_element_hash = right_addr;
+            next_parent = left_addr;
+        }
+
+        ipfs::Json path_element;
+        _client.ObjectGet(path_element_hash, &path_element);
+        path.push_back(path_element["Data"]);
+        GetMerklePath(next_parent, address, path);
+
+    }catch(std::runtime_error& e){
+        //unable to get files
+        path.clear();
+    }
 }
 
 std::string zkidIPFSGateway::PutMerkleTree(const std::vector<std::string> &tree, int i)

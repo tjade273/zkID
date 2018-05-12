@@ -29,8 +29,8 @@ bool ZkidService::GetProofForCredential(const CredentialRequest &cred, Credentia
     console->info("Recieved request for proof of credential: \n \
         issuer_address: {0} \n \
         merkle_root_address: {1} \n \
-        range_low: {2} \n \
-        range_high: {3} \n \
+        lower_bound: {2} \n \
+        upper_bound: {3} \n \
         k_bound: {4}",
                   cred.contract_salt, cred.merkle_root_address, cred.lower_bound, cred.upper_bound, cred.k_bound);
 
@@ -49,11 +49,18 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
     const std::string issuer_address = cred_request.contract_salt;
     if (!_cred_manager->HasCredential(issuer_address))
     {
+        console->error("User does not have a credential from: {0}",issuer_address);
         return false;
     }
 
     Credential cred = _cred_manager->GetCredential(issuer_address);
     std::vector<std::string> merkle_path;
     _mt_provider->GetMerklePath(cred_request.merkle_root_address,cred.merkle_address,merkle_path);
+
+    if(merkle_path.empty()){
+        console->error("Enable to get merkle path from: {0}",cred_request.merkle_root_address);
+        return false;
+    }
+
     return prover.GenerateProof(cred, cred_request, merkle_path, proof);
 }

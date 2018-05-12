@@ -2,6 +2,10 @@
 
 void IPFSServiceController::StartService(char** argv)
 {
+    if(!argv){
+        argv =  new char*[3]{"/usr/local/bin/ipfs", "daemon", NULL};
+    }
+
     pid_t pid = fork();
     if (pid == 0)
     {
@@ -12,6 +16,8 @@ void IPFSServiceController::StartService(char** argv)
     {
         this->_ipfs_process_id = pid;
     }
+
+    free(argv);
 }
 
 void IPFSServiceController::StopService()

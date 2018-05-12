@@ -94,7 +94,7 @@ CredentialBlock.prototype.display = function () {
             var current_cred = requiredCredentials[i];
             var cred_row = document.createElement("tr");
             var cred_sig_cell = document.createElement("td");
-            var cred_sig = document.createTextNode(current_cred["issuer_address"]);
+            var cred_sig = document.createTextNode(current_cred["contract_salt"]);
             var cred_desc_cell = document.createElement("td");;
             var cred_desc = document.createTextNode(current_cred["description"]);
 

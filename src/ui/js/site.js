@@ -1,5 +1,5 @@
 web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-lottery_abi = JSON.parse('[{"constant":false,"inputs":[],"name":"Join","outputs":[],"payable":false,"type":"function","credentials":[{"issuer_address":"0xdeadbeef","range_high":0,"range_low":0,"k_factor":0,"description":"Confirms holder is over 18."},{"issuer_address":"0xfeedbeef","range_high":0,"range_low":0,"k_factor":0,"description":"Confirms holder is American."}]}]')
+lottery_abi = JSON.parse('[{"constant":false,"inputs":[{"indexed": false,"name": "proofs","type": "uint[]"}],"name":"Join","outputs":[],"payable":false,"type":"function","credentials":[{"contract_salt":"0xdeadbeef","upper_bound":0,"lower_bound":0,"k_bound":0,"description":"Confirms holder is over 18."},{"contract_salt":"0xbeefdead","upper_bound":100,"lower_bound":18,"k_bound":1,"description":"Confirms holder is American."}]}]')
 
 LotteryContract = web3.eth.contract(lottery_abi);
 contractInstance = LotteryContract.at("CONTRACT_ADDR");

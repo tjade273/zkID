@@ -12,7 +12,7 @@ add_executable(
   ${TEST_SOURCES}
 )
 
-FILE (GLOB_RECURSE res "res/*.*")
+FILE (GLOB_RECURSE res "res/*")
 foreach(resource ${res})
  get_filename_component(filename ${resource} NAME)
  get_filename_component(dir ${resource} DIRECTORY)

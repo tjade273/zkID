@@ -17,13 +17,13 @@ struct Credential{
                                           contract_salt(cs),
                                           serial_number(sn),
                                           merkle_address(ma){};
-    std::string attributes;
+    std::string contract_salt;
     std::string lower_bound;
     std::string upper_bound;
     int k_bound;
-    int k;
-    std::string contract_salt;
     std::string serial_number;
+    std::string attributes;
+    int k;
     uint merkle_address;
 };
 
