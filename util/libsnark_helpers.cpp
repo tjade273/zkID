@@ -9,11 +9,23 @@ void libsnark::bit_vector_from_string(libff::bit_vector &vect, const std::string
         std::stringstream ss;
         ss << hex_char;
         ss >> std::hex >> v;
-        for (int j = 7; j >= 0; j--)
+        for (int j = 0; j < 8; j++)
         {
-            vect[i * 4 + (7 - j)] = v & (1 << j);
+          vect[4*i + j] = v & (1 << (7-j));
         }
     }
+}
+
+std::string libsnark::hex_from_bit_vector(const libff::bit_vector &vect){
+  std::stringstream ss;
+  for(int i = 0; i < vect.size(); i+=8){
+    unsigned int v = 0;
+    for(int j = 0; j < 8; j++){
+      v |= (vect[i + j] << (7-j));
+    }
+    ss << std::hex << v;
+  }
+  return ss.str();
 }
 
 /** Take from Zokrates **/

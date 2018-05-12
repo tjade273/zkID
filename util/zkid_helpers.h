@@ -8,9 +8,8 @@
 #include <fstream>
 #include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
 #include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
-#include "authentication/zkidVerificationStructs.h"
+#include "proving/zkidVerificationStructs.h"
 #include "util/libsnark_helpers.h"
-#include "json.hpp"
 
 struct LibsnarkVerificationData
 {
@@ -18,7 +17,7 @@ struct LibsnarkVerificationData
   libsnark::r1cs_ppzksnark_primary_input<libff::alt_bn128_pp> primary_input;
 };
 
-VerificationProof ExtractVerificationProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof);
+CredentialProof ExtractCredentialProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof);
 
 VerificationKey ExtractVerificationKey(libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> &vk);
 

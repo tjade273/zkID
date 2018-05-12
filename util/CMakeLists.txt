@@ -5,4 +5,4 @@ file(GLOB_RECURSE UTIL_SOURCES
     *.cpp
     *.c)
 
-target_sources(our_lib PUBLIC ${UTIL_SOURCES})
+target_sources(zkid_lib PUBLIC ${UTIL_SOURCES})

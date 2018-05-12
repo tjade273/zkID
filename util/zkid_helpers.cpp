@@ -1,10 +1,8 @@
 #include "zkid_helpers.h"
 
-using json = nlohmann::json;
-
-VerificationProof ExtractVerificationProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof)
+CredentialProof ExtractCredentialProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof)
 {
-    VerificationProof p;
+    CredentialProof p;
 
     p.A = libsnark::outputPointG1AffineAsHex(proof.g_A.g);
     p.A_p = libsnark::outputPointG1AffineAsHex(proof.g_A.h);
@@ -105,7 +103,7 @@ void ExportVerificationKey(VerificationKey &vk, const std::string &sol_path, con
 
 void ExportProof(LibsnarkVerificationData &auth, std::string fname)
 {
-    VerificationProof proof = ExtractVerificationProof(auth.proof);
+    CredentialProof proof = ExtractCredentialProof(auth.proof);
 
     std::ofstream f(fname);
     if (!f)

@@ -1,0 +1,25 @@
+<div id="credentials-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h4><var id="action-name"></var> requires the following credentials.</h1>
+    <table id="credential_table" class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Credential</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <div class = "button-container" id ="approve-deny-button-container">
+      <button type="button" class="btn btn-success" onclick = "OnApprove()">Approve</button>
+      <button type="button" class="btn btn-danger" onclick= "Onreturn()">Deny</button>
+    </div>
+    <div class="loader" id="proving-spinner">Loading...</div>
+    <div id="msg-container"><h2></h2></div>
+    <div id="return-button-container">
+        <button type="button" class="btn btn-danger" onclick = "OnReturn()">Return</button>
+    </div>
+  </div>
+</div>

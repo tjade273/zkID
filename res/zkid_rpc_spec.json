@@ -1,0 +1,22 @@
+[
+      {
+            "name": "GenerateProofs",
+            "params": {
+                  "credential_descriptions":[{}]
+            },
+            "returns": {
+                  "success":true,
+                  "proofs": [{
+                        "credential_issuer":"string",
+                        "A": [],
+                        "A_p": [],
+                        "B": [],
+                        "B_p": [],
+                        "C": [],
+                        "C_p": [],
+                        "H": [],
+                        "K": []
+                  }]
+            }
+      }
+]

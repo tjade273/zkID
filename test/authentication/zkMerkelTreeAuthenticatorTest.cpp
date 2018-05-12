@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <libsnark/gadgetlib1/gadgets/hashes/sha256/sha256_gadget.hpp>
 #include <libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp>
-#include "authentication/zkidMTA.h"
+#include "proving/zkidMTA.h"
 #include "util/zkid_helpers.h"
 
 //
@@ -14,10 +14,9 @@ TEST(zkMTATest, TestProofGenerationPbSatisfaction){
     VerificationData verification_data;
 
     AuthenticationArgsFromJson("test/res/merkle_path_test_pass.json",leaf,root,path);
-
+    printf("Path len: %d\n", path.size());
     libff::alt_bn128_pp::init_public_params();
     zkMTA<sha256_two_to_one_hash_gadget> authenticator(path.size());
-    
     bool verifiable = authenticator.GetVerificationData(leaf,root,path,verification_data);
     ASSERT_TRUE(verifiable);
 }
