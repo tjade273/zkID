@@ -161,7 +161,7 @@ library Verifier {
         Pairing.G1Point H;
     }
     function verifyingKey() pure internal returns (VerifyingKey vk) {
-        /*vk.A = Pairing.G2Point(<%vk_a%>);
+        vk.A = Pairing.G2Point(<%vk_a%>);
         vk.B = Pairing.G1Point(<%vk_b%>);
         vk.C = Pairing.G2Point(<%vk_c%>);
         vk.gamma = Pairing.G2Point(<%vk_g%>);
@@ -169,7 +169,7 @@ library Verifier {
         vk.gammaBeta2 = Pairing.G2Point(<%vk_gb2%>);
         vk.Z = Pairing.G2Point(<%vk_z%>);
         vk.IC = new Pairing.G1Point[](<%vk_ic_length%>);
-        <%vk_ic_pts%>*/
+        <%vk_ic_pts%>
     }
     function verify(uint[] input, Proof proof) internal returns (uint) {
         VerifyingKey memory vk = verifyingKey();
