@@ -12,11 +12,11 @@ enum VerificationErrorCode
 };
 
 struct CredentialRequest{
-  std::string issuer_address;
+  std::string contract_salt;
   std::string merkle_root_address;
-  uint32_t range_low;
-  uint32_t range_high;
-  uint32_t k_factor;
+  std::string lower_bound;
+  std::string upper_bound;
+  int k_bound;
 };
 
 struct CredentialProof

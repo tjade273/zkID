@@ -31,8 +31,8 @@ bool ZkidService::GetProofForCredential(const CredentialRequest &cred, Credentia
         merkle_root_address: {1} \n \
         range_low: {2} \n \
         range_high: {3} \n \
-        k_factor: {4}",
-                  cred.issuer_address, cred.merkle_root_address, cred.range_low, cred.range_high, cred.k_factor);
+        k_bound: {4}",
+                  cred.contract_salt, cred.merkle_root_address, cred.lower_bound, cred.upper_bound, cred.k_bound);
 
     return GenerateProofForCredential(cred, proof);
 }
@@ -46,7 +46,7 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
 {
     zkidProver prover(_service_config);
 
-    const std::string issuer_address = cred_request.issuer_address;
+    const std::string issuer_address = cred_request.contract_salt;
     if (!_cred_manager->HasCredential(issuer_address))
     {
         return false;
@@ -54,6 +54,6 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
 
     Credential cred = _cred_manager->GetCredential(issuer_address);
     std::vector<std::string> merkle_path;
-    _mt_provider->GetMerklePath(cred_request.merkle_root_address,cred.address,merkle_path);
+    _mt_provider->GetMerklePath(cred_request.merkle_root_address,cred.merkle_address,merkle_path);
     return prover.GenerateProof(cred, cred_request, merkle_path, proof);
 }

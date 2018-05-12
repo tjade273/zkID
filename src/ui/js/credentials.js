@@ -3,7 +3,7 @@ issuer_abi = JSON.parse('[{"constant":false,"inputs":[],"name":"getMerkleRootAdd
 IssuerContract = web3.eth.contract(issuer_abi);
 currentBlock = null;
 
-function ProofToBytes(proof) {
+function ProofToBytes(proof, publicInputs) {
     return [].concat(
         web3.utils.hexToBytes(proof["A"][0]),
         web3.utils.hexToBytes(proof["A"][1]),
@@ -23,6 +23,8 @@ function ProofToBytes(proof) {
         web3.utils.hexToBytes(proof["H"][1]),
         web3.utils.hexToBytes(proof["K"][0]),
         web3.utils.hexToBytes(proof["K"][1]));
+
+        //TODO: Append public inputs
 }
 
 
@@ -57,7 +59,7 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
             var proof_bytes = generated_proofs.reduce(function (acc, e) {
                 acc.concat(ProofToBytes(e));
             }, []);
-            action.method(proof_bytes);
+            action.method(proof_bytes,generated_proofs.length);
         } else {
             $("#msg-container").first().text("A proof could not be generated for one or more credentials.");
             $("#msg-container").show();

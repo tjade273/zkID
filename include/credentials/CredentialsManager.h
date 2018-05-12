@@ -8,9 +8,23 @@
 
 struct Credential{
     Credential(){};
-    Credential(uint32_t t, size_t a) : token(t), address(a){};
-    uint32_t token;
-    size_t address;
+    Credential(std::string a, std::string l, std::string u, int kb, int _k, std::string cs, 
+        std::string sn,uint ma) : attributes(a), 
+                                          lower_bound(l),
+                                          upper_bound(u),
+                                          k(_k),
+                                          k_bound(kb),
+                                          contract_salt(cs),
+                                          serial_number(sn),
+                                          merkle_address(ma){};
+    std::string attributes;
+    std::string lower_bound;
+    std::string upper_bound;
+    int k_bound;
+    int k;
+    std::string contract_salt;
+    std::string serial_number;
+    uint merkle_address;
 };
 
 class CredentialsManager{
