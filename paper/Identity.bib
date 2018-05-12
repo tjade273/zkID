@@ -1,0 +1,162 @@
+
+@report{garmanDecentralizedAnonymousCredentials2013,
+  title = {Decentralized {{Anonymous Credentials}}},
+  url = {http://eprint.iacr.org/2013/622},
+  abstract = {Anonymous credentials provide a powerful tool for making assertions about identity while maintaining privacy. However, a limitation of today's anonymous credential systems is the need for a trusted credential issuer --- which is both a single point of failure and a target for compromise. Furthermore, the need for such a trusted issuer can make it challenging to deploy credential systems in practice, particularly in the ad hoc network setting (e.g., anonymous peer-to-peer networks) where no single party can be trusted with this responsibility.
+
+In this work we propose a novel anonymous credential scheme that eliminates the need for a trusted credential issuer. Our approach builds on recent results in the area of electronic cash and uses techniques --- such as the calculation of a distributed transaction ledger --- that are currently in widespread deployment in the Bitcoin payment system. Using this decentralized ledger and standard cryptographic primitives, we propose and provide a proof of security for a basic anonymous credential system that allows users to make flexible identity assertions with strong privacy guarantees. Finally, we discuss a number of practical applications for our techniques, including resource management in ad hoc networks and prevention of Sybil attacks. We implement our scheme and measure its efficiency.},
+  number = {622},
+  urldate = {2018-05-01},
+  date = {2013},
+  keywords = {anonymous credentials,Bitcoin,cryptographic protocols},
+  author = {Garman, Christina and Green, Matthew and Miers, Ian},
+  file = {/home/tjaden/Zotero/storage/UDBXRMPU/Garman et al. - 2013 - Decentralized Anonymous Credentials.pdf;/home/tjaden/Zotero/storage/7KZEA2YP/622.html}
+}
+
+@article{chaumSecurityIdentificationTransaction1985,
+  title = {Security {{Without Identification}}: {{Transaction Systems}} to {{Make Big Brother Obsolete}}},
+  volume = {28},
+  issn = {0001-0782},
+  url = {http://doi.acm.org/10.1145/4372.4373},
+  doi = {10.1145/4372.4373},
+  shorttitle = {Security {{Without Identification}}},
+  abstract = {The large-scale automated transaction systems of the near future can be designed to protect the privacy and maintain the security of both individuals and organizations.},
+  number = {10},
+  journaltitle = {Commun. ACM},
+  urldate = {2018-05-01},
+  date = {1985-10},
+  pages = {1030--1044},
+  author = {Chaum, David},
+  file = {/home/tjaden/Zotero/storage/49JKF4TP/Chaum - 1985 - Security Without Identification Transaction Syste.pdf}
+}
+
+@report{brickellDirectAnonymousAttestation2004,
+  title = {Direct {{Anonymous Attestation}}},
+  url = {http://eprint.iacr.org/2004/205},
+  abstract = {This paper describes the direct anonymous attestation scheme (DAA). This scheme was adopted by the Trusted Computing Group as the method for remote authentication of a hardware module, called trusted platform module (TPM), while preserving the privacy of the user of the platform that contains the module. Direct anonymous attestation can be seen as a group signature without the feature that a signature can be opened, i.e., the anonymity is not revocable. Moreover, DAA allows for pseudonyms, i.e., for each signature a user (in agreement with the recipient of the signature) can decide whether or not the signature should be linkable to another signature. DAA furthermore allows for detection of ``known'' keys: if the DAA secret keys are extracted from a TPM and published, a verifier can detect that a signature was produced using these secret keys. The scheme is provably secure in the random oracle model under the strong RSA and the decisional Diffie-Hellman assumption.},
+  number = {205},
+  urldate = {2018-05-01},
+  date = {2004},
+  keywords = {cryptographic protocols,digital signatures,group signatures,privacy},
+  author = {Brickell, Ernie and Camenisch, Jan and Chen, Liqun},
+  file = {/home/tjaden/Zotero/storage/YGRHKDN3/Brickell et al. - 2004 - Direct Anonymous Attestation.pdf;/home/tjaden/Zotero/storage/SRGXXXMW/205.html}
+}
+
+@inproceedings{miersZerocoinAnonymousDistributed2013,
+  title = {Zerocoin: {{Anonymous Distributed E}}-{{Cash}} from {{Bitcoin}}},
+  doi = {10.1109/SP.2013.34},
+  shorttitle = {Zerocoin},
+  abstract = {Bitcoin is the first e-cash system to see widespread adoption. While Bitcoin offers the potential for new types of financial interaction, it has significant limitations regarding privacy. Specifically, because the Bitcoin transaction log is completely public, users' privacy is protected only through the use of pseudonyms. In this paper we propose Zerocoin, a cryptographic extension to Bitcoin that augments the protocol to allow for fully anonymous currency transactions. Our system uses standard cryptographic assumptions and does not introduce new trusted parties or otherwise change the security model of Bitcoin. We detail Zerocoin's cryptographic construction, its integration into Bitcoin, and examine its performance both in terms of computation and impact on the Bitcoin protocol.},
+  eventtitle = {2013 {{IEEE Symposium}} on {{Security}} and {{Privacy}}},
+  booktitle = {2013 {{IEEE Symposium}} on {{Security}} and {{Privacy}}},
+  date = {2013-05},
+  pages = {397-411},
+  keywords = {anonymous currency transactions,anonymous distributed e-cash,Bitcoin protocol,Concrete,cryptographic extension,cryptography,Cryptography,data privacy,electronic money,financial interaction,Online banking,Peer-to-peer computing,Privacy,Protocols,pseudonym,standard cryptographic assumptions,user privacy,Zerocoin cryptographic construction},
+  author = {Miers, I. and Garman, C. and Green, M. and Rubin, A. D.},
+  file = {/home/tjaden/Zotero/storage/EWWNHM68/Miers et al. - 2013 - Zerocoin Anonymous Distributed E-Cash from Bitcoi.pdf;/home/tjaden/Zotero/storage/SYH5SUPF/6547123.html}
+}
+
+@report{catalanoVectorCommitmentsTheir2011,
+  title = {Vector {{Commitments}} and Their {{Applications}}},
+  url = {http://eprint.iacr.org/2011/495},
+  abstract = {We put forward the study of a new primitive that we call \{$\backslash$em Vector Commitment\} (VC, for short). Informally, VCs allow to commit to an ordered sequence of \$q\$ values \$(m\_1, $\backslash$ldots, m\_q)\$ in such a way that one can later open the commitment at specific positions (e.g., prove that \$m\_i\$ is the \$i\$-th committed message). For security, Vector Commitments are required to satisfy a notion that we call $\backslash$emph\{position binding\} which states that an adversary should not be able to open a commitment to two different values at the same position. Moreover, what makes our primitive interesting is that we require VCs to be \{$\backslash$em concise\}, i.e. the size of the commitment string and of its openings has to be independent of the vector length.
+
+We show two realizations of VCs based on standard and well established assumptions, such as RSA, and Computational Diffie-Hellman (in bilinear groups). Next, we turn our attention to applications and we show that Vector Commitments are useful in a variety of contexts, as they allow for compact and efficient solutions which significantly improve previous works either in terms of efficiency of the resulting solutions, or in terms of "quality" of the underlying assumption, or both. These applications include: Verifiable Databases with Efficient Updates, Updatable Zero-Knowledge Databases, and Universal Dynamic Accumulators.},
+  number = {495},
+  urldate = {2018-05-01},
+  date = {2011},
+  keywords = {Accumulator,Commitments,Vector Commitments,Verifiable Databases,Zero-Knowledge Databases},
+  author = {Catalano, Dario and Fiore, Dario},
+  file = {/home/tjaden/Zotero/storage/Y3JTTGHR/Catalano and Fiore - 2011 - Vector Commitments and their Applications.pdf;/home/tjaden/Zotero/storage/BSQHXE4W/495.html}
+}
+
+@inproceedings{camenischDynamicAccumulatorsApplication2002,
+  langid = {english},
+  title = {Dynamic {{Accumulators}} and {{Application}} to {{Efficient Revocation}} of {{Anonymous Credentials}}},
+  isbn = {978-3-540-44050-5 978-3-540-45708-4},
+  url = {https://link.springer.com/chapter/10.1007/3-540-45708-9_5},
+  doi = {10.1007/3-540-45708-9_5},
+  abstract = {We introduce the notion of a dynamic accumulator. An accumulator scheme allows one to hash a large set of inputs into one short value, such that there is a short proof that a given input was incorporated into this value. A dynamic accumulator allows one to dynamically add and delete a value, such that the cost of an add or delete is independent of the number of accumulated values. We provide a construction of a dynamic accumulator and an efficient zero-knowledge proof of knowledge of an accumulated value. We prove their security under the strong RSA assumption. We then show that our construction of dynamic accumulators enables efficient revocation of anonymous credentials, and membership revocation for recent group signature and identity escrow schemes.},
+  eventtitle = {Annual {{International Cryptology Conference}}},
+  booktitle = {Advances in {{Cryptology}} — {{CRYPTO}} 2002},
+  series = {Lecture Notes in Computer Science},
+  publisher = {{Springer, Berlin, Heidelberg}},
+  urldate = {2018-05-01},
+  date = {2002-08-18},
+  pages = {61-76},
+  author = {Camenisch, Jan and Lysyanskaya, Anna},
+  file = {/home/tjaden/Zotero/storage/QXG6LL5N/Camenisch and Lysyanskaya - 2002 - Dynamic Accumulators and Application to Efficient .pdf;/home/tjaden/Zotero/storage/KFE9XVKD/3-540-45708-9_5.html}
+}
+
+@report{damgardUnclonableGroupIdentification2005,
+  title = {Unclonable {{Group Identification}}},
+  url = {http://eprint.iacr.org/2005/170},
+  abstract = {We introduce and motivate the concept of unclonable group identification, that provides maximal protection against sharing of identities while still protecting the anonymity of users. We prove that the notion can be realized from any one-way function and suggest a more efficient implementation based on specific assumptions.},
+  number = {170},
+  urldate = {2018-05-01},
+  date = {2005},
+  keywords = {privacy,anonymity,identification schemes,protocols,ryptographic protocols},
+  author = {Damgård, Ivan and Dupont, Kasper and Pedersen, Michael Østergaard},
+  file = {/home/tjaden/Zotero/storage/NK45FJIT/Damgård et al. - 2005 - Unclonable Group Identification.pdf;/home/tjaden/Zotero/storage/F7J4HCAJ/170.html}
+}
+
+@inproceedings{camenischEfficientProtocolsSet2008a,
+  location = {{Berlin, Heidelberg}},
+  title = {Efficient {{Protocols}} for {{Set Membership}} and {{Range Proofs}}},
+  isbn = {978-3-540-89254-0},
+  url = {http://dx.doi.org/10.1007/978-3-540-89255-7_15},
+  doi = {10.1007/978-3-540-89255-7_15},
+  abstract = {We consider the following problem: Given a commitment to a value\emph{σ} , prove in zero-knowledge that \emph{σ} belongs to some discrete set \emph{φ} . The set \emph{φ} can perhaps be a list of cities or clubs; often \emph{φ} canbe a numerical range such as [1,220]. This problemarises in e-cash systems, anonymous credential systems, and variousother practical uses of zero-knowledge protocols. When using commitment schemes relying on RSA-like assumptions,there are solutions to this problem which require only a constantnumber of RSA-group elements to be exchanged between the prover andverifier [5, 15, 16]. However, for many commitment schemes based onbilinear group assumptions, these techniques do not work, and thebest known protocols require \emph{O} (\emph{k} ) group elementsto be exchanged where \emph{k} is a security parameter. In this paper, we present two new approaches to buildingset-membership proofs. The first is based on bilinear groupassumptions. When applied to the case where \emph{φ} is arange of integers, our protocols require \$O($\backslash$frac\{k\}\{$\backslash$log k -$\backslash$log$\backslash$log k\})\$ group elements to be exchanged. Not only is thisresult asymptotically better, but the constants are small enough toprovide significant improvements even for small ranges. Indeed, fora discrete logarithm based setting, our new protocol is an order ofmagnitude more efficient than previously known ones. We also discuss alternative implementations of our membershipproof based on the strong RSA assumption. Depending on theapplication, e.g., when \emph{φ} is a published set of valuessuch a frequent flyer clubs, cities, or other ad hoc collections,these alternative also outperform prior solutions.},
+  booktitle = {Proceedings of the 14th {{International Conference}} on the {{Theory}} and {{Application}} of {{Cryptology}} and {{Information Security}}: {{Advances}} in {{Cryptology}}},
+  series = {ASIACRYPT '08},
+  publisher = {{Springer-Verlag}},
+  urldate = {2018-05-01},
+  date = {2008},
+  pages = {234--252},
+  keywords = {bi-linear maps,proofs of knowledge,Range proofs,set membership proofs},
+  author = {Camenisch, Jan and Chaabouni, Rafik and Shelat, Abhi}
+}
+
+@inproceedings{camenischEfficientProtocolsSet2008,
+  title = {Efficient Protocols for Set Membership and Range Proofs},
+  abstract = {Abstract. We consider the following problem: Given a commitment to a value σ, prove in zero-knowledge that σ belongs to some discrete set Φ. The set Φ can perhaps be a list of cities or clubs; often Φ can be a numerical range such as [1, 2 20]. This problem arises in e-cash systems, anonymous credential systems, and various other practical uses of zeroknowledge protocols. When using commitment schemes relying on RSA-like assumptions, there are solutions to this problem which require only a constant number of RSA-group elements to be exchanged between the prover and verifier [5, 16, 15]. However, for many commitment schemes based on bilinear group assumptions, these techniques do not work, and the best known protocols require O(k) group elements to be exchanged where k is a security parameter. In this paper, we present two new approaches to building set-membership proofs. The first is based on bilinear group assumptions. When applied to the case where Φ is a range of integers, our protocols require k log k−log log k O ( ) group elements to be exchanged. Not only is this result asymptotically better, but the constants are small enough to provide significant improvements even for small ranges. Indeed, for a discrete logarithm based setting, our new protocol is an order of magnitude more efficient than previously known ones. We also discuss alternative implementations of our membership proof based on the strong RSA assumption. Depending on the application, e.g., when Φ is a published set of values such a frequent flyer clubs, cities, or other ad hoc collections, these alternative also outperform prior solutions.},
+  booktitle = {In {{ASIACRYPT}}},
+  publisher = {{Springer}},
+  date = {2008},
+  pages = {234--252},
+  author = {Camenisch, Jan and Chaabouni, Rafik and Shelat, Abhi},
+  file = {/home/tjaden/Zotero/storage/474AYJ9W/Camenisch et al. - 2008 - Efficient protocols for set membership and range p.pdf;/home/tjaden/Zotero/storage/FWNLCFGF/summary.html}
+}
+
+@report{camenischHowWinClone2006,
+  title = {How to {{Win}} the {{Clone Wars}}: $\backslash\backslash$ {{Efficient Periodic}} n-{{Times Anonymous Authentication}}},
+  url = {http://eprint.iacr.org/2006/454},
+  shorttitle = {How to {{Win}} the {{Clone Wars}}},
+  abstract = {We create a credential system that lets a user anonymously authenticate at most \$n\$ times in a single time period. A user withdraws a dispenser of \$n\$ e-tokens. She shows an e-token to a verifier to authenticate herself; each e-token can be used only once, however, the dispenser automatically refreshes every time period. The only prior solution to this problem, due to Damgård et al.\textasciitilde[DDP05], uses protocols that are a factor of \$k\$ slower for the user and verifier, where \$k\$ is the security parameter. Damgård et al. also only support one authentication per time period, while we support \$n\$. Because our construction is based on e-cash, we can use existing techniques to identify a cheating user, trace all of her e-tokens, and revoke her dispensers. We also offer a new anonymity service: glitch protection for basically honest users who (occasionally) reuse e-tokens. The verifier can always recognize a reused e-token; however, we preserve the anonymity of users who do not reuse e-tokens too often.},
+  number = {454},
+  urldate = {2018-05-01},
+  date = {2006},
+  keywords = {cryptographic protocols,e-cash,electronic commerce and payment},
+  author = {Camenisch, Jan and Hohenberger, Susan and Kohlweiss, Markulf and Lysyanskaya, Anna and Meyerovich, Mira},
+  file = {/home/tjaden/Zotero/storage/XST7YP9U/Camenisch et al. - 2006 - How to Win the Clone Wars  Efficient Periodic n.pdf;/home/tjaden/Zotero/storage/CJVFYFC4/454.html}
+}
+
+@online{ERCIdentityIssue,
+  title = {{{ERC}}: {{Identity}} · {{Issue}} \#725 · Ethereum/{{EIPs}}},
+  url = {https://github.com/ethereum/EIPs/issues/725},
+  urldate = {2018-05-01},
+  file = {/home/tjaden/Zotero/storage/5GFEEJWD/725.html}
+}
+
+@online{braendgaardDifferentApproachesEthereum2018,
+  title = {Different {{Approaches}} to {{Ethereum Identity Standards}}},
+  url = {https://medium.com/uport/different-approaches-to-ethereum-identity-standards-a09488347c87},
+  abstract = {Identity as a concept affects all of us. Yet, depending on who you ask, there are many different ideas of what Identity is as a technology.},
+  journaltitle = {Medium},
+  urldate = {2018-05-01},
+  date = {2018-01-24T15:43:46.853Z},
+  author = {Braendgaard, Pelle},
+  file = {/home/tjaden/Zotero/storage/9T97E4IA/different-approaches-to-ethereum-identity-standards-a09488347c87.html}
+}
+
+

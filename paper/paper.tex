@@ -1,0 +1,111 @@
+\documentclass[11 pt]{extarticle}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[shortlabels, inline]{enumitem}
+\usepackage{mleftright}
+\usepackage{array}
+\usepackage{gensymb}
+\usepackage[english]{babel}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\usepackage{booktabs}
+\usepackage[numbers]{natbib}
+\usepackage{todonotes}
+\newcommand\mdoubleplus{\mathbin{+\mkern-10mu+}}
+\usepackage{tikz-cd}
+% http://tex.stackexchange.com/q/169557/5764
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\newcommand{\vectorproj}[2][]{\textit{proj}_{\vect{#1}}\vect{#2}}
+\newcommand{\vect}{\mathbf}
+\pgfplotsset{width=10cm,compat=1.9}
+
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Mat}{\text{Mat}}
+\newcommand{\sgn}{\text{sgn}}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\img}{im}
+
+\let\hom\relax% Set equal to \relax so that LaTeX thinks it's not defined
+\DeclareMathOperator{\hom}{Hom}
+\newcommand{\Char}{\text{char}}
+\newcommand{\defeq}{\overset{\text{\tiny def}}{=}}
+
+\theoremstyle{remark}
+\newtheorem{lemma}{Lemma}
+
+
+\newenvironment{amatrix}[1]{%
+  \left[\begin{array}{@{}*{#1}{c}|c@{}}
+          }{%
+        \end{array}\right]
+    }
+
+
+
+    \renewcommand\qedsymbol{$\blacksquare$}
+
+
+    \newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+      \item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+    \newenvironment{theorem*}[1][Theorem:]{\begin{trivlist}
+      \item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+    \newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+      \item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+    \newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+      \item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+    \newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+      \item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+    \newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+      \item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+    \begin{document}
+    \onehalfspacing
+
+    \title{Zero-Knowledge Credentials for Smart Contracts}
+    \author{Lucas Switzer, Tjaden Hess}
+
+    \maketitle
+
+    \begin{abstract}
+      Public blockchains present unique opportunities for the implementation of
+      autonomous and trustless systems, but suffer from trade-offs between
+      privacy and expressivity. In this paper we present an implementation of a
+      zkSNARK-based
+      anonymous credential scheme for the Ethereum blockchain and give
+      benchmarks for usage costs. We present as well an example application.
+    \end{abstract}
+
+
+    \section{Introduction}
+    While blockchains have found use cases in publicly accessible distributed
+    systems, they pose a challenge in that due to their public nature it is
+    currently impossible to attest to aspects of one's identity without some
+    trusted credential issuer.
+
+    \subsection{Prior Work}
+    A generalized scheme was proposed by \citet{garmanDecentralizedAnonymousCredentials2013}
+
+    \section{Properties and Features}
+
+    \section{Implementation}
+
+    \section{Benchmarks}
+
+    \section{Example Application}
+
+
+    \section{Future Work}
+
+    \section{Conclusion}
+
+    \bibliographystyle{plainnat}
+    \bibliography{Identity}
+  \end{document}
+  
