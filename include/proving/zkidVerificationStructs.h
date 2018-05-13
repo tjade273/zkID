@@ -4,6 +4,9 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <climits>
+
+#define ZKID_CREDENTIAL_ATTRIBUTE_NUM 7
 
 enum VerificationErrorCode
 {
@@ -27,8 +30,9 @@ struct Credential
 
 struct AttributeRequest
 {
-    std::string lower_bound;
-    std::string upper_bound;
+    std::string lower_bound = "0x00";
+    std::string upper_bound = "0x7FFFFFFF";
+    int idx;
 };
 
 struct CredentialRequest

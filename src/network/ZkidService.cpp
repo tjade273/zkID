@@ -32,18 +32,20 @@ bool ZkidService::GetProofForCredential(const CredentialRequest &cred, Credentia
     {
         auto cur_attribute = cred.attribute_requests[i];
         attribute_string +=
-            "attribute_index: " + std::to_string(i) + "\n" +
-            "lower_bound: " + cur_attribute.lower_bound + "\n" +
-            "upper_bound: " + cur_attribute.upper_bound + "\n";
+            "\t attribute_index: " + std::to_string(cur_attribute.idx) + "\n" +
+            "\t lower_bound: " + cur_attribute.lower_bound + "\n" +
+            "\t upper_bound: " + cur_attribute.upper_bound + "\n \n";
     }
 
     console->info("Recieved request for proof of credential: \n \
-        contract_salt: {0} \n \
-        merkle_root_address: {1} \n \ 
-        k_bound: {2} \n \
-        With Attributes: \n \
-        {3}",
-                  cred.contract_salt, cred.merkle_root_address, cred.k_bound, attribute_string);
+    ---------------------------------------------------------------------------- \n \
+    contract_salt: {0} \n \
+    merkle_root_address: {1} \n \ 
+    k_bound: {2} \n \
+    Attributes: \n \
+    {3}\
+    ---------------------------------------------------------------------------- \n",
+    cred.contract_salt, cred.merkle_root_address, cred.k_bound, attribute_string);
 
     return GenerateProofForCredential(cred, proof);
 }
