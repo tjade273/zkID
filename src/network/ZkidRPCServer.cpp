@@ -39,9 +39,14 @@ CredentialRequest ZkidRPCServer::CredentialRequestFromJson(const Json::Value &cr
     CredentialRequest cred_desc;
     cred_desc.contract_salt = cred_json["contract_salt"].asString();
     cred_desc.merkle_root_address = cred_json["merkle_root_address"].asString();
-    cred_desc.lower_bound = cred_json["lower_bound"].asString();
-    cred_desc.upper_bound = cred_json["upper_bound"].asString();
     cred_desc.k_bound = cred_json["k_bound"].asInt();
+
+    for(const Json::Value& attr_req_json : cred_json["requested_attributes"]){
+        AttributeRequest attr_request;
+        attr_request.lower_bound = attr_req_json["lower_bound"].asString();
+        attr_request.upper_bound = attr_req_json["upper_bound"].asString();
+        cred_desc.attribute_requests.push_back(attr_request);
+    }
 
     return cred_desc;
 }

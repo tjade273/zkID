@@ -1,15 +1,26 @@
 #ifndef _zkidProver_h
 #define _zkidProver_h
 
-#include "configuration/ConfigProverInterface.h"
 #include "zkidVerificationStructs.h"
+#include "util/zkid_helpers.h"
+
+struct ProofRequest {
+  std::string secret_key;
+  std::string merkle_root;
+  std::vector<std::string> path;
+  size_t address;
+  std::string attributes;
+  std::string upper_bounds;
+  std::string lower_bounds;
+  unsigned long k_bound;
+  unsigned long k;
+  std::string salt;
+};
+
 
 class zkidProver{
     public:
-        zkidProver(ConfigProverInterface* prover_config) : _prover_config(prover_config){};
-        bool GenerateProof(const Credential& c,const CredentialRequest& req, const std::vector<std::string>& merkle_path, CredentialProof& proof){return false; /* Actually generate a proof */};
-    private:
-        void RetrieveMerkleTree(const std::string& issuer_address);
-        ConfigProverInterface* _prover_config = nullptr;
+         virtual bool GetCredentialProof(ProofRequest &proof_req, CredentialProof &data,
+                             LibsnarkCredentialProof *libsnark_data = nullptr) = 0;
 };
 #endif

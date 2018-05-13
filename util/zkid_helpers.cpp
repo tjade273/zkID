@@ -1,9 +1,7 @@
 #include "zkid_helpers.h"
 
-CredentialProof ExtractCredentialProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof)
+void ExtractCredentialProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof, CredentialProof& p)
 {
-    CredentialProof p;
-
     p.A = libsnark::outputPointG1AffineAsHex(proof.g_A.g);
     p.A_p = libsnark::outputPointG1AffineAsHex(proof.g_A.h);
     p.B = libsnark::outputPointG2AffineAsHex(proof.g_B.g);
@@ -12,7 +10,6 @@ CredentialProof ExtractCredentialProof(libsnark::r1cs_ppzksnark_proof<libff::alt
     p.C_p = libsnark::outputPointG1AffineAsHex(proof.g_C.h);
     p.H = libsnark::outputPointG1AffineAsHex(proof.g_H);
     p.K = libsnark::outputPointG1AffineAsHex(proof.g_K);
-    return p;
 }
 
 VerificationKey ExtractVerificationKey(libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> &vk)
@@ -101,9 +98,10 @@ void ExportVerificationKey(VerificationKey &vk, const std::string &sol_path, con
     of.close();
 }
 
-void ExportProof(LibsnarkVerificationData &auth, std::string fname)
+void ExportProof(LibsnarkCredentialProof &auth, std::string fname)
 {
-    CredentialProof proof = ExtractCredentialProof(auth.proof);
+    CredentialProof proof;
+    ExtractCredentialProof(auth.proof, proof);
 
     std::ofstream f(fname);
     if (!f)

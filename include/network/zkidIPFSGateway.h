@@ -11,7 +11,7 @@ class zkidIPFSGateway : public zkidMTProvider
   public:
     zkidIPFSGateway(ConfigIPFSInterface* ipfs_config);
     void Connect(pid_t pid = 0);
-    void GetMerklePath(const std::string &merkle_address, size_t address, std::vector<std::string> &path);
+    std::string GetMerklePath(const std::string &merkle_address, size_t address, std::vector<std::string> &path);
     std::string PutMerkleTree(const std::vector<std::string>& hashes, int i = 0);
   private:
     ipfs::Client _client;

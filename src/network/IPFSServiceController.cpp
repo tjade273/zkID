@@ -16,8 +16,6 @@ void IPFSServiceController::StartService(char** argv)
     {
         this->_ipfs_process_id = pid;
     }
-
-    free(argv);
 }
 
 void IPFSServiceController::StopService()
