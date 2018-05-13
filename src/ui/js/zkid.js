@@ -3,8 +3,8 @@ issuer_abi = JSON.parse('[{"constant":false,"inputs":[],"name":"getMerkleRootAdd
 IssuerContract = web3.eth.contract(issuer_abi);
 currentBlock = null;
 
-function ProofToBytes(proof, publicInputs) {
-    return [].concat(
+function ProofToBytes(proof) {
+    proof_bytes =  [].concat(
         web3.utils.hexToBytes(proof["A"][0]),
         web3.utils.hexToBytes(proof["A"][1]),
         web3.utils.hexToBytes(proof["A_p"][0]),
@@ -22,10 +22,12 @@ function ProofToBytes(proof, publicInputs) {
         web3.utils.hexToBytes(proof["H"][0]),
         web3.utils.hexToBytes(proof["H"][1]),
         web3.utils.hexToBytes(proof["K"][0]),
-        web3.utils.hexToBytes(proof["K"][1]));
+        web3.utils.hexToBytes(proof["K"][1]),
+        proof["public_inputs"].length()); //max 255 inputs
 
-        //TODO: Append public inputs
-}
+    return proof["public_inputs"].reduce(function(acc,e){
+        acc.concat(web3.utils.hexToBytes(e));
+    },proof_bytes);
 
 
 var CredentialMethod = function (methodName, method, abi) {
