@@ -21,7 +21,7 @@ contract LotteryContract{
 
   modifier check_credentials(uint[18] data, uint serial, uint upper, uint lower) {
     uint m_root = issuer.get_root();
-    uint salt = uint(this) << 56 || (block.number >> 12) << 32 || RATE;
+    uint salt = uint(this) << 56 | (block.number >> 12) << 32 | RATE;
     Verifier.Proof memory proof;
     proof.parseProofData(data);
     uint valid = Verifier.verify([m_root, serial, upper, lower, salt], proof);
@@ -33,10 +33,10 @@ contract LotteryContract{
   }
 
   function LotteryContract(address _issuer){
-    Issuer = Issuer(_issuer);
+    issuer = Issuer(_issuer);
   }
 
-  function Join(uint[] proof) check_credentials(proof, US_CITIZEN, US_CITIZEN||OVER_18) public {
+  function Join(uint[18] proof, uint serial) check_credentials(proof, serial, US_CITIZEN, US_CITIZEN|OVER_18) public {
     participants[msg.sender] = true;
     Joined(msg.sender);
   }

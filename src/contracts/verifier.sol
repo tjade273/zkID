@@ -171,7 +171,7 @@ library Verifier {
         vk.IC = new Pairing.G1Point[](<%vk_ic_length%>);
         <%vk_ic_pts%>
     }
-    function verify(uint[] input, Proof proof) internal returns (uint) {
+    function verify(uint[5] input, Proof proof) internal returns (uint) {
         VerifyingKey memory vk = verifyingKey();
         require(input.length + 1 == vk.IC.length);
         // Compute the linear combination vk_x
