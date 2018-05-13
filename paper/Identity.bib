@@ -159,4 +159,65 @@ We show two realizations of VCs based on standard and well established assumptio
   file = {/home/tjaden/Zotero/storage/9T97E4IA/different-approaches-to-ethereum-identity-standards-a09488347c87.html}
 }
 
+@report{parnoPinocchioNearlyPractical2013,
+  title = {Pinocchio: {{Nearly Practical Verifiable Computation}}},
+  url = {https://eprint.iacr.org/2013/279},
+  shorttitle = {Pinocchio},
+  abstract = {To instill greater confidence in computations outsourced to the cloud, clients should be able to verify the correctness of the results returned. To this end, we introduce Pinocchio, a built system for efficiently verifying general computations while relying only on cryptographic assumptions. With Pinocchio, the client creates a public evaluation key to describe her computation; this setup is proportional to evaluating the computation once. The worker then evaluates the computation on a particular input and uses the evaluation key to produce a proof of correctness. The proof is only 288 bytes, regardless of the computation performed or the size of the inputs and outputs. Anyone can use a public verification key to check the proof. Pinocchio achieves strong asymptotic efficiency by refining the Quadratic Arithmetic Programs of Gennaro, Gentry, Parno, and Raykova (EuroCrypt 2013).
+
+Crucially, our evaluation on seven applications demonstrates that Pinocchio is efficient in practice too. Pinocchio's verification time is typically 10ms: 5-7 orders of magnitude less than previous work; indeed Pinocchio is the first general-purpose system to demonstrate per-instance verification cheaper than native execution (for some apps). Pinocchio also reduces the worker's proof effort by an additional 19-60x. As an additional feature, Pinocchio generalizes to zero-knowledge proofs at a negligible cost over the base protocol. Finally, to aid development, Pinocchio provides an end-to-end toolchain that compiles a subset of C into programs that implement the verifiable computation protocol.},
+  number = {279},
+  urldate = {2018-05-13},
+  date = {2013},
+  keywords = {cryptographic protocols,implementation,NIZKs,verifiable computation,zero knowledge},
+  author = {Parno, Bryan and Gentry, Craig and Howell, Jon and Raykova, Mariana},
+  file = {/home/tjaden/Zotero/storage/H84X4VJU/Parno et al. - 2013 - Pinocchio Nearly Practical Verifiable Computation.pdf;/home/tjaden/Zotero/storage/ISYEAFII/279.html}
+}
+
+@report{ben-sassonSNARKsVerifyingProgram2013,
+  title = {{{SNARKs}} for {{C}}: {{Verifying Program Executions Succinctly}} and in {{Zero Knowledge}}},
+  url = {https://eprint.iacr.org/2013/507},
+  shorttitle = {{{SNARKs}} for {{C}}},
+  abstract = {An argument system for NP is a proof system that allows efficient verification of NP statements, given proofs produced by an untrusted yet computationally-bounded prover. Such a system is non-interactive and publicly-verifiable if, after a trusted party publishes a proving key and a verification key, anyone can use the proving key to generate non-interactive proofs for adaptively-chosen NP statements, and proofs can be verified by anyone by using the verification key.
+
+This yields a zero-knowledge Succinct Non-interactive ARgument of Knowledge (zk-SNARK) for program executions in the preprocessing model -- a powerful solution for delegating NP computations, with several features not achieved by previously-implemented primitives.
+
+Our approach builds on recent theoretical progress in the area. We present efficiency improvements and implementations of two main ingredients:
+
+* Given a C program, we produce a circuit whose satisfiability encodes the correctness of execution of the program. Leveraging nondeterminism, the generated circuit's size is merely quasilinear in the size of the computation. In particular, we efficiently handle arbitrary and data-dependent loops, control flow, and memory accesses. This is in contrast with existing ``circuit generators'', which in the general case produce circuits of quadratic size.
+
+* Given a linear PCP for verifying satisfiability of circuits, we produce a corresponding SNARK. We construct such a linear PCP (which, moreover, is zero-knowledge and very efficient) by building on and improving on recent work on quadratic arithmetic programs.},
+  number = {507},
+  urldate = {2018-05-13},
+  date = {2013},
+  keywords = {cryptographic protocols,computationally-sound proofs,delegation of computation,succinct arguments,zero-knowledge},
+  author = {Ben-Sasson, Eli and Chiesa, Alessandro and Genkin, Daniel and Tromer, Eran and Virza, Madars},
+  file = {/home/tjaden/Zotero/storage/KJWE73KN/Ben-Sasson et al. - 2013 - SNARKs for C Verifying Program Executions Succinc.pdf;/home/tjaden/Zotero/storage/2EUCYJKZ/507.html}
+}
+
+@article{benetIPFSContentAddressed2014,
+  archivePrefix = {arXiv},
+  eprinttype = {arxiv},
+  eprint = {1407.3561},
+  primaryClass = {cs},
+  title = {{{IPFS}} - {{Content Addressed}}, {{Versioned}}, {{P2P File System}}},
+  url = {http://arxiv.org/abs/1407.3561},
+  abstract = {The InterPlanetary File System (IPFS) is a peer-to-peer distributed file system that seeks to connect all computing devices with the same system of files. In some ways, IPFS is similar to the Web, but IPFS could be seen as a single BitTorrent swarm, exchanging objects within one Git repository. In other words, IPFS provides a high throughput content-addressed block storage model, with content-addressed hyper links. This forms a generalized Merkle DAG, a data structure upon which one can build versioned file systems, blockchains, and even a Permanent Web. IPFS combines a distributed hashtable, an incentivized block exchange, and a self-certifying namespace. IPFS has no single point of failure, and nodes do not need to trust each other.},
+  urldate = {2018-05-13},
+  date = {2014-07-14},
+  keywords = {Computer Science - Distributed; Parallel; and Cluster Computing,Computer Science - Networking and Internet Architecture},
+  author = {Benet, Juan},
+  file = {/home/tjaden/Zotero/storage/ZA6SFNBH/Benet - 2014 - IPFS - Content Addressed, Versioned, P2P File Syst.pdf;/home/tjaden/Zotero/storage/M6GZUFLY/1407.html}
+}
+
+@article{woodEthereumSecureDecentralised2014,
+  title = {Ethereum: {{A}} Secure Decentralised Generalised Transaction Ledger},
+  volume = {151},
+  shorttitle = {Ethereum},
+  journaltitle = {Ethereum Project Yellow Paper},
+  date = {2014},
+  pages = {1--32},
+  author = {Wood, Gavin}
+}
+
 

@@ -22,6 +22,8 @@
     "pgfplots"
     "booktabs"
     "natbib"
+    "listings"
+    "xcolor"
     "todonotes"
     "tikz-cd"
     "mathtools")

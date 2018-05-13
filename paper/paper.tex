@@ -87,13 +87,110 @@ currently impossible to attest to aspects of one's identity without some
 trusted credential issuer.
 
 \subsection{Prior Work}
-A generalized scheme was proposed by \citet{garmanDecentralizedAnonymousCredentials2013}
+Identity systems for public blockchains have been proposed before in the form of
+serivces like Civic and Uport, wherein users can acquire attestations from
+trusted issuers about facets of their identity (name, age, country of origin,
+etc). These services promise ``anonymous'' attestation, but are
+\textit{linkable}, i.e.\ multiple attestations by the same user are trivially
+identifiable, and \textit{pseudonymous}, i.e.\ attestations are
+linked to a pseudonym that is known by the credential issuer. If a credential
+issuer leaks their records, then all past activity by a user is deanonymized.
+
+A zero-knowledge credential scheme for blockchains was proposed by
+\citet{garmanDecentralizedAnonymousCredentials2013}, using zkSNARKS. Our system
+adapts this scheme for the Ethereum\cite{woodEthereumSecureDecentralised2014} blockchain and implements more expressive
+forms of credentials that can be easily utilized for ad-hoc attestations in zero-knowledge.
+
+\subsection{Protocol Overview}
+\subsubsection{Actors}
+The major actors in this protocol are \textit{issuers}, \textit{verifiers} and
+\textit{users}. A verifier is a  smart-contract that wants to ensure that
+users calling a function are authorized to do so. In order to authorize users,
+the contract designates an issuer, who is responsible for granting credentials
+to users and keeping a Merkle tree of valid credentials. The verifier then
+requires that each user provide a zero-knowledge proof that the user possesses a
+credential in the merkle tree with attributes in the required range. Both
+credential issuance and usage is done in zero-knowledge and attestations are
+reusable and unlinkable.
+
+\subsection{Implementation}
+We implement zero-knowledge proofs using the elliptic curve pairing precompiled
+contracts in Ethereum, using the Pinnochio protocol
+\cite{parnoPinocchioNearlyPractical2013}. We constructed the arithmetic circuits
+for the proofs using libsnark \cite{ben-sassonSNARKsVerifyingProgram2013}.
+Commitment trees are stored using IPFS \cite{benetIPFSContentAddressed2014}.
+
 
 \section{Properties and Features}
+Our zero-knowledge identity system allows for highly flexible ad-hoc issuance of
+credentials through \textit{k-show} credentials and range-bounded attributes.
+
+
+The public inputs are
+\begin{equation*}
+  \texttt{m\_root},\ \{l_1, \dots, l_7\},\ \{u_1, \dots, u_7\}, S, k
+\end{equation*}
+
+Each proof is an assertion that the prover holds a credential
+\begin{equation*}
+c = (sk, \{attr_1, \dots, attr_7\})  
+\end{equation*}
+ such that 
+
+\begin{enumerate}[1.]
+\item The credential is a leaf of a merkle tree with root \texttt{m\_root}.
+\item The credential contains some attributes $\{attr_1, \dots, attr_7\}$ with
+  $attr_i \in [l_i,u_i]$
+\item The credential has been used fewer than $k$ times with the salt $S$
+\end{enumerate}
+
 
 \section{Implementation}
 
+\subsection{Credentials}
+Each credential is of the form
+\begin{equation*}
+c =  ( \texttt{sk}, \{attr_1, \dots, attr_n\})
+\end{equation*}
+
+where $\texttt{sk} \in \{0, 1\}^\lambda$ and $attr_i \in \Z_{2^{32}}$.
+
+\subsection{Credential Requests}
+A credential request is a tuple of the form
+\begin{equation*}
+  r = (\texttt{merkle\_root}, \texttt{serial}, \{u_1, \dots,u_n\}, \{\ell_1,\dots,\ell_n\}, S, k)
+\end{equation*}
+
+where $\texttt{merkle\_root}$ is the root of a Merkle-tree of valid credential
+commitments, $u_i, \ell_i \in \Z_{2^{32}}$ are bounds on acceptable attribute
+values, $S$ is a request-specific salt, and $k\in \N$ is the allowed number of
+uses of a single credential per salt $S$.
+
+\subsection{k-show Credentials}
+Every proof $\pi$ that a user generates has as public input
+$\texttt{serial}_\pi$ which is defined as
+\begin{equation*}
+  H(\texttt{sk}_u || S_v || k)
+\end{equation*}
+
+and a public input $\texttt{k\_bound}$ such that $k\leq \texttt{k\_bound}$. For
+each proof that the verifier accepts, the verifier adds $\texttt{serial}_\pi$ to
+its nullifier set $N$. A verifier accepts $\pi$ only if $\pi \notin N$. Thus,
+for a given salt $S_v$ the user may produce up to $\texttt{k\_bound}$ distinct
+valid proofs, while remaining unlinkable. The verifier $v$ may select $S$ such
+that it changes over time, for instance such that it contains the hash of the
+most recent block with height a multiple of 1 million, which allows for
+rate-limited credentials.
+
+\subsection{Bounded-attributes}
+A proof for a given credential request $r$ must assert that $attr_i \in [\ell_i,
+u_i]$ for all $1\leq i\leq n$. This allows attestations such as ``I possess over
+\$1 million'', ``I am between the ages of 21 and 45'', or ``I live in the USA'',
+without revealing any additional information.
+
 \subsection{Credential Scheme}
+verifier
+
 
 \subsection{The ZKID Service}
 
