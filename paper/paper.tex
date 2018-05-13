@@ -93,54 +93,23 @@ A generalized scheme was proposed by \citet{garmanDecentralizedAnonymousCredenti
 
 \section{Implementation}
 
-\subsection{dApp Framework and Credential-Enabled Contracts}
+\subsection{Credential Scheme}
 
-The properly interface with the ZKID Service a dApp will have to provide an annotated ABI for its dependant contract(s).
-The required annotations describe the required credentials for a given method within the smart contract and will
-be used to propery construct public inputs and subsequently generate proofs for credentials. An annotated ABI function
-would appear as follow:
-
-\begin{lstlisting}
-
-  {"constant":false,
-   "name":"Join",
-   "inputs":[],
-   "outputs":[],
-   "payable":false,
-   "type":"function","
-    "credentials":[
-      {"contract_salt":"0xdeadbeef",
-      "high_bound":150,
-      "low_bound":18,
-      "k_factor":1,
-      "description": "Confirms holder is over 18."
-      }
-    ]
-
-\end{lstlisting}
-
-Note that the description field is not nessesary for generation / verification of proofs, but is supplied soley for
-the use of the credential-acknowledgement framework described later. 
-
-Additionally, all credential-enabled contracts are required to implement a GetMerkleTreeAddress function that can provide
-the caller with the IPFS address of its merkle root. This is pertinent to the generation of the nessesary Merkle Tree membership
-proofs and proof generation will be unsuccessful if ignored.
-
-\subsection{ZKID Service}
+\subsection{The ZKID Service}
 
 \subsubsection{libsnark}
 
-\subsubsection{JSON RPC Service}
+\subsubsection{JSON RPC}
 
 The ZKID client application acts as a JSON RPC service that can handle requests from client dApps. For the simplest implementation,
 the RPC service offered a single procedure: GenerateProofs. This procedure takes as input all the fields nessesary
 to construct the required set of public inputs for the proofs. If proof generation was successful, the service will respond with a 
-set of generated proofs as well as their relative public inputs. The returned proofs can then be sent to the verifier contract.  
+set of generated proofs and relevant public inputs. The returned proofs can then be sent to the verifier contract.  
 
 \subsection{Verifiers}
 
-It is expected, although not required, that credential-enabled contracts perform their own verification. For this reason, we have
-provided a Solidity library enables contracts to verify proofs autonomously. The verifier library follows a scheme similar to that
+It is expected, although not required, that credential-enabled contracts perform their own proof verification. For this reason, we have
+developed a Solidity library that enables contracts to verify proofs autonomously. The verifier library follows a scheme similar to that
 of Zokrates [insert citation here]. The library exposes a single method to be utlized by the higher-level contract: verifyTx. This 
 method does precisely what the name implies and verifies as set of proofs encoded as bytes and returns true if all proofs where sucessfully
 verified and false otherwise. 
@@ -151,7 +120,18 @@ For this reason, the number of proofs requested for verification should be kept 
 \subsection{Issuers}
 
 Although there is no strict template for an issuer (asside from the credential contruction), we purpose a scheme that we believe
-will offers most of the elementary functions of an issuer.
+will offers most of the elementary functions of an issuer. This basic scheme involves 2 main functions:
+credential-holder stake and distributed merkle tree storage.
+
+\subsubsection{Credential-Holder Stake}
+
+An obvious vulenerability of the credential system as described is the ability to share credentials. So, for example, an uncredible could may
+a credible party for a specific credential. We proprose that an issuer's require a credential-requester to submit a stake when 
+applying for a credential. This stake can be redeemed by an user that can provide the issuer contract with a specified pre-image. Once 
+redeemed, the credential because invalidated. Therefore, if a dishonest party were to give away their credential, the new holder of the credential
+could steal the original holder's stake. This requires issuers to set their stakes high enough such that no party would be willing to pay the
+price of the stake for the credential. A stake system could also lead to varying "tiers" of issuers where issuers that require higher stakes could be 
+percieved as having higher credibility do the lower probability of users sharing said issuer's credential.
 
 \subsubsection{InterPlanetary File System (IPFS)}
 
@@ -159,6 +139,64 @@ As designed, the ZKID service expects verifiers to store their issued-credential
 By utilizing IPFS, the ZKID service promotes the distributed nature of its environment and further encourages issuers to take advantage of said distributed nature. All issuer
 contracts must supply a GetMerkleTreeAddress method that returns the IPFS address of their merkle root. Every issuer must also append the hashes of every issued credential 
 to their merkle tree so that verifiers and clients can construct merkle tree paths and subsequently merkle tree membership proofs as nessesary. 
+
+\subsection{dApp Framework and Credential-Enabled Contracts}
+
+Add some Introduction here
+
+\subsubsection{Credential Annotated ABI}
+The properly interface with the ZKID Service a dApp will have to provide an annotated ABI for its dependant contract(s).
+The required annotations describe the required credentials for a given method within the smart contract and will
+be used to propery construct public inputs and subsequently generate proofs for credentials. An annotated ABI function
+would appear as follow:
+\begin{lstlisting}
+
+  {"constant":false,
+   "name":"Join",
+   "inputs":[],
+   "outputs":[],
+   "payable":false,
+   "type":"function","
+    "credentials":[
+      {"contract_salt":"0xdeadbeef",
+      "high_bound":255,
+      "low_bound":18,
+      "k_bound":1,
+      "description": "Confirms holder is over 18."
+      }
+    ]
+  }
+\end{lstlisting}
+
+Note that the description field is not nessesary for generation / verification of proofs, but is supplied soley for
+the use of the credential-acknowledgement framework described later. 
+
+\subsubsection{ZKID web3 Framework}
+
+To a dApp's migration to credentail-enabled contracts as smooth as possible we have supplied a ZKID framework that interfaces
+with our prove-generation service and seemlessly collects and supplies verifcation arguments to credential-enabled methods. This 
+allows dApp creators to integrate credential functionality without changing their already developed application code.
+
+To utlize the framework a dApp simply replaces all existing contract calls with calls to their credential accepting counterparts. 
+This can be accomplished very concisely by wrapping the credial-accepting method call with partially applied
+function. A full implementation of this exists in our example application and is depicted in [INSERT FIG NUMBER];
+\begin{lstlisting}
+function OnJoinClick() {
+  var credBlock = new CredentialBlock("Join", PartialAppJoin(), lottery_abi);
+    credBlock.display();
+}
+
+function PartialAppJoin(/* Insert non-proof arguments here*/) {
+  return function (proof_bytes) {
+    contractInstance.methods["Join"](/* Non-Proof Arguments*/ ,proof_bytes).send();
+  }
+}
+
+\end{lstlisting}
+
+In the above example, "Join" allowed a users to join a lottery if they have the required credentials. Originally, took a number of non-proof arguments. 
+The credential enabled join now takes the non-proof arguments as well as proof arguments. This partial application hides the non-proof arguments from the ZKID CredentialBlock and allows the CredentialBlock to 
+supply the proof arguments post proof-generation. The dApp's code has now migrated its call to "Join" to a credential-enabled call with minimal additions.
 
 \section{Benchmarks}
 
@@ -175,4 +213,3 @@ framework that would allow applications to prompt users for the required credent
 \bibliographystyle{plainnat}
 \bibliography{Identity}
 \end{document}
-  
