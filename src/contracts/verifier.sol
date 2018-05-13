@@ -195,6 +195,18 @@ library Verifier {
         return 0;
     }
 
+    function parseProofData(Proof memory self, uint[18] data) internal {
+      uint pos = 0;
+      self.A = Pairing.G1Point(   data[pos++], data[pos++]);
+      self.A_p = Pairing.G1Point( data[pos++], data[pos++]);
+      self.B = Pairing.G2Point(  [data[pos++], data[pos++]], [data[pos++], data[pos++]]);
+      self.B_p = Pairing.G1Point( data[pos++], data[pos++]);
+      self.C = Pairing.G1Point(   data[pos++], data[pos++]);
+      self.C_p = Pairing.G1Point( data[pos++], data[pos++]);
+      self.H = Pairing.G1Point(   data[pos++], data[pos++]);
+      self.K = Pairing.G1Point(   data[pos++], data[pos++]);
+    }
+
     function parseProofsDataFromBytes(uint[] data, uint[] public_inputs, ProofData[] memory proofsData) internal{
         uint pos = 0;
         uint inputs_pos = 0;

@@ -21,15 +21,7 @@ contract LotteryContract{
     uint m_root = issuer.get_root();
     uint salt = uint(this) << 56 || (block.number >> 12) << 32 || RATE;
     Verifier.Proof memory proof;
-    uint pos = 0;
-    proof.A = Pairing.G1Point(   data[pos++], data[pos++]);
-    proof.A_p = Pairing.G1Point( data[pos++], data[pos++]);
-    proof.B = Pairing.G2Point(  [data[pos++], data[pos++]], [data[pos++], data[pos++]]);
-    proof.B_p = Pairing.G1Point( data[pos++], data[pos++]);
-    proof.C = Pairing.G1Point(   data[pos++], data[pos++]);
-    proof.C_p = Pairing.G1Point( data[pos++], data[pos++]);
-    proof.H = Pairing.G1Point(   data[pos++], data[pos++]);
-    proof.K = Pairing.G1Point(   data[pos++], data[pos++]);
+    proof.parseProofData(data);
     uint valid = Verifier.verify([m_root, serial, upper, lower, salt], proof);
     if(valid != 0 || nullifiers[serial])
       revert();
