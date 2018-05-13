@@ -195,7 +195,7 @@ library Verifier {
         return 0;
     }
 
-    function parseProofsDataFromBytes(uint[18] data, uint[5] public_inputs, ProofData[] memory proofsData) internal{
+    function parseProofsDataFromBytes(uint[] data, uint[] public_inputs, ProofData[] memory proofsData) internal{
         uint pos = 0;
         uint inputs_pos = 0;
         uint proofCount = 0;
