@@ -195,12 +195,15 @@ library Verifier {
         return 0;
     }
 
-    function parseProofsDataFromBytes(uint[] data, ProofData[] memory proofsData) internal{
+    function parseProofsDataFromBytes(uint[] data, uint[] public_inputs, ProofData[] memory proofsData) internal{
         uint pos = 0;
+        uint inputs_pos = 0;
         uint proofCount = 0;
 
         while(pos < data.length){
             ProofData memory proofData;
+
+            /* Proof Parameters */
             proofData.proof.A = Pairing.G1Point(   data[pos++], data[pos++]);
             proofData.proof.A_p = Pairing.G1Point( data[pos++], data[pos++]);
             proofData.proof.B = Pairing.G2Point(  [data[pos++], data[pos++]], [data[pos++], data[pos++]]);
@@ -209,21 +212,25 @@ library Verifier {
             proofData.proof.C_p = Pairing.G1Point( data[pos++], data[pos++]);
             proofData.proof.H = Pairing.G1Point(   data[pos++], data[pos++]);
             proofData.proof.K = Pairing.G1Point(   data[pos++], data[pos++]);
-            uint input_len = data[pos++];
+            
+            /* Public Inputs */
+            uint input_len = data[inputs_pos++];
             proofData.inputs = new uint[](input_len);
-            for(uint i =0; i < input_len; i++){
-                proofData.inputs[i] = data[pos++];
+
+            for(int i =0; i < input_len; i++){
+                proofData.inputs[i] = public_inputs[inputs_pos++];
             }
 
+            /* Add to proofsData */
             proofsData[proofCount] = proofData;
             ++proofCount;
         }
     }
 
     event Verified(string);
-    function verifyTx(uint[] proofs_bytes, uint proof_count) public returns (bool r) {
+    function verifyTx(uint[] proofs_bytes, uint proof_count, uint[] public_inputs) public returns (bool r) {
         ProofData[] memory proofsData = new ProofData[](proof_count);
-        parseProofsDataFromBytes(proofs_bytes,proofsData);
+        parseProofsDataFromBytes(proofs_bytes,public_inputs,proofsData);
         for(uint i = 0; i < proofsData.length; i++){
 
             if (verify(proofsData[i].inputs, proofsData[i].proof) != 0) {

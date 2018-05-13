@@ -4,7 +4,7 @@ IssuerContract = web3.eth.contract(issuer_abi);
 currentBlock = null;
 
 function ProofToBytes(proof) {
-    proof_bytes =  [].concat(
+    return [].concat(
         web3.utils.hexToBytes(proof["A"][0]),
         web3.utils.hexToBytes(proof["A"][1]),
         web3.utils.hexToBytes(proof["A_p"][0]),
@@ -22,21 +22,9 @@ function ProofToBytes(proof) {
         web3.utils.hexToBytes(proof["H"][0]),
         web3.utils.hexToBytes(proof["H"][1]),
         web3.utils.hexToBytes(proof["K"][0]),
-        web3.utils.hexToBytes(proof["K"][1]),
-        proof["public_inputs"].length()); //max 255 inputs
-
-    return proof["public_inputs"].reduce(function(acc,e){
-        acc.concat(web3.utils.hexToBytes(e));
-    },proof_bytes);
-
-
-var CredentialMethod = function (methodName, method, abi) {
-    this.methodName = methodName;
-    this.method = method;
-    this.requiredCredentials = abi.find(function (e) {
-        return e["name"] === methodName;
-    })["credentials"];
+        web3.utils.hexToBytes(proof["K"][1]));
 }
+
 
 CredentialBlock.prototype.FetchCredentialProofs = function () {
     var client = new zkidclient("http://localhost:8383");
@@ -116,6 +104,14 @@ CredentialBlock.prototype.display = function () {
 function CredentialBlock(methodName, method, abi) {
     this.action = new CredentialMethod(methodName, method, abi);
     currentBlock = this;
+}
+
+var CredentialMethod = function (methodName, method, abi) {
+    this.methodName = methodName;
+    this.method = method;
+    this.requiredCredentials = abi.find(function (e) {
+        return e["name"] === methodName;
+    })["credentials"];
 }
 
 function PostVericiationError(code, msg) {
