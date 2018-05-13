@@ -171,7 +171,7 @@ library Verifier {
         vk.IC = new Pairing.G1Point[](<%vk_ic_length%>);
         <%vk_ic_pts%>
     }
-    function verify(uint[] input, Proof proof) internal returns (uint) {
+    function verify(uint[5] input, Proof proof) internal returns (uint) {
         VerifyingKey memory vk = verifyingKey();
         require(input.length + 1 == vk.IC.length);
         // Compute the linear combination vk_x
@@ -195,6 +195,18 @@ library Verifier {
         return 0;
     }
 
+    function parseProofData(Proof memory self, uint[18] data) internal {
+      uint pos = 0;
+      self.A = Pairing.G1Point(   data[pos++], data[pos++]);
+      self.A_p = Pairing.G1Point( data[pos++], data[pos++]);
+      self.B = Pairing.G2Point(  [data[pos++], data[pos++]], [data[pos++], data[pos++]]);
+      self.B_p = Pairing.G1Point( data[pos++], data[pos++]);
+      self.C = Pairing.G1Point(   data[pos++], data[pos++]);
+      self.C_p = Pairing.G1Point( data[pos++], data[pos++]);
+      self.H = Pairing.G1Point(   data[pos++], data[pos++]);
+      self.K = Pairing.G1Point(   data[pos++], data[pos++]);
+    }
+
     function parseProofsDataFromBytes(uint[] data, uint[] public_inputs, ProofData[] memory proofsData) internal{
         uint pos = 0;
         uint inputs_pos = 0;
@@ -212,7 +224,7 @@ library Verifier {
             proofData.proof.C_p = Pairing.G1Point( data[pos++], data[pos++]);
             proofData.proof.H = Pairing.G1Point(   data[pos++], data[pos++]);
             proofData.proof.K = Pairing.G1Point(   data[pos++], data[pos++]);
-            
+
             /* Public Inputs */
             uint input_len = data[inputs_pos++];
             proofData.inputs = new uint[](input_len);
