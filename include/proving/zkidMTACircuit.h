@@ -6,10 +6,6 @@
 #include <libsnark/gadgetlib1/gadgets/merkle_tree/merkle_tree_check_read_gadget.hpp>
 #include <libsnark/gadgetlib1/gadgets/basic_gadgets.hpp>
 
-//TODO remove:
-#include "util/libsnark_helpers.h"
-
-
 using namespace libsnark;
 
 
@@ -118,8 +114,6 @@ public:
         leaf_digest->generate_r1cs_witness(leaf);
         path_var->generate_r1cs_witness(address, auth_path);
         merkle_check->generate_r1cs_witness();
-        printf("Merkle root:\n");
-        std::cout << hex_from_bit_vector(merkle_check->root.get_digest()) << std::endl;
 
         root_digest->generate_r1cs_witness(root);
         unpacker->generate_r1cs_witness_from_packed();
@@ -239,7 +233,7 @@ class zkid_gadget : gadget<FieldT> {
       // constrain each attribute to be in-bounds
       for(int i = 0; i < num_attributes; ++i)
         range_proofs.emplace_back(new zkrange_gadget<FieldT>(pb, attribute_size, upper_bounds_split[i], lower_bounds_split[i], attributes_split[i]));
-      
+
       // pack salt_bits into salt
       salt_kbound_bits.allocate(pb, digest_len - 8);
       bit_packers.emplace_back(new packing_gadget<FieldT>(pb, pb_variable_array<FieldT>(salt_kbound_bits.begin(), salt_kbound_bits.end()-32), salt_kbound_packed));
