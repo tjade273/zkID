@@ -4,7 +4,7 @@
 #include "proving/zkidMTA.h"
 #include "util/zkid_helpers.h"
 
-
+/*
 #define M_TREE_LENGTH 3
 
 TEST(zkMTATest, TestProofGenerationPbSatisfaction){
@@ -68,7 +68,7 @@ TEST(zkMTATest, TestVerifyFail){
 
   ASSERT_FALSE(verified);
 }
-
+*/
 
 TEST(zkIDTest, TestProofGeneration){
   ProofRequest proof;

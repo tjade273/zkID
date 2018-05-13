@@ -47,7 +47,7 @@ public:
         lower->generate_r1cs_constraints();
     }
     void generate_r1cs_witness(){
-        upper->generate_r1cs_witnwss();
+        upper->generate_r1cs_witness();
         lower->generate_r1cs_witness();
     }
 };
@@ -263,6 +263,7 @@ class zkid_gadget : gadget<FieldT> {
 
       // pack serial_number low bits
       pb_variable_array<FieldT> serial_low_bits(serial_number_digest.bits.end()-FieldT::capacity(), serial_number_digest.bits.end());
+      std::cout << "SLB size: "<< serial_low_bits.size() << std::endl;
       bit_packers.emplace_back(new packing_gadget<FieldT>(pb, serial_low_bits,  serial_number_packed));
 
       // pack merkle_root
@@ -271,9 +272,9 @@ class zkid_gadget : gadget<FieldT> {
 
       // construct merkle root
       pb_variable_array<FieldT> attribute_bits;
-      attribute_bits.allocate(pb, digest_len);
+      attribute_bits.allocate(pb, 7*attribute_size);;
       attr_splitter.reset(new multipacking_gadget<FieldT>(pb, attribute_bits, attributes_split, attribute_size));
-      leaf_inputs.reset(new block_variable<FieldT>(pb,  std::vector<pb_variable_array<FieldT>>({private_key, attribute_bits}), "leaf inputs"));
+      leaf_inputs.reset(new block_variable<FieldT>(pb,  std::vector<pb_variable_array<FieldT>>({private_key, pb_variable_array<FieldT>(attribute_size, ZERO), attribute_bits}), "leaf inputs"));
       leaf_hasher.reset(new HashT(pb, 512, *leaf_inputs, leaf_digest, "leaf hasher"));
 
       address_bits.allocate(pb, tree_depth);
@@ -294,6 +295,9 @@ class zkid_gadget : gadget<FieldT> {
 
     for(auto& range : range_proofs)
       range->generate_r1cs_constraints();
+
+    for(auto& packer : bit_packers)
+      packer->generate_r1cs_constraints(true);
 
     k_compare->generate_r1cs_constraints();
 
@@ -343,20 +347,27 @@ class zkid_gadget : gadget<FieldT> {
     private_key.fill_with_bits(this->pb, secret_key);
 
     merkle_root_digest.generate_r1cs_witness(merkle_root);
-    attributes.insert(attributes.begin(), secret_key.begin(), secret_key.end());
-    leaf_digest.generate_r1cs_witness(HashT::get_hash(attributes));
+    //attributes.insert(attributes.begin(), secret_key.begin(), secret_key.end());
+    //leaf_digest.generate_r1cs_witness(HashT::get_hash(attributes));
+    leaf_hasher->generate_r1cs_witness();
 
     libff::bit_vector serial_leaf;
     serial_leaf.insert(serial_leaf.end(), secret_key.begin(), secret_key.end());
-    serial_leaf.insert(serial_leaf.end(), salt.begin(), salt.end() - k_bound_bits.size());
+    serial_leaf.insert(serial_leaf.end(), salt.begin(), salt.end() - 32);
+
     auto k_bv = k_bits.get_bits(this->pb);
     serial_leaf.insert(serial_leaf.end(), k_bv.begin(), k_bv.end());
     serial_number_digest.generate_r1cs_witness(HashT::get_hash(serial_leaf));
 
     this->address_bits.fill_with_bits(this->pb, address_bits);
-
     path_var->generate_r1cs_witness(address, auth_path);
     merkle_check->generate_r1cs_witness();
+
+    for(auto& range : range_proofs)
+      range->generate_r1cs_witness();
+
+    for(auto& packer : bit_packers)
+      packer->generate_r1cs_witness_from_bits();
   }
 };
 

@@ -89,7 +89,6 @@ class zkID : public zkidProofGadget
         bit_vector_from_string(attributes_bv, proof_req.attributes);
         bit_vector_from_string(upper_bounds_bv, proof_req.upper_bounds);
         bit_vector_from_string(lower_bounds_bv, proof_req.lower_bounds);
-
         //Fills in the variables on the protoboard
         _zkid.generate_r1cs_witness(secret_key_bv,
                                     upper_bounds_bv,
@@ -102,7 +101,26 @@ class zkID : public zkidProofGadget
                                     root_hash_bv,
                                     address,
                                     auth_path);
-        printf("HERE4\n");
+
+        std::cout << "Tree depth: " << tree_depth << std::endl;
+
+        std::cout << "Address: " << address << std::endl;
+
+        std::cout << "Address bits: " << hex_from_bit_vector(address_bits) << std::endl;
+
+        std::cout << "Merkle Root: " << hex_from_bit_vector(_zkid.merkle_root_digest.get_digest()) << std::endl;
+
+        std::cout << "Expected root: " << hex_from_bit_vector(root_hash_bv) << std::endl;
+
+        std::cout << "Serial packed: " << HexStringFromLibsnarkBigint(_pb.val(_zkid.serial_number_packed).as_bigint()) << std::endl;
+
+        std::cout << "Serial digest: " << hex_from_bit_vector(_zkid.serial_number_digest.get_digest()) << std::endl;
+
+        std::cout << "Leaf inputs: " << hex_from_bit_vector(_zkid.leaf_inputs->get_block()) << std::endl;
+        std::cout << "Leaf len: " << _zkid.leaf_inputs->get_block().size() << std::endl;
+
+        std::cout << "Serial inputs: " << hex_from_bit_vector(_zkid.serial_inputs->get_block()) << std::endl;
+
         //Generate a authentication proof if the pb is satisified.
         if (!_pb.is_satisfied())
             return false;

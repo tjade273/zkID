@@ -2,6 +2,7 @@
 import struct
 import json
 from os import urandom
+from sys import argv
 from random import getrandbits, randint
 from hashing.sha_compress import path, sha_compress
 
@@ -13,10 +14,10 @@ class Credential(object):
         self.secret_key = secret_key
         self.attributes = attributes
 
-        self.attr_string = b"\x00"*4+struct.pack(">"+"I"*7, *attributes)
+        self.attr_string = struct.pack(">"+"I"*7, *attributes)
 
-    def generate_proof_params(self, contract_salt, upper_bounds, lower_bounds, k_bound, k):
-        serial = sha_compress(b"\x00"+self.secret_key+ b"\x00"+contract_salt + struct.pack(">I", k))
+    def generate_proof_params(self, contract_salt, upper_bounds, lower_bounds, k_bound, k, n):
+        serial = sha_compress(self.secret_key+ b"\x00"+contract_salt + struct.pack(">I", k))
         return {"sk" : self.secret_key.hex(),
                  "attributes" : self.attr_string.hex(),
                  "upper_bounds": struct.pack(">"+"I"*7, *upper_bounds).hex(),
@@ -25,10 +26,10 @@ class Credential(object):
                  "k": k,
                  "contract_salt": contract_salt.hex(),
                  "serial_number": serial.hex(),
-                 "merkle_proof" : path(8, b"\x00"+self.secret_key+self.attr_string)}
+                 "merkle_proof" : path(n, self.secret_key+b"\x00"*4+self.attr_string)}
 
 if __name__ == "__main__":
-    sk = urandom(31)
+    sk = urandom(32)
     attrs = [getrandbits(32) for _ in range(7)]
     cred = Credential(sk, attrs)
     uppers = list(map(lambda x: randint(x, 2**32), attrs))
@@ -36,5 +37,6 @@ if __name__ == "__main__":
     k = randint(0, 2**32)
     k_bound = randint(k, 2**32)
     contract_salt = urandom(27)
-    proof = cred.generate_proof_params(contract_salt, uppers, lowers, k_bound, k)
+    n = int(argv[1])
+    proof = cred.generate_proof_params(contract_salt, uppers, lowers, k_bound, k, n)
     pretty_print(proof)
