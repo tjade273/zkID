@@ -5,7 +5,7 @@
 #include "util/zkid_helpers.h"
 
 
-#define M_TREE_LENGTH 32
+#define M_TREE_LENGTH 8
 
 TEST(zkMTATest, TestProofGenerationPbSatisfaction){
     std::string root;

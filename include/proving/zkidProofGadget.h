@@ -11,7 +11,7 @@ class zkidProofGadget
     typedef libff::alt_bn128_pp ppt;
     typedef libff::Fr<ppt> FieldT;
     zkidProofGadget() : _pb() {}
-    virtual void GenerateProof(protoboard<FieldT> &pb, 
+    virtual void GenerateProof(protoboard<FieldT> &pb,
         VerificationData &v_data, LibsnarkVerificationData *libsnark_data = nullptr)
     {
         r1cs_ppzksnark_proof<ppt> proof = r1cs_ppzksnark_prover<ppt>(_keypair->pk, _pb.primary_input(), _pb.auxiliary_input());

@@ -102,8 +102,6 @@ class zkID : public zkidProofGadget
                                     address,
                                     auth_path);
 
-        pb_variable_array<FieldT> k_bound_bits(_zkid.salt_kbound_bits.end() - 32, _zkid.salt_kbound_bits.end());
-
         //Generate a authentication proof if the pb is satisified.
         if (!_pb.is_satisfied())
             return false;
