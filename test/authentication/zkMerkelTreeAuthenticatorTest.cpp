@@ -74,7 +74,7 @@ TEST(zkIDTest, TestProofGeneration){
   ProofRequest proof;
   VerificationData verification_data;
 
-  ProofRequestFromJson("test/res/credentials/test_credential_proof.json", proof);
+  ProofRequestFromJson("test/res/test_credential_proof.json", proof);
   libff::alt_bn128_pp::init_public_params();
   zkID<sha256_two_to_one_hash_gadget> authenticator(proof.path.size(), 32);
   bool verifiable = authenticator.GetVerificationData(proof, verification_data);

@@ -55,8 +55,9 @@ class zkID : public zkidProofGadget
  zkID(int tree_depth, int attribute_size) : _zkid(_pb, tree_depth, attribute_size), attribute_size(attribute_size)
     {
       _zkid.generate_r1cs_constraints();
+      auto cs = _pb.get_constraint_system();
       _keypair = std::make_shared<r1cs_ppzksnark_keypair<ppt>>
-        (r1cs_ppzksnark_keypair<ppt>(r1cs_ppzksnark_generator<ppt>(_pb.get_constraint_system())));
+        (r1cs_ppzksnark_keypair<ppt>(r1cs_ppzksnark_generator<ppt>(cs)));
       _verification_key = r1cs_ppzksnark_verification_key<ppt>(_keypair->vk);
     };
 
@@ -101,7 +102,7 @@ class zkID : public zkidProofGadget
                                     root_hash_bv,
                                     address,
                                     auth_path);
-
+        printf("HERE4\n");
         //Generate a authentication proof if the pb is satisified.
         if (!_pb.is_satisfied())
             return false;

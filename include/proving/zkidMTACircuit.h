@@ -161,6 +161,8 @@ class zkid_gadget : gadget<FieldT> {
   std::shared_ptr<merkle_tree_check_read_gadget<FieldT, HashT>> merkle_check;
 
  public:
+  pb_variable<FieldT> ZERO;
+
   pb_variable_array<FieldT> upper_bounds_bits;
   pb_variable_array<FieldT> lower_bounds_bits;
   pb_variable_array<FieldT> attributes_split;
@@ -214,12 +216,11 @@ class zkid_gadget : gadget<FieldT> {
       salt_kbound_packed.allocate(pb);
 
       pb.set_input_sizes(5);
-
+      ZERO.allocate(pb);
       private_key.allocate(pb, digest_len);
-
+      
       // pack as many attributes as fit into a single field element
       size_t num_attributes = FieldT::capacity()/attribute_size;
-
       // unpack bounds arrays into single field elements
       upper_bounds_bits.allocate(pb, num_attributes*attribute_size);
       upper_bounds_split.allocate(pb, num_attributes);
@@ -230,6 +231,8 @@ class zkid_gadget : gadget<FieldT> {
       lower_bounds_split.allocate(pb, num_attributes);
       lower_splitter.reset(new multipacking_gadget<FieldT>(pb, lower_bounds_bits, lower_bounds_split, attribute_size));
       bit_packers.emplace_back(new packing_gadget<FieldT>(pb, lower_bounds_bits, lower_bound_packed));
+
+      attributes_split.allocate(pb, num_attributes);
 
       // constrain each attribute to be in-bounds
       for(int i = 0; i < num_attributes; ++i)
@@ -244,6 +247,7 @@ class zkid_gadget : gadget<FieldT> {
       bit_packers.emplace_back(new packing_gadget<FieldT>(pb, k_bound_bits, k_bound));
 
       // pack k_bits into k_packed
+      k_bits.allocate(pb, 32);
       bit_packers.emplace_back(new packing_gadget<FieldT>(pb, k_bits, k_packed));
 
       // constrain k_packed to be less than k_bound
@@ -253,8 +257,9 @@ class zkid_gadget : gadget<FieldT> {
 
       // construct serial number hash
       pb_variable_array<FieldT> salt_bits(salt_kbound_bits.begin(), salt_kbound_bits.end()-32);
+      salt_bits.insert(salt_bits.begin(), 3, ZERO);
       serial_inputs.reset(new block_variable<FieldT>(pb, std::vector<pb_variable_array<FieldT>>({private_key, salt_bits, k_bits}), "serial inputs"));
-      serial_hasher.reset(new HashT(pb, 64, *serial_inputs, serial_number_digest, "serial hasher"));
+      serial_hasher.reset(new HashT(pb, 512, *serial_inputs, serial_number_digest, "serial hasher"));
 
       // pack serial_number low bits
       pb_variable_array<FieldT> serial_low_bits(serial_number_digest.bits.end()-FieldT::capacity(), serial_number_digest.bits.end());
@@ -269,14 +274,17 @@ class zkid_gadget : gadget<FieldT> {
       attribute_bits.allocate(pb, digest_len);
       attr_splitter.reset(new multipacking_gadget<FieldT>(pb, attribute_bits, attributes_split, attribute_size));
       leaf_inputs.reset(new block_variable<FieldT>(pb,  std::vector<pb_variable_array<FieldT>>({private_key, attribute_bits}), "leaf inputs"));
-      leaf_hasher.reset(new HashT(pb, 64, *leaf_inputs, leaf_digest, "leaf hasher"));
+      leaf_hasher.reset(new HashT(pb, 512, *leaf_inputs, leaf_digest, "leaf hasher"));
 
       address_bits.allocate(pb, tree_depth);
       path_var.reset(new merkle_authentication_path_variable<FieldT, HashT>(pb, tree_depth, "path_var"));
       merkle_check.reset(new merkle_tree_check_read_gadget<FieldT, HashT>(pb, tree_depth, address_bits, leaf_digest, merkle_root_digest, *path_var, ONE, ""));
-    }
+   }
 
   void generate_r1cs_constraints(){
+    
+    generate_r1cs_equals_const_constraint<FieldT>(this->pb, ZERO, FieldT::zero());
+
     for(auto& packer :  bit_packers)
       packer->generate_r1cs_constraints(true);
 
@@ -288,6 +296,7 @@ class zkid_gadget : gadget<FieldT> {
       range->generate_r1cs_constraints();
 
     k_compare->generate_r1cs_constraints();
+
     leaf_hasher->generate_r1cs_constraints();
     serial_hasher->generate_r1cs_constraints();
 
@@ -321,13 +330,15 @@ class zkid_gadget : gadget<FieldT> {
 
     // true means unsigned
     this->pb.val(k_packed) = FieldT(k, true);
-    this->pb.val(k_bound) = FieldT(k_bound, true);
+    this->pb.val(this->k_bound) = FieldT(k_bound, true);
 
     k_compare->generate_r1cs_witness();
 
     libff::bit_vector k_bound_bits = libff::convert_field_element_to_bit_vector(FieldT(k_bound, true));
-    salt.insert(salt.end(), k_bound_bits.begin(), k_bound_bits.end());
+
+    salt.insert(salt.end(), k_bound_bits.end()-32, k_bound_bits.end());
     salt_kbound_bits.fill_with_bits(this->pb, salt);
+
     k_bits.fill_with_bits_of_ulong(this->pb, k);
     private_key.fill_with_bits(this->pb, secret_key);
 
