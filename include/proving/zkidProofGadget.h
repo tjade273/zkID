@@ -12,7 +12,7 @@ class zkidProofGadget
     typedef libff::Fr<ppt> FieldT;
     zkidProofGadget() : _pb() {}
     virtual void GenerateProof(protoboard<FieldT> &pb, 
-        VerificationData &v_data, LibsnarkVerificationData *libsnark_data = nullptr)
+        CredentialProof &cred_proof, LibsnarkCredentialProof *libsnark_data = nullptr)
     {
         r1cs_ppzksnark_proof<ppt> proof = r1cs_ppzksnark_prover<ppt>(_keypair->pk, _pb.primary_input(), _pb.auxiliary_input());
 
@@ -22,7 +22,8 @@ class zkidProofGadget
             libsnark_data->primary_input = _pb.primary_input();
         }
 
-        v_data.proof = ExtractCredentialProof(proof);
+        
+        ExtractCredentialProof(proof, cred_proof);
     }
 
   protected:

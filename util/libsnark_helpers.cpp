@@ -23,7 +23,7 @@ std::string libsnark::hex_from_bit_vector(const libff::bit_vector &vect){
     for(int j = 0; j < 8; j++){
       v |= (vect[i + j] << (7-j));
     }
-    ss << std::hex << v;
+    ss << std::setfill('0') << std::setw(2) << std::hex << v;
   }
   return ss.str();
 }

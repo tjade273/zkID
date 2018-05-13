@@ -7,6 +7,11 @@
 #include "credentials/CredentialsManager.h"
 #include "network/ZkidRPCServer.h"
 #include "proving/zkidMTProvider.h"
+#include "proving/zkidProverImpl.h"
+#include "proving/zkidVerificationStructs.h"
+
+
+ProofRequest ConstructProofRequest(const CredentialRequest& req, const Credential& cred, const std::string& merkle_root,const std::vector<std::string> path);
 
 class ZkidService : public ZkidProofHandler
 {

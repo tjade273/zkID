@@ -1,5 +1,5 @@
 
-issuer_abi = JSON.parse('[{"constant":false,"inputs":[],"name":"getMerkleRootAddress","outputs":[{"address":"","type":"string"}],"payable":false,"type":"function"}]');
+issuer_abi = JSON.parse('[ { "constant": false, "inputs": [ { "indexed": false, "name": "proofs", "type": "uint[]" } ], "name": "Join", "outputs": [], "payable": false, "type": "function", "credentials": [ { "contract_salt": "0xdeadbeef", "k_bound": 0, "requested_attr": [ { "attribute_idx": 0, "upper_bound": 0, "lower_bound": 0, "description": "Confirms holder is over 18." }, { "attribute_idx": 1, "upper_bound": 100, "lower_bound": 18, "k_bound": 1, "description": "Confirms holder is American." } ] } ] } ]');
 IssuerContract = web3.eth.contract(issuer_abi);
 currentBlock = null;
 
@@ -24,7 +24,6 @@ function ProofToBytes(proof) {
         web3.utils.hexToBytes(proof["K"][0]),
         web3.utils.hexToBytes(proof["K"][1]));
 }
-
 
 CredentialBlock.prototype.FetchCredentialProofs = function () {
     var client = new zkidclient("http://localhost:8383");
@@ -66,7 +65,6 @@ CredentialBlock.prototype.highlightCredentials = function (generated_proofs) {
         var was_generated = generated_proofs == null ? false : generated_proofs.reduce(function (acc, e) {
             return acc ? true : e["issuer_address"] === issuer_addr;
         }, false);
-
         if (was_generated)
             $(this).animate({ backgroundColor: "#C8E6C9" }, 500);
         else
@@ -86,10 +84,21 @@ CredentialBlock.prototype.display = function () {
             var cred_sig_cell = document.createElement("td");
             var cred_sig = document.createTextNode(current_cred["contract_salt"]);
             var cred_desc_cell = document.createElement("td");;
-            var cred_desc = document.createTextNode(current_cred["description"]);
+            
+            var cred_desc_table = document.createElement("table");
+            
+
+            console.log(current_cred);
+            for(var i = 0; i < current_cred["requested_attributes"].length; i++){
+                var current_attr = current_cred["requested_attributes"][i];
+                var desc_row = document.createElement("tr");
+                var cred_desc = document.createTextNode(current_attr["description"]);
+                desc_row.appendChild(cred_desc);
+                cred_desc_table.appendChild(desc_row);
+            }
 
             cred_sig_cell.appendChild(cred_sig);
-            cred_desc_cell.appendChild(cred_desc);
+            cred_desc_cell.appendChild(cred_desc_table);
             cred_row.appendChild(cred_sig_cell)
             cred_row.appendChild(cred_desc_cell)
             table.appendChild(cred_row);

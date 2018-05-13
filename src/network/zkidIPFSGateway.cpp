@@ -4,7 +4,7 @@ zkidIPFSGateway::zkidIPFSGateway(ConfigIPFSInterface *ipfs_config) : _ipfs_confi
 {
 }
 
-void zkidIPFSGateway::GetMerklePath(const std::string &merkle_address, size_t address, std::vector<std::string> &path)
+std::string zkidIPFSGateway::GetMerklePath(const std::string &merkle_address, size_t address, std::vector<std::string> &path)
 {
     /* The LSb of the address corresponds to the top-most level of the MT 
      * and the first element of path corresponds to the level right below 
@@ -19,7 +19,7 @@ void zkidIPFSGateway::GetMerklePath(const std::string &merkle_address, size_t ad
 
         ipfs::Json links = parent["Links"];
         if (links.size() == 0)
-            return; //hit leafs
+            return parent["Data"]; //hit leafs
         ipfs::Json left_addr = links[0]["Hash"];
         ipfs::Json right_addr = links[1]["Hash"];
 
@@ -41,7 +41,7 @@ void zkidIPFSGateway::GetMerklePath(const std::string &merkle_address, size_t ad
         _client.ObjectGet(path_element_hash, &path_element);
         path.push_back(path_element["Data"]);
         GetMerklePath(next_parent, address, path);
-
+        return parent["Data"];
     }catch(std::runtime_error& e){
         //unable to get files
         path.clear();
