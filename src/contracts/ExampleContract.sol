@@ -1,11 +1,49 @@
 pragma solidity ^0.4.14;
 import "./verifier.sol";
 
+contract Issuer {
+  function get_root() public constant returns(uint);
+}
+
 contract LotteryContract{
-    mapping (address => bool) participants; //TODO: is there a better way to do a set?
-    
-    function Join(uint[] proofs) public {
-        require(Verifier.verifyTx(proofs,proofs.length));
-        participants[msg.sender] = true;
-    }
+  using Verifier for *;
+
+  uint256 constant OVER_18 = 18 << 32*6;
+  uint256 constant US_CITIZEN = 0x00555341 << 32*5; // USA in ASCII
+  uint256 constant RATE = 16;
+
+  Issuer issuer;
+
+  mapping (address => bool) participants;
+  mapping (uint => bool) nullifiers;
+
+  modifier check_credentials(uint[18] data, uint serial, uint upper, uint lower) {
+    uint m_root = issuer.get_root();
+    uint salt = uint(this) << 56 || (block.number >> 12) << 32 || RATE;
+    Verifier.Proof memory proof;
+    uint pos = 0;
+    proof.A = Pairing.G1Point(   data[pos++], data[pos++]);
+    proof.A_p = Pairing.G1Point( data[pos++], data[pos++]);
+    proof.B = Pairing.G2Point(  [data[pos++], data[pos++]], [data[pos++], data[pos++]]);
+    proof.B_p = Pairing.G1Point( data[pos++], data[pos++]);
+    proof.C = Pairing.G1Point(   data[pos++], data[pos++]);
+    proof.C_p = Pairing.G1Point( data[pos++], data[pos++]);
+    proof.H = Pairing.G1Point(   data[pos++], data[pos++]);
+    proof.K = Pairing.G1Point(   data[pos++], data[pos++]);
+    uint valid = Verifier.verify([m_root, serial, upper, lower, salt], proof);
+    if(valid != 0 || nullifiers[serial])
+      revert();
+
+    nullifiers[serial] = true;
+    _;
+  }
+
+  function LotteryContract(address _issuer){
+    Issuer = Issuer(_issuer);
+  }
+
+  function Join(uint[] proof) check_credentials(proof, US_CITIZEN, US_CITIZEN||OVER_18) public {
+    require(Verifier.verifyTx(proofs,proofs.length));
+    participants[msg.sender] = true;
+  }
 }

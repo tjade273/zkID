@@ -195,7 +195,7 @@ library Verifier {
         return 0;
     }
 
-    function parseProofsDataFromBytes(uint[] data, uint[] public_inputs, ProofData[] memory proofsData) internal{
+    function parseProofsDataFromBytes(uint[18] data, uint[5] public_inputs, ProofData[] memory proofsData) internal{
         uint pos = 0;
         uint inputs_pos = 0;
         uint proofCount = 0;
@@ -212,7 +212,7 @@ library Verifier {
             proofData.proof.C_p = Pairing.G1Point( data[pos++], data[pos++]);
             proofData.proof.H = Pairing.G1Point(   data[pos++], data[pos++]);
             proofData.proof.K = Pairing.G1Point(   data[pos++], data[pos++]);
-            
+
             /* Public Inputs */
             uint input_len = data[inputs_pos++];
             proofData.inputs = new uint[](input_len);
