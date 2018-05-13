@@ -17,6 +17,8 @@ contract LotteryContract{
   mapping (address => bool) participants;
   mapping (uint => bool) nullifiers;
 
+  event Joined(address);
+
   modifier check_credentials(uint[18] data, uint serial, uint upper, uint lower) {
     uint m_root = issuer.get_root();
     uint salt = uint(this) << 56 || (block.number >> 12) << 32 || RATE;
@@ -35,7 +37,7 @@ contract LotteryContract{
   }
 
   function Join(uint[] proof) check_credentials(proof, US_CITIZEN, US_CITIZEN||OVER_18) public {
-    require(Verifier.verifyTx(proofs,proofs.length));
     participants[msg.sender] = true;
+    Joined(msg.sender);
   }
 }
