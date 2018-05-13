@@ -9,6 +9,9 @@ from hashing.sha_compress import path, sha_compress
 def pretty_print(j):
     print(json.dumps(j, indent=4, separators=(',', ': ')))
 
+def flip_bits(i):
+    return int("{:0>32b}".format(i)[::-1], 2)
+
 class Credential(object):
     def __init__(self, secret_key, attributes):
         self.secret_key = secret_key
@@ -32,10 +35,10 @@ if __name__ == "__main__":
     sk = urandom(32)
     attrs = [getrandbits(32) for _ in range(7)]
     cred = Credential(sk, attrs)
-    uppers = list(map(lambda x: randint(x, 2**32), attrs))
-    lowers = list(map(lambda x: randint(0, x), attrs))
+    uppers = list(map(lambda x: flip_bits(randint(flip_bits(x), 2**32)), attrs))
+    lowers = list(map(lambda x: flip_bits(randint(0, flip_bits(x))), attrs))
     k = randint(0, 2**32)
-    k_bound = randint(k, 2**32)
+    k_bound = flip_bits(randint(flip_bits(k), 2**32))
     contract_salt = urandom(27)
     n = int(argv[1])
     proof = cred.generate_proof_params(contract_salt, uppers, lowers, k_bound, k, n)

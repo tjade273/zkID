@@ -75,7 +75,7 @@ class zkID : public zkidProofGadget
         libff::bit_vector attributes_bv(attribute_size*7);
         libff::bit_vector lower_bounds_bv(attribute_size*7);
         libff::bit_vector upper_bounds_bv(attribute_size*7);
-        libff::bit_vector salt_bv(FieldT::capacity()-32);
+        libff::bit_vector salt_bv(digest_len - 40);
         std::vector<libsnark::merkle_authentication_node> auth_path(tree_depth);
         size_t address = 0;
 
@@ -102,24 +102,7 @@ class zkID : public zkidProofGadget
                                     address,
                                     auth_path);
 
-        std::cout << "Tree depth: " << tree_depth << std::endl;
-
-        std::cout << "Address: " << address << std::endl;
-
-        std::cout << "Address bits: " << hex_from_bit_vector(address_bits) << std::endl;
-
-        std::cout << "Merkle Root: " << hex_from_bit_vector(_zkid.merkle_root_digest.get_digest()) << std::endl;
-
-        std::cout << "Expected root: " << hex_from_bit_vector(root_hash_bv) << std::endl;
-
-        std::cout << "Serial packed: " << HexStringFromLibsnarkBigint(_pb.val(_zkid.serial_number_packed).as_bigint()) << std::endl;
-
-        std::cout << "Serial digest: " << hex_from_bit_vector(_zkid.serial_number_digest.get_digest()) << std::endl;
-
-        std::cout << "Leaf inputs: " << hex_from_bit_vector(_zkid.leaf_inputs->get_block()) << std::endl;
-        std::cout << "Leaf len: " << _zkid.leaf_inputs->get_block().size() << std::endl;
-
-        std::cout << "Serial inputs: " << hex_from_bit_vector(_zkid.serial_inputs->get_block()) << std::endl;
+        pb_variable_array<FieldT> k_bound_bits(_zkid.salt_kbound_bits.end() - 32, _zkid.salt_kbound_bits.end());
 
         //Generate a authentication proof if the pb is satisified.
         if (!_pb.is_satisfied())

@@ -12,6 +12,7 @@
 
 using namespace libsnark;
 
+
 /*
  * Constrains an n-bit attribute `attr` to be in a range given
  * by n-bit integers `upper_bound` and `lower_bound`.
@@ -22,6 +23,7 @@ private:
     std::shared_ptr<comparison_gadget<FieldT>> upper;
     std::shared_ptr<comparison_gadget<FieldT>> lower;
     pb_linear_combination<FieldT> attribute;
+
 public:
     zkrange_gadget(protoboard<FieldT> &pb,
                    size_t n,
@@ -218,7 +220,7 @@ class zkid_gadget : gadget<FieldT> {
       pb.set_input_sizes(5);
       ZERO.allocate(pb);
       private_key.allocate(pb, digest_len);
-      
+
       // pack as many attributes as fit into a single field element
       size_t num_attributes = FieldT::capacity()/attribute_size;
       // unpack bounds arrays into single field elements
@@ -237,16 +239,18 @@ class zkid_gadget : gadget<FieldT> {
       // constrain each attribute to be in-bounds
       for(int i = 0; i < num_attributes; ++i)
         range_proofs.emplace_back(new zkrange_gadget<FieldT>(pb, attribute_size, upper_bounds_split[i], lower_bounds_split[i], attributes_split[i]));
-
+      
       // pack salt_bits into salt
-      salt_kbound_bits.allocate(pb, FieldT::capacity());
-      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, salt_kbound_bits, salt_kbound_packed));
+      salt_kbound_bits.allocate(pb, digest_len - 8);
+      bit_packers.emplace_back(new packing_gadget<FieldT>(pb, pb_variable_array<FieldT>(salt_kbound_bits.begin(), salt_kbound_bits.end()-32), salt_kbound_packed));
 
       // pack k_bound bits into k_bound
+      k_bound.allocate(pb);
       pb_variable_array<FieldT> k_bound_bits(salt_kbound_bits.end() - 32, salt_kbound_bits.end());
       bit_packers.emplace_back(new packing_gadget<FieldT>(pb, k_bound_bits, k_bound));
 
       // pack k_bits into k_packed
+      k_packed.allocate(pb);
       k_bits.allocate(pb, 32);
       bit_packers.emplace_back(new packing_gadget<FieldT>(pb, k_bits, k_packed));
 
@@ -257,13 +261,12 @@ class zkid_gadget : gadget<FieldT> {
 
       // construct serial number hash
       pb_variable_array<FieldT> salt_bits(salt_kbound_bits.begin(), salt_kbound_bits.end()-32);
-      salt_bits.insert(salt_bits.begin(), 3, ZERO);
-      serial_inputs.reset(new block_variable<FieldT>(pb, std::vector<pb_variable_array<FieldT>>({private_key, salt_bits, k_bits}), "serial inputs"));
+      assert(salt_bits.size() == 27*8);
+      serial_inputs.reset(new block_variable<FieldT>(pb, std::vector<pb_variable_array<FieldT>>({private_key, pb_variable_array<FieldT>(8, ZERO), salt_bits, k_bits}), "serial inputs"));
       serial_hasher.reset(new HashT(pb, 512, *serial_inputs, serial_number_digest, "serial hasher"));
 
       // pack serial_number low bits
       pb_variable_array<FieldT> serial_low_bits(serial_number_digest.bits.end()-FieldT::capacity(), serial_number_digest.bits.end());
-      std::cout << "SLB size: "<< serial_low_bits.size() << std::endl;
       bit_packers.emplace_back(new packing_gadget<FieldT>(pb, serial_low_bits,  serial_number_packed));
 
       // pack merkle_root
@@ -283,7 +286,7 @@ class zkid_gadget : gadget<FieldT> {
    }
 
   void generate_r1cs_constraints(){
-    
+
     generate_r1cs_equals_const_constraint<FieldT>(this->pb, ZERO, FieldT::zero());
 
     for(auto& packer :  bit_packers)
@@ -295,9 +298,6 @@ class zkid_gadget : gadget<FieldT> {
 
     for(auto& range : range_proofs)
       range->generate_r1cs_constraints();
-
-    for(auto& packer : bit_packers)
-      packer->generate_r1cs_constraints(true);
 
     k_compare->generate_r1cs_constraints();
 
@@ -332,42 +332,32 @@ class zkid_gadget : gadget<FieldT> {
     lower_splitter->generate_r1cs_witness_from_bits();
     attr_splitter->generate_r1cs_witness_from_bits();
 
-    // true means unsigned
-    this->pb.val(k_packed) = FieldT(k, true);
-    this->pb.val(this->k_bound) = FieldT(k_bound, true);
-
-    k_compare->generate_r1cs_witness();
-
-    libff::bit_vector k_bound_bits = libff::convert_field_element_to_bit_vector(FieldT(k_bound, true));
+    libff::bit_vector k_bound_bits = libff::int_list_to_bits({k_bound}, 32);
 
     salt.insert(salt.end(), k_bound_bits.end()-32, k_bound_bits.end());
     salt_kbound_bits.fill_with_bits(this->pb, salt);
 
-    k_bits.fill_with_bits_of_ulong(this->pb, k);
+    k_bits.fill_with_bits(this->pb,  libff::int_list_to_bits({k}, 32));
     private_key.fill_with_bits(this->pb, secret_key);
 
     merkle_root_digest.generate_r1cs_witness(merkle_root);
-    //attributes.insert(attributes.begin(), secret_key.begin(), secret_key.end());
-    //leaf_digest.generate_r1cs_witness(HashT::get_hash(attributes));
+
     leaf_hasher->generate_r1cs_witness();
 
-    libff::bit_vector serial_leaf;
-    serial_leaf.insert(serial_leaf.end(), secret_key.begin(), secret_key.end());
-    serial_leaf.insert(serial_leaf.end(), salt.begin(), salt.end() - 32);
-
-    auto k_bv = k_bits.get_bits(this->pb);
-    serial_leaf.insert(serial_leaf.end(), k_bv.begin(), k_bv.end());
-    serial_number_digest.generate_r1cs_witness(HashT::get_hash(serial_leaf));
+    serial_hasher->generate_r1cs_witness();
 
     this->address_bits.fill_with_bits(this->pb, address_bits);
     path_var->generate_r1cs_witness(address, auth_path);
     merkle_check->generate_r1cs_witness();
 
+    for(auto& packer : bit_packers)
+      packer->generate_r1cs_witness_from_bits();
+
     for(auto& range : range_proofs)
       range->generate_r1cs_witness();
 
-    for(auto& packer : bit_packers)
-      packer->generate_r1cs_witness_from_bits();
+    k_compare->generate_r1cs_witness();
+
   }
 };
 
