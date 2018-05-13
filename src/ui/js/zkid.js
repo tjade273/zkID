@@ -1,5 +1,5 @@
 
-issuer_abi = JSON.parse('[ { "constant": false, "inputs": [ { "indexed": false, "name": "proofs", "type": "uint[]" } ], "name": "Join", "outputs": [], "payable": false, "type": "function", "credentials": [ { "contract_salt": "0xdeadbeef", "k_bound": 0, "requested_attr": [ { "attribute_idx": 0, "upper_bound": 0, "lower_bound": 0, "description": "Confirms holder is over 18." }, { "attribute_idx": 1, "upper_bound": 100, "lower_bound": 18, "k_bound": 1, "description": "Confirms holder is American." } ] } ] } ]');
+issuer_abi = JSON.parse('[ { "constant": false, "inputs": [], "name": "getMerkleRootAddress", "outputs": [], "payable": false, "type": "function"}]');
 IssuerContract = web3.eth.contract(issuer_abi);
 currentBlock = null;
 
@@ -31,7 +31,7 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
     this.action.requiredCredentials = this.action.requiredCredentials.map((e) => {
         //ask each verifier contract for the address of its merkle root
         try {
-            var issuerContractInstance = IssuerContract.at(e["issuer_address"]);
+            var issuerContractInstance = IssuerContract.at(e["contract_salt"]);
             e["merkle_root_address"] = issuerContractInstance.getMerkleRootAddress().call();
         } catch (e) {
             e["merkle_root_address"] = "";

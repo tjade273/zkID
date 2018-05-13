@@ -19,5 +19,5 @@ void CredentialsManager::LoadCredentials(){
                                                                             current_cred["secret_key"].asString(),
                                                                             current_cred["k"].asInt(),
                                                                             current_cred["contract_salt"].asString(),
-                                                                            current_cred["merkel_address"].asInt());}
+                                                                            current_cred["merkle_address"].asInt());}
 }
