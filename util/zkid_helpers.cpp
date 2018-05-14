@@ -38,12 +38,12 @@ VerificationKey ExtractVerificationKey(libsnark::r1cs_ppzksnark_verification_key
 
 std::string FormatG1(std::array<std::string, 2> p)
 {
-    return p[0] + ", " + p[1];
+  return "\"" + p[0]+"\"" + ", " + "\""+ p[1] + "\"";
 }
 
 std::string FormatG2(std::array<std::string, 4> p)
 {
-    return "[" + p[0] + ", " + p[1] + "], [" + p[2] + ", " + p[3] + "]";
+  return "\"" + p[0] + "\"" + ", " + "\"" + p[1] + "\"" + ", " + "\"" + p[2]+ "\"" + ", " + "\"" + p[3] + "\"";
 }
 
 void ExportVerificationKey(VerificationKey &vk, const std::string &sol_path, const std::string &out_path)
@@ -109,25 +109,20 @@ void ExportProof(LibsnarkCredentialProof &auth, std::string fname)
         std::cerr << "Could not open proof export file" << std::endl;
         return;
     }
-    f << "event Verified(string);" << std::endl;
-    f << "function verifyTx() returns (bool r) {" << std::endl;
-    f << "\tuint[] memory input = new uint[](" << auth.primary_input.size() << ");" << std::endl;
-    f << "\tProof memory proof;" << std::endl;
+    f << "["<< FormatG1(proof.A) << ", "
+      << FormatG1(proof.A_p) << ", "
+      << FormatG2(proof.B) << ", "
+      << FormatG1(proof.B_p) << ", "
+      << FormatG1(proof.C) << ", "
+      << FormatG1(proof.C_p) << ", "
+      << FormatG1(proof.H) << ", "
+      << FormatG1(proof.K) << "]" << std::endl << std::endl;
 
-    f << "\tproof.A = Pairing.G1Point(" << FormatG1(proof.A) << ");" << std::endl;
-    f << "\tproof.A_p = Pairing.G1Point(" << FormatG1(proof.A_p) << ");" << std::endl;
-    f << "\tproof.B = Pairing.G2Point(" << FormatG2(proof.B) << ");" << std::endl;
-    f << "\tproof.B_p = Pairing.G1Point(" << FormatG1(proof.B_p) << ");" << std::endl;
-    f << "\tproof.C = Pairing.G1Point(" << FormatG1(proof.C) << ");" << std::endl;
-    f << "\tproof.C_p = Pairing.G1Point(" << FormatG1(proof.C_p) << ");" << std::endl;
-    f << "\tproof.H = Pairing.G1Point(" << FormatG1(proof.H) << ");" << std::endl;
-    f << "\tproof.K = Pairing.G1Point(" << FormatG1(proof.K) << ");" << std::endl;
-
-    for (int i = 0; i < auth.primary_input.size(); i++)
+    f << "[";
+    for (int i = 0; i < auth.primary_input.size() - 1; i++)
     {
-        f << "\tinput[" << i << "] = 0x" << libsnark::HexStringFromLibsnarkBigint(auth.primary_input[i].as_bigint()) << ";" << std::endl;
+      f << "\"0x" << libsnark::HexStringFromLibsnarkBigint(auth.primary_input[i].as_bigint()) << "\", ";
     }
-    f << "\tif (verify(input, proof) == 0) {\n\t\tVerified(\"Transaction successfully verified.\");\n\t\treturn true;\n\t} else {\n\t\treturn false;\n\t}\n}" << std::endl;
-
+    f << "\"0x" << libsnark::HexStringFromLibsnarkBigint(auth.primary_input[auth.primary_input.size() - 1].as_bigint()) << "\"]";
     f.close();
 }
