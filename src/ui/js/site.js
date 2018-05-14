@@ -30,11 +30,17 @@ function OnJoinClick() {
 }
 
 /* Use partial application to supply non-proof arguments */
-
 function PartialAppJoin(/* Insert non-proof arguments here*/) {
-    return function (proof_bytes, serial, verify_cb,error_cb) {
+    return function (proof_bytes, serial, joined_cb,error_cb) {
         contractInstance.methods.Join(proof_bytes, serial).send({"from":web3.eth.getCoinbase()},cb)
-        .on("Verify",verify_cb)
-        .on("Err",error_cb);
+        .on("reciept",function(reciept){
+            if(reciept.events["Joined"] != undefined){
+                joined_cb();
+            }else if (reciept.events["Err"] != undefined){
+                error_cb();
+            }else{
+                console.log("Failed to capture a verifier event!")
+            }
+        })    
     }
 }

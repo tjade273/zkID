@@ -53,7 +53,7 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
         this.highlightCredentials(generated_proofs);
         if (result["success"]) {
             proof_bytes, serial = ProofToBytes(e);
-            action.method(proof_bytes, serial, function (result) {
+            action.method(proof_bytes, serial, function () {
                 OnReturn();
             }, function (err) {
                 this.showError("Verification was unsuccessfuly for one or more credentials.")
