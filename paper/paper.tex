@@ -242,28 +242,10 @@ to their merkle tree so that verifiers and clients can construct merkle tree pat
 Add some Introduction here
 
 \subsubsection{Credential Annotated ABI}
-The properly interface with the ZKID Service a dApp will have to provide an annotated ABI for its dependant contract(s).
-The required annotations describe the required credentials for a given method within the smart contract and will
-be used to propery construct public inputs and subsequently generate proofs for credentials. An annotated ABI function
+The properly interface with the ZKID Service a dApp would provide an annotated ABI for its dependant contract(s).
+The annotations describe the required credentials for a given method within the smart contract and will
+be used to communicate public inputs to the ZKID prooving service. An annotated ABI function
 would appear as follow:
-\begin{lstlisting}
-
-  {"constant":false,
-   "name":"Join",
-   "inputs":[],
-   "outputs":[],
-   "payable":false,
-   "type":"function","
-    "credentials":[
-      {"contract_salt":"0xdeadbeef",
-      "high_bound":255,
-      "low_bound":18,
-      "k_bound":1,
-      "description": "Confirms holder is over 18."
-      }
-    ]
-  }
-\end{lstlisting}
 
 Note that the description field is not nessesary for generation / verification of proofs, but is supplied soley for
 the use of the credential-acknowledgement framework described later. 
@@ -276,22 +258,9 @@ allows dApp creators to integrate credential functionality without changing thei
 
 To utlize the framework a dApp simply replaces all existing contract calls with calls to their credential accepting counterparts. 
 This can be accomplished very concisely by wrapping the credial-accepting method call with partially applied
-function. A full implementation of this exists in our example application and is depicted in [INSERT FIG NUMBER];
-\begin{lstlisting}
-function OnJoinClick() {
-  var credBlock = new CredentialBlock("Join", PartialAppJoin(), lottery_abi);
-    credBlock.display();
-}
+function.
 
-function PartialAppJoin(/* Insert non-proof arguments here*/) {
-  return function (proof_bytes) {
-    contractInstance.methods["Join"](/* Non-Proof Arguments*/ ,proof_bytes).send();
-  }
-}
-
-\end{lstlisting}
-
-In the above example, "Join" allowed a users to join a lottery if they have the required credentials. Originally, took a number of non-proof arguments. 
+The "Join" function in the provided example application is an example of how to properly provide the ZKID framework with a partially applied credential-enabled function. Originally, took a number of non-proof arguments. 
 The credential enabled join now takes the non-proof arguments as well as proof arguments. This partial application hides the non-proof arguments from the ZKID CredentialBlock and allows the CredentialBlock to 
 supply the proof arguments post proof-generation. The dApp's code has now migrated its call to "Join" to a credential-enabled call with minimal additions.
 
@@ -302,6 +271,8 @@ supply the proof arguments post proof-generation. The dApp's code has now migrat
 To demonstrate the facilities provided by the our system we developed a simple lottery dApp that requries participants to be
 both over the age of 18 and have American Citizenship to participate. Along with the dApp, we created a credential-acknowledgement
 framework that would allow applications to prompt users for the required credentials before any proofs are generated.
+
+
 
 \section{Future Work}
 
