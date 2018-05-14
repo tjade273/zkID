@@ -52,7 +52,7 @@ def path(count, leaf=None):
         sibling = urandom(32)
         right = bool(urandom(1)[0]%2)
         h = sha_compress(h+sibling if right else sibling+h)
-        tree["path"].append({"hash": sibling.hex(), "right": right})
+        tree["path"].insert(0, ({"hash": sibling.hex(), "right": right}))
     tree["root"] = h.hex()
     return tree
 
