@@ -14,13 +14,18 @@ def sha_compress(data):
     sha256.sha_transform(state)
     return struct.pack(">"+"I"*8, *state["digest"])
 
-def full_tree(depth):
+def full_tree(depth, _leaf):
     idx = (1 << (depth+1)) - 2
     tree = [0]*(idx+1)
     tree_json = [0]*(idx+1)
     idx_temp = idx
+
     for i in range(int(idx_temp/2) + 1):
-        leaf = urandom(64)
+        leaf = None
+        if i == 0:
+            leaf = _leaf
+        else:
+            leaf = urandom(64)
         h = sha_compress(leaf)
         tree[idx] = h
         tree_json[idx]= (h.hex())

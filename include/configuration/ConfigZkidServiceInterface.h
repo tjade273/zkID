@@ -8,5 +8,6 @@ class ConfigZkidServiceInterface : public ConfigRPCServerInterface
 {
   public:
     virtual int GetServicePort() = 0;
+    virtual std::string GetKeyPath() = 0;
 };
 #endif

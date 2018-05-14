@@ -4,7 +4,7 @@ import json
 from os import urandom
 from sys import argv
 from random import getrandbits, randint
-from hashing.sha_compress import path, sha_compress
+from hashing.sha_compress import path, sha_compress,full_tree
 
 def pretty_print(j):
     print(json.dumps(j, indent=4, separators=(',', ': ')))
@@ -29,7 +29,7 @@ class Credential(object):
                  "k": k,
                  "contract_salt": contract_salt.hex(),
                  "serial_number": serial.hex(),
-                 "merkle_proof" : path(n, self.secret_key+b"\x00"*4+self.attr_string)}
+                 "merkle_proof" : full_tree(n, self.secret_key+b"\x00"*4+self.attr_string)}
 
 if __name__ == "__main__":
     sk = urandom(32)

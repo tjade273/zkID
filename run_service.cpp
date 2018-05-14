@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     {
         ZkidService service(&config, &cred_manager, &zkidIPFSGateway);
 
-        service.console->info("Loading user credentials from: {0}",config.GetCredentialsFilePath());
+        service.console->info("Loading user credentials from: {0}", config.GetCredentialsFilePath());
         cred_manager.LoadCredentials();
 
         if (result["l"].as<bool>())
