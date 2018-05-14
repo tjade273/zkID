@@ -98,6 +98,8 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
     if (prover.GetCredentialProof(proof_request, proof, libsnark_data))
     {
         ExportProof(libsnark_data,"proof.temp");
+        VerificationKey key = ExtractVerificationKey(prover.GetVerificationKey());
+        ExportVerificationKey(key,"test/res/verification.sol.tmpl","verifier.sol");
         console->info("Successfully generated proof for: {0}", issuer_address);
         return true;
     }

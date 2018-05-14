@@ -12,7 +12,7 @@ void ExtractCredentialProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> 
     p.K = libsnark::outputPointG1AffineAsHex(proof.g_K);
 }
 
-VerificationKey ExtractVerificationKey(libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> &vk)
+VerificationKey ExtractVerificationKey(const libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> &vk)
 {
     VerificationKey k;
 

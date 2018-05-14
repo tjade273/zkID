@@ -19,7 +19,7 @@ struct LibsnarkCredentialProof
 
 void ExtractCredentialProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof, CredentialProof& cred_proof);
 
-VerificationKey ExtractVerificationKey(libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> &vk);
+VerificationKey ExtractVerificationKey(const libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> &vk);
 
 std::string FormatG1(std::array<std::string, 2> p);
 
