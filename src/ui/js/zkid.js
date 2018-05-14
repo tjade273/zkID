@@ -39,10 +39,11 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
     this.action.requiredCredentials = this.action.requiredCredentials.map((e) => {
         //ask each verifier contract for the address of its merkle root
         try {
-            var issuerContractInstance = IssuerContract.at(e["contract_salt"]);
-            e["merkle_root_address"] = issuerContractInstance.ipfs_hash().call();
+            //var issuerContractInstance = IssuerContract.at(e["contract_salt"]);
+            e["merkle_root_address"] = "QmWgxfXhs2rovrqDKoNSprrWpZKZiF9edUTVd7U2q3BR1M";
+           //e["merkle_root_address"] = issuerContractInstance.ipfs_hash().call();
         } catch (e) {
-            e["merkle_root_address"] = "";
+            e["merkle_root_address"] = "QmWgxfXhs2rovrqDKoNSprrWpZKZiF9edUTVd7U2q3BR1M";
         } finally {
             return e;
         }
@@ -52,7 +53,7 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
         var generated_proofs = result["proofs"];
         this.highlightCredentials(generated_proofs);
         if (result["success"]) {
-            proof_bytes, serial = ProofToBytes(e);
+            var proof_bytes, serial = ProofToBytes(e);
             action.method(proof_bytes, serial, function () {
                 OnReturn();
             }, function (err) {
@@ -67,10 +68,10 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
 }
 
 CredentialBlock.prototype.highlightCredentials = function (generated_proofs) {
-    $("#credential_table").find("tr:not(:first-child)").each(function () {
+    $("#credential_table").find("> tr:not(:first-child)").each(function () {
         var issuer_addr = $(this).find(">:first-child").text();
         var was_generated = generated_proofs == null ? false : generated_proofs.reduce(function (acc, e) {
-            return acc ? true : e["issuer_address"] === issuer_addr;
+            return acc ? true : e["contract_salt"] === issuer_addr;
         }, false);
         if (was_generated)
             $(this).animate({ backgroundColor: "#C8E6C9" }, 500);
@@ -97,11 +98,14 @@ CredentialBlock.prototype.display = function () {
 
             console.log(current_cred);
             for (var i = 0; i < current_cred["requested_attributes"].length; i++) {
+
                 var current_attr = current_cred["requested_attributes"][i];
-                var desc_row = document.createElement("tr");
-                var cred_desc = document.createTextNode(current_attr["description"]);
-                desc_row.appendChild(cred_desc);
-                cred_desc_table.appendChild(desc_row);
+                if (current_attr["description"] != undefined) {
+                    var cred_desc = document.createTextNode(current_attr["description"]);
+                    var desc_row = document.createElement("tr");
+                    desc_row.appendChild(cred_desc);
+                    cred_desc_table.appendChild(desc_row);
+                }
             }
 
             cred_sig_cell.appendChild(cred_sig);

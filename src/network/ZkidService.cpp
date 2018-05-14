@@ -95,7 +95,16 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
 
     ProofRequest proof_request = ConstructProofRequest(cred_request, cred, merkle_root, merkle_path);
     LibsnarkCredentialProof libsnark_data;
-    return prover.GetCredentialProof(proof_request, proof, libsnark_data);
+    if (prover.GetCredentialProof(proof_request, proof, libsnark_data))
+    {
+        console->info("Successfully generated proof for: {0}", issuer_address);
+        return true;
+    }
+    else
+    {
+        console->error("Failed to generate proof for: {0}", issuer_address);
+        return false;
+    }
 }
 
 ProofRequest ConstructProofRequest(const CredentialRequest &req, const Credential &cred, const std::string &merkle_root, const std::vector<std::string> merkle_path)

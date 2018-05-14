@@ -109,6 +109,7 @@ void ExportProof(LibsnarkCredentialProof &auth, std::string fname)
         std::cerr << "Could not open proof export file" << std::endl;
         return;
     }
+    
     f << "event Verified(string);" << std::endl;
     f << "function verifyTx() returns (bool r) {" << std::endl;
     f << "\tuint[] memory input = new uint[](" << auth.primary_input.size() << ");" << std::endl;
