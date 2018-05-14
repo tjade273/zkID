@@ -38,10 +38,10 @@ class zkidProverImpl : public zkidProofGadget, public zkidProver
       GenerateKeys();
     };
 
- zkidProverImpl(int tree_depth, int attribute_size, r1cs_ppzksnark_keypair<ppt> &keypair) : _zkid(_pb, tree_depth, attribute_size), attribute_size(attribute_size)
+ zkidProverImpl(int tree_depth, int attribute_size,  std::string key_path) : _zkid(_pb, tree_depth, attribute_size), attribute_size(attribute_size)
   {
     _zkid.generate_r1cs_constraints();
-    _keypair = std::make_shared<r1cs_ppzksnark_keypair<ppt>>(keypair);
+    ImportKeys(key_path);
   };
 
   typedef Hash<FieldT> HashT;

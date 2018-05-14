@@ -29,3 +29,7 @@ std::string ZkidConfiguration::GetIPFSClientIP(){
 int ZkidConfiguration::GetIPFSClientPort(){
     return _config["ipfs_client_port"].asInt();
 }
+
+std::string ZkidConfiguration::GetKeyPath(){
+  return _config["zk_key_dir"].asString();
+}

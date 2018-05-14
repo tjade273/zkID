@@ -9,7 +9,6 @@ ZkidService::ZkidService(ConfigZkidServiceInterface *service_config, Credentials
     _rpc_server = std::make_shared<ZkidRPCServer>(_http_server, _service_config);
     if (dynamic_cast<jsonrpc::AbstractServerConnector *>(&_http_server)->GetHandler() == NULL)
         exit(0);
-
     _rpc_server->SetProofHandler(this);
 };
 
@@ -75,7 +74,7 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
         return false;
     }
 
-    zkidProverImpl<sha256_two_to_one_hash_gadget> prover(merkle_path.size(), 32);
+    zkidProverImpl<sha256_two_to_one_hash_gadget> prover(merkle_path.size(), 32, _service_config->GetKeyPath());
 
     ProofRequest proof_request = ConstructProofRequest(cred_request, cred, merkle_root, merkle_path);
 
