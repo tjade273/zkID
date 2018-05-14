@@ -91,16 +91,13 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
         return false;
     }
 
-    for(auto node : merkle_path){
-        std::cout << node << std::endl;
-    }
-
     zkidProverImpl<sha256_two_to_one_hash_gadget> prover(merkle_path.size(), 32, _service_config->GetKeyPath());
 
     ProofRequest proof_request = ConstructProofRequest(cred_request, cred, merkle_root, merkle_path);
     LibsnarkCredentialProof libsnark_data;
     if (prover.GetCredentialProof(proof_request, proof, libsnark_data))
     {
+        ExportProof(libsnark_data,"proof.temp");
         console->info("Successfully generated proof for: {0}", issuer_address);
         return true;
     }
