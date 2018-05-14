@@ -2,7 +2,8 @@ pragma solidity ^0.4.14;
 import "./verifier.sol";
 
 contract Issuer {
-  function get_root() public constant returns(uint);
+  function merkle_root() public constant returns(uint);
+  function ipfs_hash() public constant returns (string);
 }
 
 contract LotteryContract{
@@ -21,7 +22,7 @@ contract LotteryContract{
   event Err(uint);
 
   modifier check_credentials(uint[18] data, uint serial, uint upper, uint lower) {
-    uint m_root = issuer.get_root();
+    uint m_root = issuer.merkle_root();
     uint salt = uint(this) << 56 | (block.number >> 12) << 32 | RATE;
     Verifier.Proof memory proof;
     proof.parseProofData(data);
