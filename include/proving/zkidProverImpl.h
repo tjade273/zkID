@@ -35,13 +35,49 @@ class zkidProverImpl : public zkidProofGadget, public zkidProver
  zkidProverImpl(int tree_depth, int attribute_size) : _zkid(_pb, tree_depth, attribute_size), attribute_size(attribute_size)
     {
       _zkid.generate_r1cs_constraints();
-      auto cs = _pb.get_constraint_system();
-      _keypair = std::make_shared<r1cs_ppzksnark_keypair<ppt>>
-        (r1cs_ppzksnark_keypair<ppt>(r1cs_ppzksnark_generator<ppt>(cs)));
-      _verification_key = r1cs_ppzksnark_verification_key<ppt>(_keypair->vk);
+      GenerateKeys();
     };
 
-    typedef Hash<FieldT> HashT;
+ zkidProverImpl(int tree_depth, int attribute_size, r1cs_ppzksnark_keypair<ppt> &keypair) : _zkid(_pb, tree_depth, attribute_size), attribute_size(attribute_size)
+  {
+    _zkid.generate_r1cs_constraints();
+    _keypair = std::make_shared<r1cs_ppzksnark_keypair<ppt>>(keypair);
+  };
+
+  typedef Hash<FieldT> HashT;
+
+    void GenerateKeys(){
+      _keypair = std::make_shared<r1cs_ppzksnark_keypair<ppt>>
+        (r1cs_ppzksnark_keypair<ppt>(r1cs_ppzksnark_generator<ppt>(_pb.get_constraint_system())));
+    }
+
+    void ExportKeys(std::string f){
+      std::ofstream vk_file(f + "/verifier.key");
+      std::ofstream pk_file(f + "/prover.key");
+      if(!vk_file || !pk_file)
+        std::cout << "File not found" << std::endl;
+
+      vk_file << _keypair->vk;
+      pk_file << _keypair->pk;
+      vk_file.close();
+      pk_file.close();
+    }
+
+    void ImportKeys(std::string f){
+      std::ifstream vk_file(f + "/verifier.key");
+      std::ifstream pk_file(f + "/prover.key");
+
+      if(!vk_file || !pk_file)
+        std::cout << "File not found" << std::endl;
+
+      r1cs_ppzksnark_verification_key<ppt> vk;
+      r1cs_ppzksnark_proving_key<ppt> pk;
+      vk_file >> vk;
+      pk_file >> pk;
+      vk_file.close();
+      pk_file.close();
+      _keypair.reset(new r1cs_ppzksnark_keypair<ppt>(std::move(pk), std::move(vk)));
+    }
 
     bool GetCredentialProof(ProofRequest &proof_req, CredentialProof &data,
                              LibsnarkCredentialProof *libsnark_data = nullptr)
@@ -98,8 +134,12 @@ class zkidProverImpl : public zkidProofGadget, public zkidProver
     }
 
     const r1cs_ppzksnark_verification_key<ppt> &GetVerificationKey()
-    {
-        return this->_verification_key;
+      {
+      return r1cs_ppzksnark_verification_key<ppt>(_keypair->vk);
+    }
+
+    const r1cs_ppzksnark_proving_key<ppt> &GetProvingKey(){
+      return r1cs_ppzksnark_proving_key<ppt>(_keypair->pk);
     }
 
   private:
@@ -116,7 +156,7 @@ class zkidProverImpl : public zkidProofGadget, public zkidProver
   private:
     int _digest_len = HashT::get_digest_len();
     int attribute_size;
-    r1cs_ppzksnark_verification_key<ppt> _verification_key;
+    
     zkid_gadget<FieldT, HashT> _zkid;
     VerificationError _e;
 };
