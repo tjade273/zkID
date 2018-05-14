@@ -32,13 +32,13 @@ template <template <typename> typename Hash>
 class zkidProverImpl : public zkidProofGadget, public zkidProver
 {
   public:
- zkidProverImpl(int tree_depth, int attribute_size) : _zkid(_pb, tree_depth, attribute_size), attribute_size(attribute_size)
+ zkidProverImpl(int tree_depth, int attr_size) : _zkid(_pb, tree_depth, attr_size), attribute_size(attr_size)
     {
       _zkid.generate_r1cs_constraints();
       GenerateKeys();
     };
 
- zkidProverImpl(int tree_depth, int attribute_size,  std::string key_path) : _zkid(_pb, tree_depth, attribute_size), attribute_size(attribute_size)
+ zkidProverImpl(int tree_depth, int attr_size,  std::string key_path) : _zkid(_pb, tree_depth, attr_size), attribute_size(attr_size)
   {
     _zkid.generate_r1cs_constraints();
     ImportKeys(key_path);
@@ -74,6 +74,7 @@ class zkidProverImpl : public zkidProofGadget, public zkidProver
       r1cs_ppzksnark_proving_key<ppt> pk;
       vk_file >> vk;
       pk_file >> pk;
+
       vk_file.close();
       pk_file.close();
       _keypair.reset(new r1cs_ppzksnark_keypair<ppt>(std::move(pk), std::move(vk)));

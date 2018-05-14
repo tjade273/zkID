@@ -49,18 +49,6 @@ CredentialRequest ZkidRPCServer::CredentialRequestFromJson(const Json::Value &cr
         cred_desc.attribute_requests.push_back(attr_request);
     }
     
-    if (cred_desc.attribute_requests.size() < ZKID_CREDENTIAL_ATTRIBUTE_NUM)
-    {
-        for (int i = 0; i < ZKID_CREDENTIAL_ATTRIBUTE_NUM; i++)
-        {
-            if(cred_desc.attribute_requests.size() < i || cred_desc.attribute_requests[i].idx != i){
-                AttributeRequest r;
-                r.idx = i;
-                cred_desc.attribute_requests.push_back(r);
-            }
-        }
-    }
-
     return cred_desc;
 }
 

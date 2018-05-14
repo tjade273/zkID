@@ -10,7 +10,7 @@
 class ZkidProofHandler
 {
 public:
-    virtual bool GetProofForCredential(const CredentialRequest &cred, CredentialProof& proof) = 0;
+    virtual bool GetProofForCredential(CredentialRequest &cred, CredentialProof& proof) = 0;
 };
 
 class ZkidRPCServer : public AbstractZkidRPCServer

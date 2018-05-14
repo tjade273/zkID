@@ -30,8 +30,8 @@ struct Credential
 
 struct AttributeRequest
 {
-    std::string lower_bound = "0x00";
-    std::string upper_bound = "0x7FFFFFFF";
+    std::string lower_bound = "00000000";
+    std::string upper_bound = "7fffffff";
     int idx;
 };
 
