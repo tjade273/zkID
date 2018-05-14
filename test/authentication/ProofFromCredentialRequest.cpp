@@ -38,6 +38,8 @@ TEST(TestProofRPC, TestProofFromCredentialRequest)
     }
 
     CredentialProof p;
+
+    
     ASSERT_TRUE(service.GetProofForCredential(req, p));
 
     ipfs_service.StopService();

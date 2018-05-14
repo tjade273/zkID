@@ -11,14 +11,15 @@ int main(int argc, char **argv)
     cxxopts::Options options("ZKID Service", "Zero-Knowledge identity proof generation service and credential manager for the Ethereum Blockcahin.");
     options.add_options()("f,configuration-file", "Path to file where service configuration file is stored", cxxopts::value<std::string>()->default_value(""));
     options.add_options()("l,ipfs-flag", "Launch local ipfs service", cxxopts::value<bool>()->default_value("false"));
-    options.add_options()("u,upload-merke-tree","Uploads a merkle tree at given file",cxxopts::value<std::string>()->default_value(""));
+    options.add_options()("u,upload-merke-tree", "Uploads a merkle tree at given file", cxxopts::value<std::string>()->default_value(""));
     auto result = options.parse(argc, argv);
 
     IPFSServiceController ipfs_service;
 
     std::string config_file_path = result["f"].as<std::string>();
 
-    if(config_file_path.empty()){
+    if (config_file_path.empty())
+    {
         ZkidService::console->error("Please supply a configuration file with the -f option");
         return 0;
     }
@@ -29,6 +30,8 @@ int main(int argc, char **argv)
 
     try
     {
+        libff::alt_bn128_pp::init_public_params();
+
         ZkidService service(&config, &cred_manager, &zkidIPFSGateway);
 
         service.console->info("Loading user credentials from: {0}", config.GetCredentialsFilePath());
@@ -42,16 +45,18 @@ int main(int argc, char **argv)
         }
         std::string merkle_file_path = result["u"].as<std::string>();
 
-        if(!merkle_file_path.empty()){
+        if (!merkle_file_path.empty())
+        {
             Json::Value v = JsonObjectFromFile(merkle_file_path);
 
             std::vector<std::string> tree;
-            for(int i = 0; i < v["merkle_proof"].size(); i++){
+            for (int i = 0; i < v["merkle_proof"].size(); i++)
+            {
                 tree.push_back(v["merkle_proof"][i].asString());
             }
 
             std::string merkle_tree_address = zkidIPFSGateway.PutMerkleTree(tree);
-            service.console->info("Stored merkle tree from {0} at {1}", merkle_file_path,merkle_tree_address);
+            service.console->info("Stored merkle tree from {0} at {1}", merkle_file_path, merkle_tree_address);
         }
         if (service.Start())
         {
@@ -64,8 +69,6 @@ int main(int argc, char **argv)
         {
             service.console->info("Failed to start zkid service on port {0}", service.GetPort());
         }
-
-
     }
     catch (jsonrpc::JsonRpcException &e)
     {
