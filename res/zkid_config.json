@@ -1,5 +1,5 @@
 {
-    "credentials_file":"test/res/credentials/credentials.json",
+    "credentials_file":"test/res/credentials.json",
     "service_port":8383,
     "ipfs_client_ip":"localhost",
     "ipfs_client_port":8080
