@@ -79,8 +79,8 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
     zkidProverImpl<sha256_two_to_one_hash_gadget> prover(merkle_path.size(), 32, _service_config->GetKeyPath());
 
     ProofRequest proof_request = ConstructProofRequest(cred_request, cred, merkle_root, merkle_path);
-
-    return prover.GetCredentialProof(proof_request, proof);
+    LibsnarkCredentialProof libsnark_data;
+    return prover.GetCredentialProof(proof_request, proof, libsnark_data);
 }
 
 ProofRequest ConstructProofRequest(const CredentialRequest &req, const Credential &cred, const std::string &merkle_root, const std::vector<std::string> merkle_path)

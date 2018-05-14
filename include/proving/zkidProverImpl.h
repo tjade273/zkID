@@ -35,13 +35,16 @@ class zkidProverImpl : public zkidProofGadget, public zkidProver
  zkidProverImpl(int tree_depth, int attribute_size) : _zkid(_pb, tree_depth, attribute_size), attribute_size(attribute_size)
     {
       _zkid.generate_r1cs_constraints();
+      std::cout << "Generating Keypairs" << std::endl;
       GenerateKeys();
     };
 
  zkidProverImpl(int tree_depth, int attribute_size,  std::string key_path) : _zkid(_pb, tree_depth, attribute_size), attribute_size(attribute_size)
   {
     _zkid.generate_r1cs_constraints();
+    std::cout << "Importing keys" << std::endl;
     ImportKeys(key_path);
+    std::cout << "Done!" << std::endl;
   };
 
   typedef Hash<FieldT> HashT;
@@ -80,7 +83,7 @@ class zkidProverImpl : public zkidProofGadget, public zkidProver
     }
 
     bool GetCredentialProof(ProofRequest &proof_req, CredentialProof &data,
-                             LibsnarkCredentialProof *libsnark_data = nullptr)
+                             LibsnarkCredentialProof &libsnark_data)
     {
         //Pb variables
         const size_t digest_len = HashT::get_digest_len();
@@ -104,6 +107,7 @@ class zkidProverImpl : public zkidProofGadget, public zkidProver
         bit_vector_from_string(attributes_bv, proof_req.attributes);
         bit_vector_from_string(upper_bounds_bv, proof_req.upper_bounds);
         bit_vector_from_string(lower_bounds_bv, proof_req.lower_bounds);
+
         //Fills in the variables on the protoboard
         _zkid.generate_r1cs_witness(secret_key_bv,
                                     upper_bounds_bv,
@@ -117,7 +121,7 @@ class zkidProverImpl : public zkidProofGadget, public zkidProver
                                     address,
                                     auth_path);
 
-        pb_variable_array<FieldT> k_bound_bits(_zkid.salt_kbound_bits.end() - 32, _zkid.salt_kbound_bits.end());
+        //pb_variable_array<FieldT> k_bound_bits(_zkid.salt_kbound_bits.end() - 32, _zkid.salt_kbound_bits.end());
 
         //Generate a authentication proof if the pb is satisified.
         if (!_pb.is_satisfied())
@@ -135,11 +139,11 @@ class zkidProverImpl : public zkidProofGadget, public zkidProver
 
     const r1cs_ppzksnark_verification_key<ppt> &GetVerificationKey()
       {
-      return r1cs_ppzksnark_verification_key<ppt>(_keypair->vk);
+      return _keypair->vk;
     }
 
     const r1cs_ppzksnark_proving_key<ppt> &GetProvingKey(){
-      return r1cs_ppzksnark_proving_key<ppt>(_keypair->pk);
+      return _keypair->pk;
     }
 
   private:
