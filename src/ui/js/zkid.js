@@ -44,7 +44,7 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
         var generated_proofs = result["proofs"];
         this.highlightCredentials(generated_proofs);
         if (result["success"]) {
-            proof_bytes,serial = ProofToBytes(e);                
+            proof_bytes,serial = ProofToBytes(e);
             action.method(proof_bytes,serial);
         } else {
             $("#msg-container").first().text("A proof could not be generated for one or more credentials.");
