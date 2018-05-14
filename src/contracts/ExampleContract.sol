@@ -18,6 +18,7 @@ contract LotteryContract{
   mapping (uint => bool) nullifiers;
 
   event Joined(address);
+  event Err(uint);
 
   modifier check_credentials(uint[18] data, uint serial, uint upper, uint lower) {
     uint m_root = issuer.get_root();
@@ -25,8 +26,10 @@ contract LotteryContract{
     Verifier.Proof memory proof;
     proof.parseProofData(data);
     uint valid = Verifier.verify([m_root, serial, upper, lower, salt], proof);
-    if(valid != 0 || nullifiers[serial])
-      revert();
+    if(valid != 0 || nullifiers[serial]){
+      Err(valid);
+      return;
+    }
 
     nullifiers[serial] = true;
     _;
