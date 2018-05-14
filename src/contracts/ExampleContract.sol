@@ -2,7 +2,7 @@ pragma solidity ^0.4.14;
 import "./verifier.sol";
 
 contract Issuer {
-  function get_root() public constant returns(uint);
+   function get_root() public constant returns(uint);
 }
 
 contract LotteryContract{

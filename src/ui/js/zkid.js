@@ -4,7 +4,7 @@ IssuerContract = web3.eth.contract(issuer_abi);
 currentBlock = null;
 
 function ProofToBytes(proof) {
-    return [].concat(
+    return ([].concat(
         web3.utils.hexToBytes(proof["A"][0]),
         web3.utils.hexToBytes(proof["A"][1]),
         web3.utils.hexToBytes(proof["A_p"][0]),
@@ -22,7 +22,7 @@ function ProofToBytes(proof) {
         web3.utils.hexToBytes(proof["H"][0]),
         web3.utils.hexToBytes(proof["H"][1]),
         web3.utils.hexToBytes(proof["K"][0]),
-        web3.utils.hexToBytes(proof["K"][1]));
+        web3.utils.hexToBytes(proof["K"][1])), web3.utils.hexToBytes(proof["serial"]));
 }
 
 CredentialBlock.prototype.FetchCredentialProofs = function () {
@@ -43,12 +43,9 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
     client.GenerateProofs(this.action.requiredCredentials, (id, result) => {
         var generated_proofs = result["proofs"];
         this.highlightCredentials(generated_proofs);
-
         if (result["success"]) {
-            var proof_bytes = generated_proofs.reduce(function (acc, e) {
-                acc.concat(ProofToBytes(e));
-            }, []);
-            action.method(proof_bytes,generated_proofs.length);
+            proof_bytes,serial = ProofToBytes(e);                
+            action.method(proof_bytes,serial);
         } else {
             $("#msg-container").first().text("A proof could not be generated for one or more credentials.");
             $("#msg-container").show();

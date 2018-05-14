@@ -22,6 +22,7 @@ class zkidProofGadget
             libsnark_data->primary_input = _pb.primary_input();
         }
 
+        cred_proof.serial = HexStringFromLibsnarkBigint(libsnark_data->primary_input[1].as_bigint());
         
         ExtractCredentialProof(proof, cred_proof);
     }
