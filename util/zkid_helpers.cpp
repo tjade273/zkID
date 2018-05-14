@@ -38,12 +38,12 @@ VerificationKey ExtractVerificationKey(libsnark::r1cs_ppzksnark_verification_key
 
 std::string FormatG1(std::array<std::string, 2> p)
 {
-  return "\"" + p[0]+"\"" + ", " + "\""+ p[1] + "\"";
+  return  p[0]+ ", " + p[1];
 }
 
 std::string FormatG2(std::array<std::string, 4> p)
 {
-  return "\"" + p[0] + "\"" + ", " + "\"" + p[1] + "\"" + ", " + "\"" + p[2]+ "\"" + ", " + "\"" + p[3] + "\"";
+  return  "[" + p[0] +  ", "  + p[1] + "], ["  + p[2] + ", "  + p[3]+"]";
 }
 
 void ExportVerificationKey(VerificationKey &vk, const std::string &sol_path, const std::string &out_path)
