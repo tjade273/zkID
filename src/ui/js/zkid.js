@@ -22,7 +22,8 @@ function ProofToBytes(proof) {
         web3.utils.hexToBytes(proof["H"][0]),
         web3.utils.hexToBytes(proof["H"][1]),
         web3.utils.hexToBytes(proof["K"][0]),
-        web3.utils.hexToBytes(proof["K"][1])), web3.utils.hexToBytes(proof["serial"]));
+        web3.utils.hexToBytes(proof["K"][1])), 
+        web3.utils.hexToBytes(proof["serial"]));
 }
 
 
