@@ -16,7 +16,7 @@ enum VerificationErrorCode
 struct Credential
 {
     Credential(){};
-    Credential(std::string a, std::string key, int _k, std::string cs, size_t ma) : attributes(a),
+    Credential(std::string a, std::string key, uint _k, std::string cs, size_t ma) : attributes(a),
                                                                          k(_k),
                                                                          contract_salt(cs),
                                                                          secret_key(key),
@@ -24,14 +24,14 @@ struct Credential
     std::string secret_key;
     std::string contract_salt;
     std::string attributes;
-    int k;
+    uint k;
     size_t merkle_address;
 };
 
 struct AttributeRequest
 {
-    std::string lower_bound = "0x00";
-    std::string upper_bound = "0x7FFFFFFF";
+    std::string lower_bound = "00000000";
+    std::string upper_bound = "7fffffff";
     int idx;
 };
 
@@ -40,7 +40,7 @@ struct CredentialRequest
     std::string contract_salt;
     std::string merkle_root_address;
     std::vector<AttributeRequest> attribute_requests;
-    int k_bound;
+    uint k_bound;
 };
 
 struct CredentialProof

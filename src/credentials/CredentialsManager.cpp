@@ -17,7 +17,7 @@ void CredentialsManager::LoadCredentials(){
         Json::Value current_cred = creds_json[i];
         _credentials[current_cred["contract_salt"].asString()] = Credential(current_cred["attributes"].asString(), 
                                                                             current_cred["secret_key"].asString(),
-                                                                            current_cred["k"].asInt(),
+                                                                            current_cred["k"].asUInt(),
                                                                             current_cred["contract_salt"].asString(),
                                                                             current_cred["merkle_address"].asInt());}
 }

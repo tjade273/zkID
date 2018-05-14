@@ -1,6 +1,7 @@
 {
     "credentials_file":"test/res/credentials.json",
     "service_port":8383,
+    "zk_key_dir": "test/res",
     "ipfs_client_ip":"localhost",
     "ipfs_client_port":5001
 }

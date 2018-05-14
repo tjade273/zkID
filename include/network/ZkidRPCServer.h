@@ -10,14 +10,14 @@
 class ZkidProofHandler
 {
 public:
-    virtual bool GetProofForCredential(const CredentialRequest &cred, CredentialProof& proof) = 0;
+    virtual bool GetProofForCredential(CredentialRequest &cred, CredentialProof& proof) = 0;
 };
 
 class ZkidRPCServer : public AbstractZkidRPCServer
 {
 
 public:
-  ZkidRPCServer(jsonrpc::AbstractServerConnector &conn, ConfigRPCServerInterface *rpc_config);
+  ZkidRPCServer(jsonrpc::AbstractServerConnector& conn, ConfigRPCServerInterface *rpc_config);
   Json::Value GenerateProofs(const Json::Value &credential_descriptions);
   void SetProofHandler(ZkidProofHandler *listener);
 

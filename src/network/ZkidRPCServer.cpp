@@ -1,7 +1,7 @@
 #include "network/ZkidRPCServer.h"
 #include <cassert>
 
-ZkidRPCServer::ZkidRPCServer(jsonrpc::AbstractServerConnector &conn, ConfigRPCServerInterface *rpc_config) : AbstractZkidRPCServer(conn),
+ZkidRPCServer::ZkidRPCServer(jsonrpc::AbstractServerConnector& conn, ConfigRPCServerInterface *rpc_config) : AbstractZkidRPCServer(conn),
                                                                                                              _rpc_config(rpc_config)
 {
 }
@@ -38,7 +38,7 @@ CredentialRequest ZkidRPCServer::CredentialRequestFromJson(const Json::Value &cr
     CredentialRequest cred_desc;
     cred_desc.contract_salt = cred_json["contract_salt"].asString();
     cred_desc.merkle_root_address = cred_json["merkle_root_address"].asString();
-    cred_desc.k_bound = cred_json["k_bound"].asInt();
+    cred_desc.k_bound = cred_json["k_bound"].asUInt();
 
     for (const Json::Value &attr_req_json : cred_json["requested_attributes"])
     {
@@ -49,18 +49,6 @@ CredentialRequest ZkidRPCServer::CredentialRequestFromJson(const Json::Value &cr
         cred_desc.attribute_requests.push_back(attr_request);
     }
     
-    if (cred_desc.attribute_requests.size() < ZKID_CREDENTIAL_ATTRIBUTE_NUM)
-    {
-        for (int i = 0; i < ZKID_CREDENTIAL_ATTRIBUTE_NUM; i++)
-        {
-            if(cred_desc.attribute_requests.size() < i || cred_desc.attribute_requests[i].idx != i){
-                AttributeRequest r;
-                r.idx = i;
-                cred_desc.attribute_requests.push_back(r);
-            }
-        }
-    }
-
     return cred_desc;
 }
 

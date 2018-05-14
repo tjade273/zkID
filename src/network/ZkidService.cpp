@@ -23,8 +23,21 @@ void ZkidService::Stop()
     console->info("Stopped zkid service on port {0}.", _service_config->GetServicePort());
 }
 
-bool ZkidService::GetProofForCredential(const CredentialRequest &cred, CredentialProof &proof)
+bool ZkidService::GetProofForCredential(CredentialRequest &cred, CredentialProof &proof)
 {
+    if (cred.attribute_requests.size() < ZKID_CREDENTIAL_ATTRIBUTE_NUM)
+    {
+        for (int i = 0; i < ZKID_CREDENTIAL_ATTRIBUTE_NUM; i++)
+        {
+            if (cred.attribute_requests.size() < i || cred.attribute_requests[i].idx != i)
+            {
+                AttributeRequest r;
+                r.idx = i;
+                cred.attribute_requests.push_back(r);
+            }
+        }
+    }
+
     std::string attribute_string;
 
     for (int i = 0; i < cred.attribute_requests.size(); i++)
@@ -44,7 +57,7 @@ bool ZkidService::GetProofForCredential(const CredentialRequest &cred, Credentia
     Attributes: \n \
     {3}\
     ---------------------------------------------------------------------------- \n",
-    cred.contract_salt, cred.merkle_root_address, cred.k_bound, attribute_string);
+                  cred.contract_salt, cred.merkle_root_address, cred.k_bound, attribute_string);
 
     return GenerateProofForCredential(cred, proof);
 }
@@ -66,16 +79,18 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
 
     std::vector<std::string> merkle_path;
 
-    if(cred_request.merkle_root_address.empty()){
-      console->error("Merkle address blank");
-      return false;
+    if (cred_request.merkle_root_address.empty())
+    {
+        console->error("Merkle address blank");
+        return false;
     }
     std::string merkle_root = _mt_provider->GetMerklePath(cred_request.merkle_root_address, cred.merkle_address, merkle_path);
     if (merkle_path.empty())
     {
-        console->error("Enable to get merkle path from: {0}", cred_request.merkle_root_address);
+        console->error("Unable to get merkle path from: {0}", cred_request.merkle_root_address);
         return false;
     }
+
     zkidProverImpl<sha256_two_to_one_hash_gadget> prover(merkle_path.size(), 32, _service_config->GetKeyPath());
 
     ProofRequest proof_request = ConstructProofRequest(cred_request, cred, merkle_root, merkle_path);
