@@ -77,14 +77,18 @@
 	privacy and expressivity. In this paper we present an implementation of a
 	zkSNARK-based
 	anonymous credential scheme for the Ethereum blockchain and give
-	benchmarks for usage costs. We present as well an example application.
+	benchmarks for usage costs. We present as an example application an
+  age-verification contract.
 \end{abstract}
 
 \section{Introduction}
 While blockchains have found use cases in publicly accessible distributed
 systems, they pose a challenge in that due to their public nature it is
-currently impossible to attest to aspects of one's identity without some
-trusted credential issuer.
+currently impossible to attest to aspects of one's identity without the
+participation of a trusted credential issuer. Many distributed applications have
+some responsibility to verify aspects of their users' identity, such as age or
+place of residence, but would ideally not reveal anything else about the user,
+including metadata about past and future attestations of identity.
 
 \subsection{Prior Work}
 Identity systems for public blockchains have been proposed before in the form of
@@ -113,7 +117,7 @@ credential in the merkle tree with attributes in the required range. Both
 credential issuance and usage is done in zero-knowledge and attestations are
 reusable and unlinkable.
 
-\subsection{Implementation}
+\subsection{Approach}
 We implement zero-knowledge proofs using the elliptic curve pairing precompiled
 contracts in Ethereum, using the Pinnochio protocol
 \cite{parnoPinocchioNearlyPractical2013}. We constructed the arithmetic circuits
@@ -121,33 +125,13 @@ for the proofs using libsnark \cite{ben-sassonSNARKsVerifyingProgram2013}.
 Commitment trees are stored using IPFS \cite{benetIPFSContentAddressed2014}.
 
 
-\section{Properties and Features}
-Our zero-knowledge identity system allows for highly flexible ad-hoc issuance of
-credentials through \textit{k-show} credentials and range-bounded attributes.
-
-
-The public inputs are
-\begin{equation*}
-  \texttt{m\_root},\ \{l_1, \dots, l_7\},\ \{u_1, \dots, u_7\}, S, k
-\end{equation*}
-
-Each proof is an assertion that the prover holds a credential
-\begin{equation*}
-c = (sk, \{attr_1, \dots, attr_7\})  
-\end{equation*}
- such that 
-
-\begin{enumerate}[1.]
-\item The credential is a leaf of a merkle tree with root \texttt{m\_root}.
-\item The credential contains some attributes $\{attr_1, \dots, attr_7\}$ with
-  $attr_i \in [l_i,u_i]$
-\item The credential has been used fewer than $k$ times with the salt $S$
-\end{enumerate}
-
 
 \section{Implementation}
 
 \subsection{Credentials}
+
+
+\subsubsection{Credential Contents}
 Each credential is of the form
 \begin{equation*}
 c =  ( \texttt{sk}, \{attr_1, \dots, attr_n\})
@@ -155,18 +139,18 @@ c =  ( \texttt{sk}, \{attr_1, \dots, attr_n\})
 
 where $\texttt{sk} \in \{0, 1\}^\lambda$ and $attr_i \in \Z_{2^{32}}$.
 
-\subsection{Credential Requests}
+\subsubsection{Credential Requests}
 A credential request is a tuple of the form
 \begin{equation*}
-  r = (\texttt{merkle\_root}, \texttt{serial}, \{u_1, \dots,u_n\}, \{\ell_1,\dots,\ell_n\}, S, k)
+  r = (\texttt{merkle\_root}, \{u_1, \dots,u_n\}, \{\ell_1,\dots,\ell_n\}, S, k\_bound)
 \end{equation*}
 
 where $\texttt{merkle\_root}$ is the root of a Merkle-tree of valid credential
 commitments, $u_i, \ell_i \in \Z_{2^{32}}$ are bounds on acceptable attribute
-values, $S$ is a request-specific salt, and $k\in \N$ is the allowed number of
+values, $S$ is a request-specific salt, and $k\_bound\in \N$ is the allowed number of
 uses of a single credential per salt $S$.
 
-\subsection{k-show Credentials}
+\subsubsection{k-show Credentials}
 Every proof $\pi$ that a user generates has as public input
 $\texttt{serial}_\pi$ which is defined as
 \begin{equation*}
@@ -182,14 +166,34 @@ that it changes over time, for instance such that it contains the hash of the
 most recent block with height a multiple of 1 million, which allows for
 rate-limited credentials.
 
-\subsection{Bounded-attributes}
+\subsubsection{Bounded-attributes}
 A proof for a given credential request $r$ must assert that $attr_i \in [\ell_i,
 u_i]$ for all $1\leq i\leq n$. This allows attestations such as ``I possess over
 \$1 million'', ``I am between the ages of 21 and 45'', or ``I live in the USA'',
 without revealing any additional information.
 
-\subsection{Credential Scheme}
-verifier
+\subsubsection{Arithmetic Circuit}
+The verification algorithm for credentials is encoded as a rank-1 constraint
+system, and accepts as public input a credential request $r$ along with a serial
+number \texttt{serial}, and as private
+input
+\begin{equation*}
+  aux = (c, k, M)
+\end{equation*}
+where $c$ is the credential satisfying request $r$, $k$ is the nonce that
+generates $\texttt{serial}$, and $M$ is a merkle proof giving the authentication
+path for $c$. The circuit constrains
+\begin{itemize}
+\item $M$ to be a valid merkle proof for $c$ in
+  the tree with root $\texttt{merkle\_root}$
+\item $k \leq k\_bound$
+  \item  $\ell_i\leq
+    attr_i\leq u_i$
+  \item \texttt{serial} = $ H(\texttt{sk}_u || S_v || k)$
+\end{itemize}
+
+The verifier accepts if the proof satisfies this circuit and \texttt{serial} is
+not in its nullifier set $N$.
 
 
 \subsection{The ZKID Service}
