@@ -12,7 +12,7 @@ function OnJoinClick() {
 /* Use partial application to supply non-proof arguments */
 
 function PartialAppJoin(/* Insert non-proof arguments here*/) {
-    return function (proof_bytes, numOfProofs) {
-        contractInstance.methods["Join"](proof_bytes,numOfProofs).send();
+    return function (proof_bytes, serial) {
+        contractInstance.methods["Join"](proof_bytes,serial).send();
     }
 }

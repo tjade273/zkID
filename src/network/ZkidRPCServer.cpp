@@ -85,7 +85,8 @@ Json::Value ZkidRPCServer::ProofToJson(const CredentialProof &proof)
     proof_json["H"][1] = proof.H[1];
     proof_json["K"][0] = proof.K[0];
     proof_json["K"][1] = proof.K[1];
-
+    proof_json["serial"] = proof.serial;
+    
     return proof_json;
 }
 

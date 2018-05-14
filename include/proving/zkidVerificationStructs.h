@@ -53,6 +53,7 @@ struct CredentialProof
     std::array<std::string, 2> C_p;
     std::array<std::string, 2> H;
     std::array<std::string, 2> K;
+    std::string serial;    
 };
 
 struct VerificationKey
