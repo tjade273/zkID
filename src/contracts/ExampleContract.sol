@@ -1,10 +1,6 @@
 pragma solidity ^0.4.14;
 import "./verifier.sol";
-
-contract Issuer {
-  function merkle_root() public constant returns(uint);
-  function ipfs_hash() public constant returns (string);
-}
+import "./issuer.sol";
 
 contract LotteryContract{
   using Verifier for *;
