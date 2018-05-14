@@ -21,6 +21,6 @@ struct ProofRequest {
 class zkidProver{
     public:
          virtual bool GetCredentialProof(ProofRequest &proof_req, CredentialProof &data,
-                             LibsnarkCredentialProof *libsnark_data = nullptr) = 0;
+                             LibsnarkCredentialProof &libsnark_data) = 0;
 };
 #endif

@@ -18,7 +18,7 @@ contract LotteryContract{
   event Err(uint);
 
   modifier check_credentials(uint[18] data, uint serial, uint upper, uint lower) {
-    uint m_root = issuer.merkle_root();
+    uint m_root = issuer.get_merkle_root();
     uint salt = uint(this) << 56 | (block.number >> 12) << 32 | RATE;
     Verifier.Proof memory proof;
     proof.parseProofData(data);
