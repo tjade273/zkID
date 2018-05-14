@@ -21,6 +21,7 @@ public:
   //ConfigProverInterface
   std::string GetMerkleTreeEndpoint(const std::string &issuer);
 
+  std::string GetKeyPath();
 
   //ConfigIPFSInterfance
   std::string GetIPFSClientIP();
