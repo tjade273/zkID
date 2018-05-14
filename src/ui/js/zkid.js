@@ -1,5 +1,5 @@
 
-issuer_abi = JSON.parse('[ { "constant": false, "inputs": [], "name": "getMerkleRootAddress", "outputs": [], "payable": false, "type": "function"}]');
+issuer_abi = JSON.parse('[ { "constant": false, "inputs": [], "name": "ipfs_hash", "outputs": [], "payable": false, "type": "function"}]');
 IssuerContract = web3.eth.contract(issuer_abi);
 currentBlock = null;
 
@@ -25,6 +25,14 @@ function ProofToBytes(proof) {
         web3.utils.hexToBytes(proof["K"][1])), web3.utils.hexToBytes(proof["serial"]));
 }
 
+
+CredentialBlock.prototype.showError = function (msg) {
+    $("#msg-container").first().text(msg);
+    $("#msg-container").show();
+    $("#return-button-container").show();
+}
+
+
 CredentialBlock.prototype.FetchCredentialProofs = function () {
     var client = new zkidclient("http://localhost:8383");
 
@@ -32,7 +40,7 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
         //ask each verifier contract for the address of its merkle root
         try {
             var issuerContractInstance = IssuerContract.at(e["contract_salt"]);
-            e["merkle_root_address"] = issuerContractInstance.getMerkleRootAddress().call();
+            e["merkle_root_address"] = issuerContractInstance.ipfs_hash().call();
         } catch (e) {
             e["merkle_root_address"] = "";
         } finally {
@@ -44,15 +52,17 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
         var generated_proofs = result["proofs"];
         this.highlightCredentials(generated_proofs);
         if (result["success"]) {
-            proof_bytes,serial = ProofToBytes(e);
-            action.method(proof_bytes,serial);
+            proof_bytes, serial = ProofToBytes(e);
+            action.method(proof_bytes, serial, function (result) {
+                OnReturn();
+            }, function (err) {
+                this.showError("Verification was unsuccessfuly for one or more credentials.")
+            });
         } else {
-            $("#msg-container").first().text("A proof could not be generated for one or more credentials.");
-            $("#msg-container").show();
-            $("#return-button-container").show();
+            this.showError("A proof could not be generated for one or more credentials.");
         }
-    }, function (code, msg) {
-        PostFetchError(code, msg);
+    }, (code, msg) => {
+        this.showError("Unable to connect to ZKID proof service.")
     });
 }
 
@@ -81,12 +91,12 @@ CredentialBlock.prototype.display = function () {
             var cred_sig_cell = document.createElement("td");
             var cred_sig = document.createTextNode(current_cred["contract_salt"]);
             var cred_desc_cell = document.createElement("td");;
-            
+
             var cred_desc_table = document.createElement("table");
-            
+
 
             console.log(current_cred);
-            for(var i = 0; i < current_cred["requested_attributes"].length; i++){
+            for (var i = 0; i < current_cred["requested_attributes"].length; i++) {
                 var current_attr = current_cred["requested_attributes"][i];
                 var desc_row = document.createElement("tr");
                 var cred_desc = document.createTextNode(current_attr["description"]);
