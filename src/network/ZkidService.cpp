@@ -63,7 +63,7 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
         return false;
     }
     Credential cred = _cred_manager->GetCredential(issuer_address);
-   
+
     std::vector<std::string> merkle_path;
 
     if(cred_request.merkle_root_address.empty()){
