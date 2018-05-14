@@ -56,24 +56,26 @@ int ZkidService::GetPort()
 
 bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_request, CredentialProof &proof)
 {
-
     const std::string issuer_address = cred_request.contract_salt;
     if (!_cred_manager->HasCredential(issuer_address))
     {
         console->error("User does not have a credential from: {0}", issuer_address);
         return false;
     }
-
     Credential cred = _cred_manager->GetCredential(issuer_address);
+   
     std::vector<std::string> merkle_path;
-    std::string merkle_root = _mt_provider->GetMerklePath(cred_request.merkle_root_address, cred.merkle_address, merkle_path);
 
+    if(cred_request.merkle_root_address.empty()){
+      console->error("Merkle address blank");
+      return false;
+    }
+    std::string merkle_root = _mt_provider->GetMerklePath(cred_request.merkle_root_address, cred.merkle_address, merkle_path);
     if (merkle_path.empty())
     {
         console->error("Enable to get merkle path from: {0}", cred_request.merkle_root_address);
         return false;
     }
-
     zkidProverImpl<sha256_two_to_one_hash_gadget> prover(merkle_path.size(), 32, _service_config->GetKeyPath());
 
     ProofRequest proof_request = ConstructProofRequest(cred_request, cred, merkle_root, merkle_path);

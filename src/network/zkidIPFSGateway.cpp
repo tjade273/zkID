@@ -45,6 +45,7 @@ std::string zkidIPFSGateway::GetMerklePath(const std::string &merkle_address, si
     }catch(std::runtime_error& e){
         //unable to get files
         path.clear();
+        return "";
     }
 }
 
