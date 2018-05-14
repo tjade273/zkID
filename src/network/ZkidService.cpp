@@ -73,14 +73,16 @@ bool ZkidService::GenerateProofForCredential(const CredentialRequest &cred_reque
     std::string merkle_root = _mt_provider->GetMerklePath(cred_request.merkle_root_address, cred.merkle_address, merkle_path);
     if (merkle_path.empty())
     {
-        console->error("Enable to get merkle path from: {0}", cred_request.merkle_root_address);
+        console->error("Unable to get merkle path from: {0}", cred_request.merkle_root_address);
         return false;
     }
+
     zkidProverImpl<sha256_two_to_one_hash_gadget> prover(merkle_path.size(), 32, _service_config->GetKeyPath());
 
-    ProofRequest proof_request = ConstructProofRequest(cred_request, cred, merkle_root, merkle_path);
+    /*ProofRequest proof_request = ConstructProofRequest(cred_request, cred, merkle_root, merkle_path);
 
-    return prover.GetCredentialProof(proof_request, proof);
+    return prover.GetCredentialProof(proof_request, proof);*/
+    return false;
 }
 
 ProofRequest ConstructProofRequest(const CredentialRequest &req, const Credential &cred, const std::string &merkle_root, const std::vector<std::string> merkle_path)

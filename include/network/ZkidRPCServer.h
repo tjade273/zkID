@@ -17,7 +17,7 @@ class ZkidRPCServer : public AbstractZkidRPCServer
 {
 
 public:
-  ZkidRPCServer(jsonrpc::AbstractServerConnector &conn, ConfigRPCServerInterface *rpc_config);
+  ZkidRPCServer(jsonrpc::AbstractServerConnector& conn, ConfigRPCServerInterface *rpc_config);
   Json::Value GenerateProofs(const Json::Value &credential_descriptions);
   void SetProofHandler(ZkidProofHandler *listener);
 
