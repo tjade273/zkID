@@ -4,19 +4,43 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <climits>
 
+#define ZKID_CREDENTIAL_ATTRIBUTE_NUM 7
 
 enum VerificationErrorCode
 {
     //TODO: Define some error codes.
 };
 
-struct CredentialRequest{
-  std::string issuer_address;
-  std::string merkle_root_address;
-  uint32_t range_low;
-  uint32_t range_high;
-  uint32_t k_factor;
+struct Credential
+{
+    Credential(){};
+    Credential(std::string a, std::string key, uint _k, std::string cs, size_t ma) : attributes(a),
+                                                                         k(_k),
+                                                                         contract_salt(cs),
+                                                                         secret_key(key),
+                                                                         merkle_address(ma){};
+    std::string secret_key;
+    std::string contract_salt;
+    std::string attributes;
+    uint k;
+    size_t merkle_address;
+};
+
+struct AttributeRequest
+{
+    std::string lower_bound = "00000000";
+    std::string upper_bound = "7fffffff";
+    int idx;
+};
+
+struct CredentialRequest
+{
+    std::string contract_salt;
+    std::string merkle_root_address;
+    std::vector<AttributeRequest> attribute_requests;
+    uint k_bound;
 };
 
 struct CredentialProof
@@ -29,24 +53,20 @@ struct CredentialProof
     std::array<std::string, 2> C_p;
     std::array<std::string, 2> H;
     std::array<std::string, 2> K;
+    std::string serial;    
 };
 
 struct VerificationKey
 {
-    std::array<std::string,4> A;
-    std::array<std::string,2> B;
-    std::array<std::string,4> C;
-    std::array<std::string,4> gamma;
-    std::array<std::string,2> gammaBeta1;
-    std::array<std::string,4> gammaBeta2;
-    std::array<std::string,4> Z;
-    std::array<std::string,2> IC0;
-    std::vector<std::array<std::string,2>> ICs;
-};
-
-struct VerificationData
-{
-    CredentialProof proof;
+    std::array<std::string, 4> A;
+    std::array<std::string, 2> B;
+    std::array<std::string, 4> C;
+    std::array<std::string, 4> gamma;
+    std::array<std::string, 2> gammaBeta1;
+    std::array<std::string, 4> gammaBeta2;
+    std::array<std::string, 4> Z;
+    std::array<std::string, 2> IC0;
+    std::vector<std::array<std::string, 2>> ICs;
 };
 
 struct VerificationError

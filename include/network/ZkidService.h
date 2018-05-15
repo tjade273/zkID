@@ -7,6 +7,11 @@
 #include "credentials/CredentialsManager.h"
 #include "network/ZkidRPCServer.h"
 #include "proving/zkidMTProvider.h"
+#include "proving/zkidProverImpl.h"
+#include "proving/zkidVerificationStructs.h"
+
+
+ProofRequest ConstructProofRequest(const CredentialRequest& req, const Credential& cred, const std::string& merkle_root,const std::vector<std::string> path);
 
 class ZkidService : public ZkidProofHandler
 {
@@ -17,7 +22,7 @@ class ZkidService : public ZkidProofHandler
     static std::shared_ptr<spdlog::logger> console;
     bool Start();
     void Stop();
-    bool GetProofForCredential(const CredentialRequest &cred, CredentialProof& proof);
+    bool GetProofForCredential(CredentialRequest &cred, CredentialProof& proof);
     int GetPort();
   protected:
   virtual bool GenerateProofForCredential(const CredentialRequest &cred, CredentialProof &proof);

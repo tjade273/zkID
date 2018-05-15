@@ -1,6 +1,0 @@
-{
-    "credentials_file":"res/credentials/credentials.json",
-    "service_port":8383,
-    "ipfs_clinet_ip":"ipfs_client_ip",
-    "ipfs_client_port":8080
-}

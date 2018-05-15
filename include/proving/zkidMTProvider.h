@@ -7,6 +7,6 @@
 class zkidMTProvider
 {
   public:
-    virtual void GetMerklePath(const std::string &merkle_address, size_t address, std::vector<std::string> &path) = 0;
+    virtual std::string GetMerklePath(const std::string &merkle_address, size_t address, std::vector<std::string> &path) = 0;
 };
 #endif

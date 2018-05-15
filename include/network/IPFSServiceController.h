@@ -8,7 +8,7 @@
 class IPFSServiceController
 {
   public:
-    void StartService(char** argv);
+    void StartService(char** argv = nullptr);
     void StopService();
 
   private:

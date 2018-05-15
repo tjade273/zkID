@@ -91,7 +91,8 @@
   width: 1em;
   height: 1em;
   border-radius: 50%;
-  margin: 30px auto 2px auto;
+  padding: 10px;
+  margin: 30px auto 20px auto;
   position: relative;
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);

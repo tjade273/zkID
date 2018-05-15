@@ -11,15 +11,15 @@
 #include "proving/zkidVerificationStructs.h"
 #include "util/libsnark_helpers.h"
 
-struct LibsnarkVerificationData
+struct LibsnarkCredentialProof
 {
   libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> proof;
   libsnark::r1cs_ppzksnark_primary_input<libff::alt_bn128_pp> primary_input;
 };
 
-CredentialProof ExtractCredentialProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof);
+void ExtractCredentialProof(libsnark::r1cs_ppzksnark_proof<libff::alt_bn128_pp> &proof, CredentialProof& cred_proof);
 
-VerificationKey ExtractVerificationKey(libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> &vk);
+VerificationKey ExtractVerificationKey(const libsnark::r1cs_ppzksnark_verification_key<libff::alt_bn128_pp> &vk);
 
 std::string FormatG1(std::array<std::string, 2> p);
 
@@ -27,5 +27,5 @@ std::string FormatG2(std::array<std::string, 4> p);
 
 void ExportVerificationKey(VerificationKey &vk, const std::string &sol_path, const std::string &out_path);
 
-void ExportProof(LibsnarkVerificationData &auth, std::string fname);
+void ExportProof(LibsnarkCredentialProof &auth, std::string fname);
 #endif

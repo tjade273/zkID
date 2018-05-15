@@ -76,3 +76,19 @@ target_include_directories(
   ${DEPENDS_DIR}/libsnark
   ${DEPENDS_DIR}/libsnark/depends/libfqfft
 )
+
+
+add_definitions(-DBINARY_OUTPUT)
+
+file(GLOB_RECURSE PROVING_SOURCES
+    *.cpp)
+
+add_executable(
+  keygen
+  ${PROVING_SOURCES}
+)
+
+target_link_libraries(
+  keygen
+  zkid_lib
+)

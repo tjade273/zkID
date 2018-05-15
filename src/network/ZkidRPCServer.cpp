@@ -1,10 +1,9 @@
 #include "network/ZkidRPCServer.h"
 #include <cassert>
 
-ZkidRPCServer::ZkidRPCServer(jsonrpc::AbstractServerConnector &conn, ConfigRPCServerInterface *rpc_config) : AbstractZkidRPCServer(conn),
-                                                                                                _rpc_config(rpc_config)
+ZkidRPCServer::ZkidRPCServer(jsonrpc::AbstractServerConnector& conn, ConfigRPCServerInterface *rpc_config) : AbstractZkidRPCServer(conn),
+                                                                                                             _rpc_config(rpc_config)
 {
-    
 }
 
 Json::Value ZkidRPCServer::GenerateProofs(const Json::Value &credential_descs)
@@ -25,7 +24,7 @@ Json::Value ZkidRPCServer::GenerateProofs(const Json::Value &credential_descs)
         if (_proof_handler->GetProofForCredential(cred, proof))
         {
             Json::Value proof_json = ProofToJson(proof);
-            proof_json["issuer_address"] = cred.issuer_address;
+            proof_json["contract_salt"] = cred.contract_salt;
             result["proofs"].append(proof_json);
         }
     }
@@ -37,12 +36,19 @@ Json::Value ZkidRPCServer::GenerateProofs(const Json::Value &credential_descs)
 CredentialRequest ZkidRPCServer::CredentialRequestFromJson(const Json::Value &cred_json)
 {
     CredentialRequest cred_desc;
-    cred_desc.issuer_address = cred_json["issuer_address"].asString();
+    cred_desc.contract_salt = cred_json["contract_salt"].asString();
     cred_desc.merkle_root_address = cred_json["merkle_root_address"].asString();
-    cred_desc.range_low = cred_json["range_low"].asInt();
-    cred_desc.range_high = cred_json["range_high"].asInt();
-    cred_desc.k_factor = cred_json["k_factor"].asInt();
+    cred_desc.k_bound = cred_json["k_bound"].asUInt();
 
+    for (const Json::Value &attr_req_json : cred_json["requested_attributes"])
+    {
+        AttributeRequest attr_request;
+        attr_request.lower_bound = attr_req_json["lower_bound"].asString();
+        attr_request.upper_bound = attr_req_json["upper_bound"].asString();
+        attr_request.idx = attr_req_json["idx"].asInt();
+        cred_desc.attribute_requests.push_back(attr_request);
+    }
+    
     return cred_desc;
 }
 
@@ -67,7 +73,8 @@ Json::Value ZkidRPCServer::ProofToJson(const CredentialProof &proof)
     proof_json["H"][1] = proof.H[1];
     proof_json["K"][0] = proof.K[0];
     proof_json["K"][1] = proof.K[1];
-
+    proof_json["serial"] = proof.serial;
+    
     return proof_json;
 }
 

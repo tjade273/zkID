@@ -1,10 +1,10 @@
 
-issuer_abi = JSON.parse('[{"constant":false,"inputs":[],"name":"getMerkleRootAddress","outputs":[{"address":"","type":"string"}],"payable":false,"type":"function"}]');
+issuer_abi = JSON.parse('[ { "constant": false, "inputs": [], "name": "ipfs_hash", "outputs": [], "payable": false, "type": "function"}]');
 IssuerContract = web3.eth.contract(issuer_abi);
 currentBlock = null;
 
 function ProofToBytes(proof) {
-    return [].concat(
+    return ([].concat(
         web3.utils.hexToBytes(proof["A"][0]),
         web3.utils.hexToBytes(proof["A"][1]),
         web3.utils.hexToBytes(proof["A_p"][0]),
@@ -22,17 +22,17 @@ function ProofToBytes(proof) {
         web3.utils.hexToBytes(proof["H"][0]),
         web3.utils.hexToBytes(proof["H"][1]),
         web3.utils.hexToBytes(proof["K"][0]),
-        web3.utils.hexToBytes(proof["K"][1]));
+        web3.utils.hexToBytes(proof["K"][1])), 
+        web3.utils.hexToBytes(proof["serial"]));
 }
 
 
-var CredentialMethod = function (methodName, method, abi) {
-    this.methodName = methodName;
-    this.method = method;
-    this.requiredCredentials = abi.find(function (e) {
-        return e["name"] === methodName;
-    })["credentials"];
+CredentialBlock.prototype.showError = function (msg) {
+    $("#msg-container").first().text(msg);
+    $("#msg-container").show();
+    $("#return-button-container").show();
 }
+
 
 CredentialBlock.prototype.FetchCredentialProofs = function () {
     var client = new zkidclient("http://localhost:8383");
@@ -40,10 +40,11 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
     this.action.requiredCredentials = this.action.requiredCredentials.map((e) => {
         //ask each verifier contract for the address of its merkle root
         try {
-            var issuerContractInstance = IssuerContract.at(e["issuer_address"]);
-            e["merkle_root_address"] = issuerContractInstance.getMerkleRootAddress().call();
+            //var issuerContractInstance = IssuerContract.at(e["contract_salt"]);
+            e["merkle_root_address"] = "QmWgxfXhs2rovrqDKoNSprrWpZKZiF9edUTVd7U2q3BR1M";
+           //e["merkle_root_address"] = issuerContractInstance.ipfs_hash().call();
         } catch (e) {
-            e["merkle_root_address"] = "";
+            e["merkle_root_address"] = "QmWgxfXhs2rovrqDKoNSprrWpZKZiF9edUTVd7U2q3BR1M";
         } finally {
             return e;
         }
@@ -52,29 +53,27 @@ CredentialBlock.prototype.FetchCredentialProofs = function () {
     client.GenerateProofs(this.action.requiredCredentials, (id, result) => {
         var generated_proofs = result["proofs"];
         this.highlightCredentials(generated_proofs);
-
         if (result["success"]) {
-            var proof_bytes = generated_proofs.reduce(function (acc, e) {
-                acc.concat(ProofToBytes(e));
-            }, []);
-            action.method(proof_bytes);
+            var proof_bytes, serial = ProofToBytes(e);
+            action.method(proof_bytes, serial, function () {
+                OnReturn();
+            }, function (err) {
+                this.showError("Verification was unsuccessfuly for one or more credentials.")
+            });
         } else {
-            $("#msg-container").first().text("A proof could not be generated for one or more credentials.");
-            $("#msg-container").show();
-            $("#return-button-container").show();
+            this.showError("A proof could not be generated for one or more credentials.");
         }
-    }, function (code, msg) {
-        PostFetchError(code, msg);
+    }, (code, msg) => {
+        this.showError("Unable to connect to ZKID proof service.")
     });
 }
 
 CredentialBlock.prototype.highlightCredentials = function (generated_proofs) {
-    $("#credential_table").find("tr:not(:first-child)").each(function () {
+    $("#credential_table").find("> tr:not(:first-child)").each(function () {
         var issuer_addr = $(this).find(">:first-child").text();
         var was_generated = generated_proofs == null ? false : generated_proofs.reduce(function (acc, e) {
-            return acc ? true : e["issuer_address"] === issuer_addr;
+            return acc ? true : e["contract_salt"] === issuer_addr;
         }, false);
-
         if (was_generated)
             $(this).animate({ backgroundColor: "#C8E6C9" }, 500);
         else
@@ -92,12 +91,26 @@ CredentialBlock.prototype.display = function () {
             var current_cred = requiredCredentials[i];
             var cred_row = document.createElement("tr");
             var cred_sig_cell = document.createElement("td");
-            var cred_sig = document.createTextNode(current_cred["issuer_address"]);
+            var cred_sig = document.createTextNode(current_cred["contract_salt"]);
             var cred_desc_cell = document.createElement("td");;
-            var cred_desc = document.createTextNode(current_cred["description"]);
+
+            var cred_desc_table = document.createElement("table");
+
+
+            console.log(current_cred);
+            for (var i = 0; i < current_cred["requested_attributes"].length; i++) {
+
+                var current_attr = current_cred["requested_attributes"][i];
+                if (current_attr["description"] != undefined) {
+                    var cred_desc = document.createTextNode(current_attr["description"]);
+                    var desc_row = document.createElement("tr");
+                    desc_row.appendChild(cred_desc);
+                    cred_desc_table.appendChild(desc_row);
+                }
+            }
 
             cred_sig_cell.appendChild(cred_sig);
-            cred_desc_cell.appendChild(cred_desc);
+            cred_desc_cell.appendChild(cred_desc_table);
             cred_row.appendChild(cred_sig_cell)
             cred_row.appendChild(cred_desc_cell)
             table.appendChild(cred_row);
@@ -112,6 +125,14 @@ CredentialBlock.prototype.display = function () {
 function CredentialBlock(methodName, method, abi) {
     this.action = new CredentialMethod(methodName, method, abi);
     currentBlock = this;
+}
+
+var CredentialMethod = function (methodName, method, abi) {
+    this.methodName = methodName;
+    this.method = method;
+    this.requiredCredentials = abi.find(function (e) {
+        return e["name"] === methodName;
+    })["credentials"];
 }
 
 function PostVericiationError(code, msg) {

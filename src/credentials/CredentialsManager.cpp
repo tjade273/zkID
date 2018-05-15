@@ -9,12 +9,15 @@ Credential CredentialsManager::GetCredential(const std::string& issuer_address){
 }
 
 void CredentialsManager::LoadCredentials(){
-    const std::string& credentials_directory = _cred_config->GetCredentialsFilePath();
+    const std::string& credential_file = _cred_config->GetCredentialsFilePath();
 
-    Json::Value creds_json = JsonObjectFromFile(credentials_directory);
+    Json::Value creds_json = JsonObjectFromFile(credential_file);
 
     for(int i = 0; i < creds_json.size(); i++){
         Json::Value current_cred = creds_json[i];
-        _credentials[current_cred["issuer_address"].asString()] = Credential(current_cred["token"].asInt(), current_cred["address"].asInt());
-    }
+        _credentials[current_cred["contract_salt"].asString()] = Credential(current_cred["attributes"].asString(), 
+                                                                            current_cred["secret_key"].asString(),
+                                                                            current_cred["k"].asUInt(),
+                                                                            current_cred["contract_salt"].asString(),
+                                                                            current_cred["merkle_address"].asInt());}
 }
