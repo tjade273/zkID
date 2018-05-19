@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Arch Linux) (preloaded format=pdflatex 2018.3.4)  14 MAY 2018 07:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Arch Linux) (preloaded format=pdflatex 2018.3.4)  14 MAY 2018 08:46
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -834,42 +834,73 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 187.
-[3] [4] (./paper.bbl
-Underfull \hbox (badness 1253) in paragraph at lines 10--15
+<issuing.png, id=25, 382.42876pt x 101.37875pt>
+File: issuing.png Graphic file (type png)
+<use issuing.png>
+Package pdftex.def Info: issuing.png  used on input line 202.
+(pdftex.def)             Requested size: 191.2139pt x 50.68924pt.
+<verifying.png, id=27, 849.1725pt x 101.37875pt>
+File: verifying.png Graphic file (type png)
+<use verifying.png>
+Package pdftex.def Info: verifying.png  used on input line 203.
+(pdftex.def)             Requested size: 424.5852pt x 50.68924pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[3] [4 <./issuing.png> <./verifying.png>] [5] (./paper.bbl
+Underfull \hbox (badness 2384) in paragraph at lines 9--12
+[]\OT1/cmr/m/n/10.95 Civic Se-cure Iden-tity Ecosys-tem - De-cen-tral-ized Iden
+-tity & Reusable KYC.  URL
+ []
+
+
+Underfull \hbox (badness 1253) in paragraph at lines 19--24
 []\OT1/cmr/m/n/10.95 Eli Ben-Sasson, Alessan-dro Chiesa, Daniel Genkin, Eran Tr
 omer, and Madars Virza.
  []
 
-[5]
-Underfull \hbox (badness 4291) in paragraph at lines 17--20
+
+Underfull \hbox (badness 4291) in paragraph at lines 26--29
 []\OT1/cmr/m/n/10.95 Juan Benet.  IPFS - Con-tent Ad-dressed, Ver-sioned, P2P F
 ile Sys-tem.  URL
  []
 
-) [6] (./paper.aux) ) 
+
+Underfull \hbox (badness 2970) in paragraph at lines 31--35
+[]\OT1/cmr/m/n/10.95 Pelle Braendgaard.  Dif-fer-ent Ap-proaches to Ethereum Id
+en-tity Stan-dards.  URL
+ []
+
+
+Overfull \hbox (61.95322pt too wide) in paragraph at lines 31--35
+\OT1/cmtt/m/n/10.95 https://medium.com/uport/different-approaches-to-ethereum-i
+dentity-standards-a09488347c87\OT1/cmr/m/n/10.95 . 
+ []
+
+[6]) [7] (./paper.aux) ) 
 Here is how much of TeX's memory you used:
- 27003 strings out of 492982
- 662484 string characters out of 6138580
- 814473 words of memory out of 5000000
- 30068 multiletter control sequences out of 15000+600000
+ 27023 strings out of 492982
+ 662934 string characters out of 6138580
+ 815536 words of memory out of 5000000
+ 30085 multiletter control sequences out of 15000+600000
  12510 words of font info for 48 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,8n,96p,729b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx
-10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/s
-hare/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></
-usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmti10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.p
-fb></usr/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on paper.pdf (6 pages, 163577 bytes).
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
+r/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb
+></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmti10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt1
+0.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on paper.pdf (7 pages, 184486 bytes).
 PDF statistics:
- 78 PDF objects out of 1000 (max. 8388607)
- 56 compressed objects within 1 object stream
+ 88 PDF objects out of 1000 (max. 8388607)
+ 61 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 13 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 23 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -92,7 +92,7 @@ including metadata about past and future attestations of identity.
 
 \subsection{Prior Work}
 Identity systems for public blockchains have been proposed before in the form of
-serivces like Civic and Uport, wherein users can acquire attestations from
+serivces like Civic\cite{CivicSecureIdentity} and Uport\cite{braendgaardDifferentApproachesEthereum2018}, wherein users can acquire attestations from
 trusted issuers about facets of their identity (name, age, country of origin,
 etc). These services promise ``anonymous'' attestation, but are
 \textit{linkable}, i.e.\ multiple attestations by the same user are trivially
@@ -197,9 +197,12 @@ not in its nullifier set $N$.
 
 
 \subsection{The ZKID Service}
-
-\subsubsection{libsnark}
-
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.5]{issuing}\vspace{40pt}
+  \includegraphics[scale=0.5]{verifying}
+  \caption{ZKID Service}
+\end{figure}
 \subsubsection{JSON RPC}
 
 The ZKID client application acts as a JSON RPC service that can handle requests from client dApps. For the simplest implementation,
@@ -241,10 +244,6 @@ By utilizing IPFS, the ZKID service promotes the distributed nature of its envir
 contracts must supply a GetMerkleTreeAddress method that returns the IPFS address of their merkle root. Every issuer must also append the hashes of every issued credential 
 to their merkle tree so that verifiers and clients can construct merkle tree paths and subsequently merkle tree membership proofs as nessesary. 
 
-\subsection{dApp Framework and Credential-Enabled Contracts}
-
-Add some Introduction here
-
 \subsubsection{Credential Annotated ABI}
 The properly interface with the ZKID Service a dApp would provide an annotated ABI for its dependant contract(s).
 The annotations describe the required credentials for a given method within the smart contract and will
@@ -270,6 +269,13 @@ supply the proof arguments post proof-generation. The dApp's code has now migrat
 
 \section{Benchmarks}
 
+Deployment of our contract takes $3.6$ million gas, and a single execution of
+the verifier requires $1.79$ million. At current prices this is about $0.01432$
+ETH or $\$10.50$. Proving time for a tree dept of $32$ is 43.2 seconds. We feel
+that these are reasonable enough for use, but could certainly be improved as
+discussed below. Proving time scales linearly with the depth of the merkle tree,
+while verification cost is constant.
+
 \section{Example Application}
 
 To demonstrate the facilities provided by the our system we developed a simple lottery dApp that requries participants to be
@@ -279,8 +285,16 @@ framework that would allow applications to prompt users for the required credent
 
 
 \section{Future Work}
+Currently the contract does not make use of the preprocessed verifier that
+libsnark provides, which would allow us to remove 2 pairing checks at the cost
+of several EC group operations. Additionally, Zcash is developing a new zkSNARK
+system on a more efficient curve called JubJub\cite{ZcashJubjub} that allows fixed-base
+exponentiation for efficient EC operations in
+circuits, allowing efficient CRHs.
 
-\section{Conclusion}
+\section{Acknowledgements}
+Huge thanks to Ian Miers for helping set us on the right path and formalizing
+the properties that an anonymous credential scheme should have.
 
 \bibliographystyle{plainnat}
 \bibliography{Identity}
